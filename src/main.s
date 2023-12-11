@@ -1,11 +1,7 @@
-; much of this code is based on https://gbdev.io/gb-asm-tutorial/index.html
-
 #include "hw.s"
-
 
 .org 0x0
 .fill 0, 0x100
-
 #include "header.s"
  
 entry:
@@ -56,11 +52,11 @@ forever:
   jp forever 
 
 tiles:
-.db 1
+.db 0xFF, 0xAA, 0xBB, 0xCC, 0xEE, 0x11, 0x22, 0x33
 tiles_end:
 
 tilemap:
-.db 1
+.db 0x00
 tilemap_end:
 
 
