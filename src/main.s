@@ -5,60 +5,68 @@
 #include "header.s"
  
 entry:
-wait_vblank:
+  ; wait for first vblank
+  call vblankwait
+  
+  ; initially disable lcd 
+  call lcdoff
+
+  ; copy tiles 0
+  ld de, tiles0
+  ld hl, 0x9000
+  ld bc, tiles0_end - tiles0
+  call memcpy
+
+  ; copy tilemap 0
+  ld de, tilemap0
+  ld hl, 0x9800
+  ld bc, tilemap0_end - tilemap0
+  call memcpy
+
+  ; enable lcd
+  call lcdon 
+
+forever:
+  jp forever 
+
+
+; memcpy:
+; parameters: 
+;   hl: src
+;   de: dst
+;   bc: len
+memcpy:
+@next:
+  ld a, [de]
+  ld [hl+], a
+  inc de
+  dec bc
+  ld a, b
+  or a, c
+  jp nz, @next
+  ret
+
+vblankwait:
   ld a, [RLY]
   cp a, 144
-  jp c, wait_vblank
+  jp c, vblankwait 
+  ret
 
-disable_lcd:
-  ; lcd off 
-  ld a, 0
-  ld [RLCD], a
-
-copy_tiles:
-  ld de, tiles
-  ld hl, 0x9000
-  ld bc, tiles_end - tiles
-@copy_tiles:
-  ld a, [de]
-  ld [hl+], a
-  inc de
-  dec bc
-  ld a, b
-  or a, c
-  jp nz, @copy_tiles
-
-copy_tilemap:
-  ld de, tilemap
-  ld hl, 0x9800
-  ld bc, tilemap_end - tilemap
-@copy_tilemap:
-  ld a, [de]
-  ld [hl+], a
-  inc de
-  dec bc
-  ld a, b
-  or a, c
-  jp nz, @copy_tilemap 
- 
-enable_lcd:
+lcdon:
   ld a, LCDCF_ON | LCDCF_BGON
   ld [RLCD], a
       
   ld a, 0b11100100
   ld [RBGP], a
+  ret
 
-forever:
-  jp forever 
+lcdoff:
+  ld a, 0
+  ld [RLCD], a
+  ret
 
-tiles:
-.db 0xFF, 0xAA, 0xBB, 0xCC, 0xEE, 0x11, 0x22, 0x33
-tiles_end:
-
-tilemap:
-.db 0x00
-tilemap_end:
-
+#include "tiles.s"
+#include "tilemaps.s"
 
 ; fill bank
 .fill 0, 0x7FFF - $
