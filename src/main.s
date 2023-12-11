@@ -36,9 +36,24 @@ entry:
   ; enable lcd
   call lcdon 
 
-forever:
-  jp forever 
+main:
+@forever:
+  call vblankwait 
 
+  call input 
+  call update
+
+  jp @forever 
+
+input:
+  ret
+
+update:
+  ld a, [OAMRAM + 1]
+  inc a
+  ld [OAMRAM + 1], a
+
+  ret
 
 ; memcpy:
 ; parameters: 
