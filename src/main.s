@@ -49,7 +49,7 @@ main:
 
 input:
   ; store old inputs 
-  ld a, inputs 
+  ld a, [inputs] 
   ld [prev_inputs], a
   
   ld a, P1FDPAD   
@@ -87,6 +87,9 @@ update:
   ld a, [OAMRAM + 1]
   inc a
   ld [OAMRAM + 1], a
+  ld a, [inputs]
+  add a, 32
+  ld [OAMRAM], a
 
   ret
 
