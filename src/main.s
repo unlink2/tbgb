@@ -48,12 +48,37 @@ main:
   jp @forever 
 
 input:
+  ; store old inputs 
+  ld a, inputs 
+  ld prev_inputs, a
+  
   ld a, P1FDPAD   
-  call input_readhalf 
+  call @input_readhalf 
+  ; store in b for now...
+  ld b, a
+    
+  ld a, P1FBTN 
+  call @input_readhalf
+  sawp a ; move to lower 4 bits 
+  
+  ; release P1F
+  ld a, P1FNONE 
+  ldh [RP1], a
 
-input_readhalf:
+  xor a, b
+  ld inputs, a 
+
+; returns
+;   a: A7-4 -> inputs
+@input_readhalf:
   ld [RP1], a
+  ; wait for values to become stable 
   call @wastecycles
+  ldh a, [RP1]
+  ldh a, [RP1]
+  ldh a, [RP1] ; last read counts
+
+  or a, 0xF0 ; A7-4 -> keys
   ret 
 @wastecycles:
   ret
