@@ -50,7 +50,7 @@ main:
 input:
   ; store old inputs 
   ld a, inputs 
-  ld prev_inputs, a
+  ld [prev_inputs], a
   
   ld a, P1FDPAD   
   call @input_readhalf 
@@ -59,14 +59,14 @@ input:
     
   ld a, P1FBTN 
   call @input_readhalf
-  sawp a ; move to lower 4 bits 
+  swap a ; move to lower 4 bits 
   
   ; release P1F
   ld a, P1FNONE 
   ldh [RP1], a
 
   xor a, b
-  ld inputs, a 
+  ld [inputs], a 
 
 ; returns
 ;   a: A7-4 -> inputs
