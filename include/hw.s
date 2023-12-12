@@ -16,6 +16,16 @@
 #define P1F5 0x00100000 ; set to 0 to get buttons 
 #define P1F4 0x00010000 ; set to 0 to get dpad
 
+; buttons 
+#define BTNDOWN 0x80
+#define BTNUP 0x40
+#define BTNLEFT 0x20
+#define BTNRIGHT 0x10
+#define BTNSTART 0x08
+#define BTNSELECT 0x04
+#define BTNA 0x02
+#define BTNB 0x01
+
 .def int P1FDPAD = P1F5
 .def int P1FBTN = P1F4
 .def int P1FNONE = P1F5 | P1F4
@@ -26,3 +36,5 @@
 .def int SCRN0 = 0x9800
 .def int SCRN1 = 0x9C00
 .def int OAMRAM = 0xFE00
+
+

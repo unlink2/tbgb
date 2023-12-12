@@ -49,7 +49,8 @@ main:
 
 input:
   ; store old inputs 
-  ld a, [inputs] 
+  ld a, [inputs]
+  ld c, a ; c hold prev_inputs for now
   ld [prev_inputs], a
   
   ld a, P1FDPAD   
@@ -66,7 +67,9 @@ input:
   ldh [RP1], a
 
   xor a, b
-  ld [inputs], a 
+  ld [inputs], a
+  xor a, c ; just pressed 
+  ld [just_pressed], a
 
 ; returns
 ;   a: A7-4 -> inputs
@@ -84,12 +87,14 @@ input:
   ret
 
 update:
-  ld a, [OAMRAM + 1]
-  inc a
-  ld [OAMRAM + 1], a
   ld a, [inputs]
-  add a, 32
-  ld [OAMRAM], a
+  and a, 1 
+  jp nz, @notleft
+  ; left input hit
+    ld a, [OAMRAM + 1]
+    inc a
+    ld [OAMRAM + 1], a
+@notleft:
 
   ret
 
