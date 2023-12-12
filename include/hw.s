@@ -11,6 +11,15 @@
 #define RBGP 0xFF47
 #define ROBP0 0xFF48
 
+; P1: joy pad register
+#define RP1 0xFF00
+#define P1F5 0x00100000 ; set to 0 to get buttons 
+#define P1F4 0x00010000 ; set to 0 to get dpad
+
+.def int P1FDPAD = P1F5
+.def int P1FBTN = P1F4
+.def int P1FNONE = P1F5 | P1F4
+
 ; memory map 
 .def int VRAM = 0x8000
 .def int VRAM9000 = VRAM+0x1000

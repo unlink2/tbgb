@@ -1,5 +1,7 @@
 #include "hw.s"
 
+#include "wram.s"
+
 .org 0x0
 .fill 0, 0x100
 #include "header.s"
@@ -46,6 +48,14 @@ main:
   jp @forever 
 
 input:
+  ld a, P1FDPAD   
+  call input_readhalf 
+
+input_readhalf:
+  ld [RP1], a
+  call @wastecycles
+  ret 
+@wastecycles:
   ret
 
 update:
