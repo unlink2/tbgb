@@ -115,7 +115,6 @@ update:
     inc a
     ld [OAMRAM], a
 @notdown:
-
   ret
 
 ; memcpy:
