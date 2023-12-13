@@ -42,6 +42,7 @@ entry:
 main:
 @forever:
   call vblankwait
+  call vblankwait
   call input 
   call update
 
