@@ -40,6 +40,13 @@ entry:
   ; enable lcd
   call lcdon 
 
+  ; init display regs
+  ld a, 0b11100100
+  ld [RBGP], a
+
+  ld a, 0b11100100 
+  ld [ROBP0], a
+
   call vblankwait
 
   ; enable interrupts 
@@ -84,7 +91,7 @@ input:
   ; release P1F
   ld a, P1FNONE 
   ldh [RP1], a
-
+  ret 
 ; inputs:
 ;   a: P1 key matrix flag 
 ; returns
@@ -92,14 +99,14 @@ input:
 pollp1:
   ld [RP1], a
   ; wait for values to become stable 
-  call @wastecycles
+  ldh a, [RP1]
+  ldh a, [RP1]
+  ldh a, [RP1]
   ldh a, [RP1]
   ldh a, [RP1]
   ldh a, [RP1] ; last read counts
   and a, 0x0F
   ret 
-@wastecycles:
-  ret
 
 draw:
   ld a, [inputs]
@@ -163,14 +170,7 @@ vblankwait:
 
 lcdon:
   ld a, LCDCF_ON | LCDCF_BGON | LCDCF_OBJON
-  ld [RLCD], a
-  
-  ; init display regs
-  ld a, 0b11100100
-  ld [RBGP], a
-
-  ld a, 0b11100100 
-  ld [ROBP0], a
+  ld [RLCD], a 
   ret
 
 lcdoff:
