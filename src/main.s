@@ -22,7 +22,7 @@ entry:
   ld bc, tiles0_end - tiles0
   call memcpy
   
-  ; copy oam data 
+  ; copy oam tile data 
   ld de, tiles0
   ld hl, VRAM
   ld bc, tiles0_end - tiles0
@@ -41,8 +41,7 @@ entry:
 
 main:
 @forever:
-  call vblankwait 
-
+  call vblankwait
   call input 
   call update
 
@@ -174,7 +173,7 @@ oamload_test:
   ld [hl+], a
   ld a, 10 + 8
   ld [hl+], a
-  ld a, 0
+  ld a, 1
   ld [hl+], a
   ld a, 0
   ld [hl], a
