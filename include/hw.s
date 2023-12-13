@@ -26,6 +26,13 @@
 #define BTNA 0x02
 #define BTNB 0x01
 
+; interrupts
+; interrupt flag 
+#define IF 0xFF0F
+; interrupt enabled
+#define IE 0xFFFF
+#define IVBLANK 0b00000001
+
 .def int P1FDPAD = P1F5
 .def int P1FBTN = P1F4
 .def int P1FNONE = P1F5 | P1F4

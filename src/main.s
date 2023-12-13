@@ -4,7 +4,8 @@
 #include "wram.s"
 
 .org 0x0
-.fill 0, 0x100
+#include "jmp.s"
+.fill 0, 0x100 - $
 #include "header.s"
  
 entry:
@@ -34,19 +35,26 @@ entry:
   ld bc, tilemap0_end - tilemap0
   call memcpy
 
-  call oamload_test
+  call oamload_test 
 
   ; enable lcd
   call lcdon 
 
+  call vblankwait
+
+  ; enable interrupts 
+  ld a, IVBLANK
+  ld [IE], a
+  ei 
+
 main:
 @forever:
-  call vblankwait
-  call vblankwait
+  jp @forever 
+
+vblank:
   call input 
   call update
-
-  jp @forever 
+  ret
 
 input:
   ld a, P1FDPAD
@@ -177,6 +185,9 @@ oamload_test:
   ld [hl+], a
   ld a, 0
   ld [hl], a
+  ret
+
+nohandler:
   ret
 
 #include "tiles.s"
