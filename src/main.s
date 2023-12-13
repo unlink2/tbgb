@@ -1,4 +1,5 @@
 #include "hw.s"
+#include "macros.s"
 
 #include "wram.s"
 
@@ -48,53 +49,73 @@ main:
   jp @forever 
 
 input:
-  ; store old inputs 
-  ld a, [inputs]
-  ld c, a ; c hold prev_inputs for now
-  ld [prev_inputs], a
-  
-  ld a, P1FDPAD   
-  call @input_readhalf 
-  ; store in b for now...
+  ld a, P1FDPAD
+  call pollp1
+  swap a
   ld b, a
-    
+
   ld a, P1FBTN 
-  call @input_readhalf
-  swap a ; move to lower 4 bits 
-  
+  call pollp1
+  or a, b
+
+  ld [inputs], a
+
   ; release P1F
   ld a, P1FNONE 
   ldh [RP1], a
 
-  xor a, b
-  ld [inputs], a
-  xor a, c ; just pressed 
-  ld [just_pressed], a
-
+; inputs:
+;   a: P1 key matrix flag 
 ; returns
 ;   a: A7-4 -> inputs
-@input_readhalf:
+pollp1:
   ld [RP1], a
   ; wait for values to become stable 
   call @wastecycles
   ldh a, [RP1]
   ldh a, [RP1]
   ldh a, [RP1] ; last read counts
-
-  or a, 0xF0 ; A7-4 -> keys
+  and a, 0x0F
   ret 
 @wastecycles:
   ret
 
 update:
   ld a, [inputs]
-  and a, 1 
+  and a, BTNLEFT 
   jp nz, @notleft
   ; left input hit
     ld a, [OAMRAM + 1]
-    inc a
+    dec a
     ld [OAMRAM + 1], a
 @notleft:
+  
+  ld a, [inputs]
+  and a, BTNRIGHT
+  jp nz, @notright
+  ; right input hit
+    ld a, [OAMRAM + 1]
+    inc a
+    ld [OAMRAM + 1], a
+@notright:
+  
+  ld a, [inputs]
+  and a, BTNUP
+  jp nz, @notup
+  ; up input hit 
+    ld a, [OAMRAM]
+    dec a
+    ld [OAMRAM], a
+@notup:
+  
+  ld a, [inputs]
+  and a, BTNDOWN 
+  jp nz, @notdown 
+  ; down input hit 
+    ld a, [OAMRAM]
+    inc a
+    ld [OAMRAM], a
+@notdown:
 
   ret
 
