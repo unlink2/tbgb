@@ -49,11 +49,24 @@ entry:
 
 main:
 @forever:
+  ; mark frame as finished 
+  ld a, 1
+  ld [update_flags], a
   jp @forever 
 
 vblank:
+  ; skip the frame if the previous
+  ; frame did not finish 
+  ld a, [update_flags]
+  and a, 1
+  ret z
+
   call input 
-  call update
+  call draw
+
+  ; reset update flags
+  ld a, 0
+  ld [update_flags], a
   ret
 
 input:
@@ -88,7 +101,7 @@ pollp1:
 @wastecycles:
   ret
 
-update:
+draw:
   ld a, [inputs]
   and a, BTNLEFT 
   jp nz, @notleft
