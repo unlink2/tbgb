@@ -294,6 +294,8 @@ oamload_test:
 nohandler:
   ret
 
+#include "act.s"
+
 #include "tiles.s"
 #include "tilemaps.s"
 

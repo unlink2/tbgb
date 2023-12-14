@@ -4,4 +4,4 @@ BDIR=bin/
 
 all:
 	mkdir -p $(BDIR)
-	ulas -v -o $(BDIR)/$(BIN) -l - -s bin/syms.txt -i ./include src/main.s
+	ulas -v -o $(BDIR)/$(BIN) -l - -s bin/syms.txt -i ./include -i ./src src/main.s

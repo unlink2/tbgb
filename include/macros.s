@@ -3,3 +3,4 @@
 .db ($1 >> 8) & 0xFF 
 #endmacro
 
+#define NULL 0
