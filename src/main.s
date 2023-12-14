@@ -76,6 +76,12 @@ vblank:
   ld [update_flags], a
   ret
 
+; poll inputs
+; returns:
+;   new inputs in [input]
+;   previous inputs in [prev_inputs]
+; registers:
+;   a, b, c, d
 input:
   ld a, P1FDPAD
   call pollp1
@@ -84,18 +90,18 @@ input:
 
   ld a, P1FBTN 
   call pollp1
-  or a, b
+  xor a, b
 
   ld [inputs], a
 
-  ; release P1F
-  ld a, P1FNONE 
-  ldh [RP1], a
   ret 
+; poll p1 
 ; inputs:
 ;   a: P1 key matrix flag 
 ; returns
-;   a: A7-4 -> inputs
+;   a: A0-3 -> inputs
+; registers:
+;   a, d
 pollp1:
   ld [RP1], a
   ; wait for values to become stable 
@@ -105,13 +111,26 @@ pollp1:
   ldh a, [RP1]
   ldh a, [RP1]
   ldh a, [RP1] ; last read counts
-  and a, 0x0F
+  ; mask away bit 7-4
+  or a, 0xF0
+  
+  ld d, a
+  ; reset P1F
+  ld a, P1FNONE 
+  ldh [RP1], a
+  ld a, d
+
   ret 
 
 draw:
   ld a, [inputs]
+  swap a
+  and a, 0x0F
+  ld [OAMRAM + 2], a
+  
+  ld a, [inputs]
   and a, BTNLEFT 
-  jp nz, @notleft
+  jp z, @notleft
   ; left input hit
     ld a, [OAMRAM + 1]
     dec a
@@ -120,7 +139,7 @@ draw:
   
   ld a, [inputs]
   and a, BTNRIGHT
-  jp nz, @notright
+  jp z, @notright
   ; right input hit
     ld a, [OAMRAM + 1]
     inc a
@@ -129,7 +148,7 @@ draw:
   
   ld a, [inputs]
   and a, BTNUP
-  jp nz, @notup
+  jp z, @notup
   ; up input hit 
     ld a, [OAMRAM]
     dec a
@@ -138,7 +157,7 @@ draw:
   
   ld a, [inputs]
   and a, BTNDOWN 
-  jp nz, @notdown 
+  jp z, @notdown 
   ; down input hit 
     ld a, [OAMRAM]
     inc a
