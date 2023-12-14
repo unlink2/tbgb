@@ -1,8 +1,10 @@
 ; work ram
-.org 0xC000
+#define WRAM 0xC000
+.org WRAM
+
+#define WRAMLEN 0xFFF
 
 inputs: .adv 1
-just_pressed: .adv 1
 prev_inputs: .adv 1
 
 update_flags: .adv 1

@@ -14,7 +14,14 @@ entry:
   
   ; initially disable lcd 
   call lcdoff
-  
+
+  ; clear wram
+  ld a, 0
+  ld hl, WRAM
+  ld bc, WRAMLEN
+  call memset 
+
+  ; clear oam 
   call oamclear
 
   ; copy tiles 0
@@ -53,13 +60,26 @@ entry:
   ld a, IVBLANK
   ld [IE], a
   ei 
+  
+  ; clear first frame
+  ld a, 0
+  ld [update_flags], a
 
 main:
 @forever:
+  ld a, [update_flags]
+  ; do not run the next update until the current vblank is cleared 
+  jp nz, @forever 
+  
+  call update
+
   ; mark frame as finished 
   ld a, 1
   ld [update_flags], a
   jp @forever 
+
+update:
+  ret
 
 vblank:
   ld hl, frame
@@ -200,10 +220,12 @@ dbghex:
   
 
 ; memcpy:
-; parameters: 
-;   hl: src
-;   de: dst
+; inputs: 
+;   hl: dst
+;   de: src
 ;   bc: len
+; registers:
+;   a, bc, hl, de
 memcpy:
 @next:
   ld a, [de]
@@ -214,6 +236,22 @@ memcpy:
   or a, c
   jp nz, @next
   ret
+
+; memset
+; inputs:
+;  a:  value
+;  hl: dst 
+;  bc: length
+; registers:
+;   a, hl, de
+memset:
+@next:
+  ld [hl+], a
+  dec bc
+  ld a, b
+  or a, c
+  jp nz, @next
+  ret 
 
 vblankwait:
   ld a, [RLY]
