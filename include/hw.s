@@ -13,8 +13,8 @@
 
 ; P1: joy pad register
 #define RP1 0xFF00
-#define P1F5 0x00100000 ; get buttons 
-#define P1F4 0x00010000 ; get dpad
+#define P1F5 0b00100000 ; get buttons 
+#define P1F4 0b00010000 ; get dpad
 
 ; buttons 
 #define BTNDOWN 0x80

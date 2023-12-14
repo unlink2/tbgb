@@ -86,16 +86,21 @@ vblank:
 ; registers:
 ;   a, b, c, d
 input:
+  ld a, [inputs]
+  ld [prev_inputs], a
+
   ld a, P1FDPAD
   call pollp1
   swap a
   ld b, a
-
+  
   ld a, P1FBTN 
-  call pollp1
-  xor a, b
-
+  call pollp1 
+  or a, b
+   
+  
   ld [inputs], a
+  ld a, b
 
   ret 
 ; poll p1 
@@ -114,9 +119,9 @@ pollp1:
   ldh a, [RP1]
   ldh a, [RP1]
   ldh a, [RP1] ; last read counts
-  ; mask away bit 7-4
-  or a, 0xF0
-  
+  xor a, 0x0F
+  and a, 0x0F
+
   ld d, a
   ; reset P1F
   ld a, P1FNONE 
@@ -126,11 +131,6 @@ pollp1:
   ret 
 
 draw:
-  ld a, [inputs]
-  swap a
-  and a, 0x0F
-  ld [OAMRAM + 2], a
-  
   ld a, [inputs]
   and a, BTNLEFT 
   jp z, @notleft
@@ -167,17 +167,37 @@ draw:
     ld [OAMRAM], a
 @notdown:
 
-  ; draw current frame to top left corner 
+  ; draw current frame to top left corner
   ld a, [frame]
-  and a, 0x0F 
-  ld [SCRN0+1], a
-
-  ld a, [frame]
-  swap a
-  and a, 0x0F
-  ld [SCRN0], a
+  ld hl, SCRN0
+  call dbghex 
+  
+  ; draw inputs 
+  ld a, [inputs]
+  ld hl, SCRN0+3
+  call dbghex
 
   ret
+
+; draw a hex number to screen 
+; inputs:
+;   a: the number 
+;   hl: screen address
+; registers: a, b, hl
+dbghex:
+  ld b, a
+
+  ld a, b
+  swap a
+  and a, 0x0F
+  ld [hl+], a
+  
+  ld a, b
+  and a, 0x0F 
+  ld [hl+], a
+
+  ret
+  
 
 ; memcpy:
 ; parameters: 
