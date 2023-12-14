@@ -6,3 +6,4 @@ just_pressed: .adv 1
 prev_inputs: .adv 1
 
 update_flags: .adv 1
+frame: .adv 2

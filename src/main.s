@@ -62,6 +62,9 @@ main:
   jp @forever 
 
 vblank:
+  ld hl, frame
+  inc [hl]
+
   ; skip the frame if the previous
   ; frame did not finish 
   ld a, [update_flags]
@@ -163,6 +166,17 @@ draw:
     inc a
     ld [OAMRAM], a
 @notdown:
+
+  ; draw current frame to top left corner 
+  ld a, [frame]
+  and a, 0x0F 
+  ld [SCRN0+1], a
+
+  ld a, [frame]
+  swap a
+  and a, 0x0F
+  ld [SCRN0], a
+
   ret
 
 ; memcpy:
