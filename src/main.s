@@ -295,6 +295,9 @@ oamload_test:
 nohandler:
   ret
 
+panic:
+  ret
+
 #include "act.s"
 
 #include "tiles.s"

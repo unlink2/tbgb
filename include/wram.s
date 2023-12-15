@@ -34,4 +34,3 @@ frame: .adv 1
 
 ; actor memory 
 acttbl: .adv ACTMAX * ACTSIZE
-acttbl_end:
