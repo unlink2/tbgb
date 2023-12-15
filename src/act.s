@@ -16,19 +16,19 @@ act_alloc:
   ; if not active, set active and return
   and a, ACT_FACTIVE 
   jp z, @found
-
-  ; go to next act 
-  add hl, bc
-  ; inc counter 
-  inc d
-  ld d, a
-  ; are we at end?
-  cp a, ACTMAX
-  jp nz, @seeknext
-  
-  ; return NULL
-  ld hl, NULL
-  ret
+ 
+    ; go to next act 
+    add hl, bc
+    ; inc counter 
+    inc d
+    ld d, a
+    ; are we at end?
+    cp a, ACTMAX
+    jp nz, @seeknext
+    
+    ; return NULL
+    ld hl, NULL
+    ret
 @found:
   ld a, ACT_FACTIVE 
   ld [hl], a
