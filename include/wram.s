@@ -14,23 +14,17 @@ frame: .adv 1
 #define ACTMAX 16
 #define ACTSIZE 10
 
-; TODO: refactor actors once struct syntax is supported
-; for now we just use math to access members
-; e.g. load actor offset into hl
-; then do a relative read at ACTY to get y position
-; actor offsets
-; which oam object the actor uses
-#define ACTFLAGS 0
-#define ACTOBJ 1
-#define ACTTYPE 2
-; actor upadte function pointer (2 bytes)
-#define ACTFN 3
-#define ACTUNUSED 5
-; oam mirrors 
-#define ACTOX 6
-#define ACTY 7
-#define ACTTILE 8
-#define ACTOAMFLAGS 9
+; actor memory layout
+.se 0
+.de actflags, 1
+.de actobj, 1
+.de acttype, 1
+.de actfn, 2
+.de actunused, 1
+.de actx, 1
+.de acty, 1
+.de acttile, 1
+.de actoamflags, 1
 
 ; actors falgs 
 #define ACT_FACTIVE 0b00000001
