@@ -2,6 +2,7 @@
 #include "macros.s"
 
 #include "wram.s"
+#include "oam.s"
 
 .org 0x0
 #include "jmp.s"
@@ -155,36 +156,36 @@ draw:
   and a, BTNLEFT 
   jp z, @notleft
   ; left input hit
-    ld a, [OAMRAM + 1]
+    ld a, [OAMRAM + oamx]
     dec a
-    ld [OAMRAM + 1], a
+    ld [OAMRAM + oamx], a
 @notleft:
   
   ld a, [inputs]
   and a, BTNRIGHT
   jp z, @notright
   ; right input hit
-    ld a, [OAMRAM + 1]
+    ld a, [OAMRAM + oamx]
     inc a
-    ld [OAMRAM + 1], a
+    ld [OAMRAM + oamx], a
 @notright:
   
   ld a, [inputs]
   and a, BTNUP
   jp z, @notup
   ; up input hit 
-    ld a, [OAMRAM]
+    ld a, [OAMRAM + oamy]
     dec a
-    ld [OAMRAM], a
+    ld [OAMRAM + oamy], a
 @notup:
   
   ld a, [inputs]
   and a, BTNDOWN 
   jp z, @notdown 
   ; down input hit 
-    ld a, [OAMRAM]
+    ld a, [OAMRAM + oamy]
     inc a
-    ld [OAMRAM], a
+    ld [OAMRAM + oamy], a
 @notdown:
 
   ; draw current frame to top left corner
