@@ -57,11 +57,14 @@ entry:
 
   call vblankwait
 
+  ; init player 
+  call player_init
+
   ; enable interrupts 
   ld a, IVBLANK
   ld [IE], a
   ei 
-  
+
   ; clear first frame
   ld a, 0
   ld [update_flags], a
@@ -244,9 +247,11 @@ memcpy:
 ;  hl: dst 
 ;  bc: length
 ; registers:
-;   a, hl, de
+;   a, b, hl, de
 memset:
+  ld b, a
 @next:
+  ld a, b
   ld [hl+], a
   dec bc
   ld a, b

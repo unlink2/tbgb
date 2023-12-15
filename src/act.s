@@ -34,7 +34,17 @@ act_alloc:
   ld [hl], a
   ret
 
+; init player with the first free 
+; actor found  
 player_init:
+  call act_alloc
+  hl_null_panic
+  
+  ld a, l
+  ld [actpl], a
+  ld a, h
+  ld [actpl+1], a
+
   ret
 
 player_update:

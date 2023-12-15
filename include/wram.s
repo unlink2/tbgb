@@ -32,5 +32,8 @@ frame: .adv 1
 ; actor types 
 #define ACT_TPLAYER 0x01
 
+; player actor pointer
+actpl: .adv 2
+
 ; actor memory 
 acttbl: .adv ACTMAX * ACTSIZE
