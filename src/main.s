@@ -83,6 +83,33 @@ main:
   jp @forever 
 
 update:
+  
+@update_act:
+  ld bc, ACTSIZE
+  ld hl, acttbl
+  ld d, 0 ; loop counter 
+@next:
+  ld a, [hl]
+  and a, ACT_FACTIVE
+  jp z, @skip
+
+    ; if found, store hl 
+    ; bc and d for later 
+    ; FIXME: surely we can do better here 
+    push hl
+    push bc
+    push de
+    
+    ; jump to the function 
+    ld bc, actfn 
+    add hl, bc ; hl points to fn pointer now...
+    call callptr
+
+    pop de
+    pop bc
+    pop hl
+@skip:
+
   ret
 
 vblank:
@@ -153,6 +180,18 @@ pollp1:
   ld a, d
 
   ret 
+
+; call address in hl
+; inputs:
+;   hl: pointing to function pointer we want to call 
+callptr:
+  ; load pointer into hl
+  ld a, [hl+]
+  ld b, a
+  ld a, [hl]
+  ld h, a
+  ld l, b
+  jp hl
 
 draw:
   ld a, [inputs]

@@ -13,3 +13,12 @@
   jp z, rst_panic
 #endmacro
 
+; store pointer
+; inputs:
+;   $1 = pointer address
+#macro ldhlptr
+  ld a, $1 & 0xFF
+  ld [hl+], a
+  ld a, ($1 >> 8) & 0xFF
+  ld [hl+], a
+#endmacro 

@@ -40,10 +40,42 @@ player_init:
   call act_alloc
   hl_null_panic
   
+  ; save pointer to player 
+  ; for later use 
   ld a, l
   ld [actpl], a
   ld a, h
   ld [actpl+1], a
+  
+  ; now init player data 
+  inc hl ; no need for flags 
+
+  ; player object is always 0
+  ld a, 0
+  ld [hl+], a
+  
+  ; type is player 
+  ld a, ACT_TPLAYER
+  ld [hl+], a
+
+  ; ld fn pointer 
+  ldhlptr player_update 
+  
+  ; ignore unused byte for now...
+  inc hl 
+
+  ; TODO: set proper initial location
+  ld a, 64
+  ld [hl+], a ; x pos 
+  ld [hl+], a ; y pos
+  
+  ; TODO: set sprite 
+  ld a, 1
+  ld [hl+], a 
+  
+  ; oam flags
+  ld a, 0
+  ld [hl+], a
 
   ret
 
