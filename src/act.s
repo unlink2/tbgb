@@ -2,6 +2,19 @@
 ;   all actor update functions expect the actor ptr to be located in 
 ;   the de register initially
 
+; actors and oam
+; actors keep all their data in the actor table 
+; once a frame actors attempt to allocate 
+; shadow oam objects for themselves 
+; in a first come first serve principal 
+; the only exception is that the player 
+; will always be allocated first 
+; and then all remaining actors can decide to allocate objs in their init
+; code based on their needs, again first come first serve
+; when using the allocated object, the global offset (soamgoffset) should 
+; be taken into account to ensure sprite flickering is working as intended
+; if an object cannot allocated enough objs it should fail to init and be 
+; dropped
 
 ; attempts to allocate an actor 
 ; from the actor table 
@@ -38,39 +51,6 @@ act_alloc:
   ld a, ACT_FACTIVE 
   ld [hl], a
   ret
-
-; allocate shadow oam
-; and copies data to soam
-; registers:
-;   hl, af, bc, de
-acttosoam:
-  ld hl, acttbl 
-  ld bc, ACTSIZE 
-  ld d, ACTMAX 
-
-  ; current free obj in oam
-  ld e, 0
-  
-@next:
-    ; read flags 
-    ld a, acttbl 
-    ; if not active, leave it be 
-    and a, ACT_FACTIVE 
-    jr z, @skip REL
-
-    ; check if this sprite will fit into remaining slots 
-    ; if so allocate them
-    ; otherwise write 0xFF into obj to indicate allocation error 
-    ld a, e ; a = current oam offset
-    add a, OBJSIZE
-    cp a, OAMRAM_SIZE 
-    
-@skip:
-    add hl, bc
-    dec d
-    jr nz, @next REL
-
-  ret 
 
 ; dam shadow oam to oam
 ; registers:

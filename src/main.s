@@ -126,9 +126,6 @@ update:
   ld a, d
   cp a, ACTMAX
   jr nz, @next REL
-  
-  ; update done... transfer to soam 
-  call acttosoam
 
   ret
 
