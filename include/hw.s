@@ -45,5 +45,7 @@
 .def int SCRN0 = 0x9800
 .def int SCRN1 = 0x9C00
 .def int OAMRAM = 0xFE00
+.def int OBJSIZE = 4
+.def int OAMRAM_SIZE = OBJSMAX * OBJSIZE
 
 

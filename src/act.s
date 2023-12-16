@@ -47,7 +47,9 @@ acttosoam:
   ld hl, acttbl 
   ld bc, ACTSIZE 
   ld d, ACTMAX 
-  ld e, OBJSMAX
+
+  ; current free obj in oam
+  ld e, 0
   
 @next:
     ; read flags 
@@ -56,6 +58,12 @@ acttosoam:
     and a, ACT_FACTIVE 
     jr z, @skip REL
 
+    ; check if this sprite will fit into remaining slots 
+    ; if so allocate them
+    ; otherwise write 0xFF into obj to indicate allocation error 
+    ld a, e ; a = current oam offset
+    add a, OBJSIZE
+    cp a, OAMRAM_SIZE 
     
 @skip:
     add hl, bc
