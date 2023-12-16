@@ -32,9 +32,9 @@ entry:
   call memcpy
   
   ; copy oam tile data 
-  ld de, tiles0
+  ld de, acts0
   ld hl, VRAM
-  ld bc, tiles0_end - tiles0
+  ld bc, acts0_end - acts0 
   call memcpy
 
   ; copy tilemap 0
@@ -44,6 +44,12 @@ entry:
   call memcpy
 
   call oamload_test 
+
+  ; init player 
+  call player_init
+
+  ; draw first frame
+  call vblank 
 
   ; enable lcd
   call lcdon 
@@ -57,15 +63,12 @@ entry:
 
   call vblankwait
 
-  ; init player 
-  call player_init
-
   ; enable interrupts 
   ld a, IVBLANK
   ld [IE], a
   ei 
 
-  ; clear first frame
+  ; set flag for first frame to go ahead 
   ld a, 0
   ld [update_flags], a
 

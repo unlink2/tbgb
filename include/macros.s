@@ -24,4 +24,4 @@
 #endmacro 
 
 ; relative jump: jr <label> RELB 
-#define REL - $ - 2 
+#define REL - $ - 2 & 0xFF 
