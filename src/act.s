@@ -69,6 +69,13 @@ player_init:
   ; ignore unused byte for now...
   inc hl 
 
+  ; xl 
+  ld a, 0
+  ld [hl+], a
+  
+  ; yl
+  ld [hl+], a
+
   ; TODO: set proper initial location
   ld a, 64
   ld [hl+], a ; x pos 

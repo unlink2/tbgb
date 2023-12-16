@@ -12,7 +12,6 @@ frame: .adv 1
 
 ; max actors 
 #define ACTMAX 16
-#define ACTSIZE 10
 
 ; actor memory layout
 .se 0
@@ -21,10 +20,16 @@ frame: .adv 1
 .de acttype, 1
 .de actfn, 2
 .de actunused, 1
+; postions are x.xl and y.yl 
+; fixed point integers 
+.de actxl, 1 
+.de actyl, 1
 .de actx, 1
 .de acty, 1
 .de acttile, 1
 .de actoamflags, 1
+.de ACTSIZE, 0
+
 
 ; actors falgs 
 #define ACT_FACTIVE 0b00000001
