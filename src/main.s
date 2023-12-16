@@ -101,6 +101,11 @@ update:
     push bc
     push de
     
+    ; pop hl into de because the actors expect
+    ; the actor ptr to be in de initially
+    push hl
+    pop de
+
     ; jump to the function 
     ld bc, actfn 
     add hl, bc ; hl points to fn pointer now...
@@ -117,7 +122,7 @@ update:
   inc d 
   ld a, d
   cp a, ACTMAX
-  jr nz, @next RELB
+  jr nz, @next REL
 
   ret
 
@@ -196,7 +201,9 @@ pollp1:
 
 ; call address in hl
 ; inputs:
-;   hl: pointing to function pointer we want to call 
+;   hl: pointing to function pointer we want to call
+; registers:
+;   hl, a, b
 callptr:
   ; load pointer into hl
   ld a, [hl+]
@@ -281,6 +288,9 @@ memset:
   or a, c
   jp nz, @next
   ret 
+; actor update functions:
+;   all actor update functions expect the actor ptr to be located in 
+;   the de register initially
 
 vblankwait:
   ld a, [RLY]

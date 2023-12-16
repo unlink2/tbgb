@@ -1,3 +1,8 @@
+; actor update functions:
+;   all actor update functions expect the actor ptr to be located in 
+;   the de register initially
+
+
 ; attempts to allocate an actor 
 ; from the actor table 
 ; inputs:
@@ -80,41 +85,55 @@ player_init:
   ret
 
 player_update:
+  ; move actor ptr to hl
+  push de 
+  pop hl
+  push hl ; we need base hl again later 
+  
+  ; set hl to actx ptr
+  ld de, actx 
+  add hl, de
+
   ; TODO: improve player handling
   ; by using hl as object ptr
   ld a, [inputs]
   and a, BTNLEFT 
-  jp z, @notleft
+  jr z, @notleft REL
   ; left input hit
-    ld a, [acttbl + actx]
+    ld a, [hl] 
     dec a
-    ld [acttbl + actx], a
+    ld [hl], a
 @notleft:
   
   ld a, [inputs]
   and a, BTNRIGHT
-  jp z, @notright
+  jr z, @notright REL
   ; right input hit
-    ld a, [acttbl + actx]
+    ld a, [hl]
     inc a
-    ld [acttbl + actx], a
+    ld [hl], a
 @notright:
+ 
+  ;set hl to acty ptr
+  pop hl
+  ld de, acty 
+  add hl, de
 
   ld a, [inputs]
   and a, BTNUP
-  jp z, @notup
+  jr z, @notup REL
   ; up input hit 
-    ld a, [acttbl + acty]
+    ld a, [hl]
     dec a
-    ld [acttbl + acty], a
+    ld [hl], a
 @notup:
   
   ld a, [inputs]
   and a, BTNDOWN 
-  jp z, @notdown 
+  jr z, @notdown REL
   ; down input hit 
-    ld a, [acttbl + acty]
+    ld a, [hl]
     inc a
-    ld [acttbl + acty], a
+    ld [hl], a
 @notdown:
   ret
