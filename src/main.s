@@ -126,12 +126,13 @@ update:
   ld a, d
   cp a, ACTMAX
   jr nz, @next REL
+  
+  ; update done... transfer to soam 
+  call acttosoam
 
   ret
 
 vblank:
-  
-
   ld hl, frame
   inc [hl]
 
@@ -141,7 +142,9 @@ vblank:
   and a, 1
   ret z
 
-  call input 
+  call input
+
+  call soamtooam
   call draw
 
   ; reset update flags

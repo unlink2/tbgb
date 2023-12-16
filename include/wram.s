@@ -11,7 +11,7 @@ update_flags: .adv 1
 frame: .adv 1
 
 ; max actors
-; 10 actors max. each actor owns 4 objects in oam
+; 10 actors max.
 #define ACTMAX 10
 
 ; actor memory layout
@@ -26,7 +26,8 @@ frame: .adv 1
 .de actobj, 1
 .de acttype, 1
 .de actfn, 2
-.de actunused, 1
+; how many objects are required
+.de actreqobj, 1
 ; postions are x.xl and y.yl 
 ; fixed point integers 
 .de actxl, 1 

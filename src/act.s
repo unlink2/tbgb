@@ -39,6 +39,38 @@ act_alloc:
   ld [hl], a
   ret
 
+; allocate shadow oam
+; and copies data to soam
+; registers:
+;   hl, af, bc, de
+acttosoam:
+  ld hl, acttbl 
+  ld bc, ACTSIZE 
+  ld d, ACTMAX 
+  ld e, OBJSMAX
+  
+@next:
+    ; read flags 
+    ld a, acttbl 
+    ; if not active, leave it be 
+    and a, ACT_FACTIVE 
+    jr z, @skip REL
+
+    
+@skip:
+    add hl, bc
+    dec d
+    jr nz, @next REL
+
+  ret 
+
+; dam shadow oam to oam
+; registers:
+;   hl, af, bc, de
+; TODO: for now we just memcpy, but we should really dma soon
+soamtooam:
+  ret 
+
 ; init player with the first free 
 ; actor found  
 player_init:
