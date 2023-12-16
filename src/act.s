@@ -80,4 +80,41 @@ player_init:
   ret
 
 player_update:
+  ; TODO: improve player handling
+  ; by using hl as object ptr
+  ld a, [inputs]
+  and a, BTNLEFT 
+  jp z, @notleft
+  ; left input hit
+    ld a, [acttbl + actx]
+    dec a
+    ld [acttbl + actx], a
+@notleft:
+  
+  ld a, [inputs]
+  and a, BTNRIGHT
+  jp z, @notright
+  ; right input hit
+    ld a, [acttbl + actx]
+    inc a
+    ld [acttbl + actx], a
+@notright:
+
+  ld a, [inputs]
+  and a, BTNUP
+  jp z, @notup
+  ; up input hit 
+    ld a, [acttbl + acty]
+    dec a
+    ld [acttbl + acty], a
+@notup:
+  
+  ld a, [inputs]
+  and a, BTNDOWN 
+  jp z, @notdown 
+  ; down input hit 
+    ld a, [acttbl + acty]
+    inc a
+    ld [acttbl + acty], a
+@notdown:
   ret

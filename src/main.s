@@ -72,6 +72,7 @@ entry:
 main:
 @forever:
   ld a, [update_flags]
+  cp a, 0
   ; do not run the next update until the current vblank is cleared 
   jp nz, @forever 
   
@@ -109,10 +110,20 @@ update:
     pop bc
     pop hl
 @skip:
+  
+  ; go to next actor
+  add hl, bc
+  ; inc loop counter 
+  inc d 
+  ld a, d
+  cp a, ACTMAX
+  jr nz, @next RELB
 
   ret
 
 vblank:
+  
+
   ld hl, frame
   inc [hl]
 
@@ -128,6 +139,8 @@ vblank:
   ; reset update flags
   ld a, 0
   ld [update_flags], a
+
+
   ret
 
 ; poll inputs
@@ -194,41 +207,12 @@ callptr:
   jp hl
 
 draw:
-  ld a, [inputs]
-  and a, BTNLEFT 
-  jp z, @notleft
-  ; left input hit
-    ld a, [OAMRAM + oamx]
-    dec a
-    ld [OAMRAM + oamx], a
-@notleft:
-  
-  ld a, [inputs]
-  and a, BTNRIGHT
-  jp z, @notright
-  ; right input hit
-    ld a, [OAMRAM + oamx]
-    inc a
-    ld [OAMRAM + oamx], a
-@notright:
-  
-  ld a, [inputs]
-  and a, BTNUP
-  jp z, @notup
-  ; up input hit 
-    ld a, [OAMRAM + oamy]
-    dec a
-    ld [OAMRAM + oamy], a
-@notup:
-  
-  ld a, [inputs]
-  and a, BTNDOWN 
-  jp z, @notdown 
-  ; down input hit 
-    ld a, [OAMRAM + oamy]
-    inc a
-    ld [OAMRAM + oamy], a
-@notdown:
+  ; TODO: improve copying to oam 
+  ld a, [acttbl + actx]
+  ld [OAMRAM + oamx], a
+
+  ld a, [acttbl + acty]
+  ld [OAMRAM + oamy], a
 
   ; draw current frame to top left corner
   ld a, [frame]
@@ -239,7 +223,7 @@ draw:
   ld a, [inputs]
   ld hl, SCRN0+3
   call dbghex
-
+  
   ret
 
 ; draw a hex number to screen 

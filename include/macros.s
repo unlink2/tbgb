@@ -22,3 +22,8 @@
   ld a, ($1 >> 8) & 0xFF
   ld [hl+], a
 #endmacro 
+
+; relative jump forward: jr RELF <label>
+#define RELF $ -
+; relative jump backward: jr <label> RELB 
+#define RELB - $ - 2 

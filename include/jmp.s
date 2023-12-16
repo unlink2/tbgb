@@ -15,5 +15,16 @@ rst_panic:
 ; vblank 0x40
 ;=============
 vec_vblank:
-  call vblank 
+  push af
+  push bc
+  push de
+  push hl
+
+  call vblank
+
+  pop hl
+  pop de
+  pop bc
+  pop af
+
   reti
