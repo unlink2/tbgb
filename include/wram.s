@@ -63,7 +63,7 @@ acttbl: .adv ACTMAX * ACTSIZE
 ; the data for x, y, char and flags are then copied over to the apropriate tile 
 ; the shadow oam is then dma'd to the real oam in vblank
 soam: .adv ACTMAX * SOAMSIZE
-soamflags: .adv OBJSMAX ; 40 bytes indicating the current allocation status of soam
+soamallocflags: .adv OBJSMAX ; 40 bytes indicating the current allocation status of soam
 
 #define SOAM_FACTIVE 0b00000001
 

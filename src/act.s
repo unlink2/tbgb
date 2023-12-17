@@ -63,7 +63,7 @@ soamtooam:
 ; same as memset
 soamfreeall:
   ld a, 0
-  ld hl, soamflags
+  ld hl, soamallocflags
   ld bc, OBJSMAX
   jp memset 
 
@@ -75,7 +75,7 @@ soamfreeall:
 ; registers:
 ;   
 soamalloc:
-  ld hl, soamflags 
+  ld hl, soamallocflags 
   ld d, 0 ; loop counter 
 @next:
 
