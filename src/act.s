@@ -62,7 +62,7 @@ soamtooam:
   ld a, 40 ; 160-cycle wait 
 @wait:
   dec a
-  jr nz, @wait
+  jr nz, @wait REL
   ret 
 soamtooam_end:
 
