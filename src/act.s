@@ -71,19 +71,48 @@ soamfreeall:
 ; inputs:
 ;   a: amount of objs required 
 ; returns:
-;   bc: offset into soam for first allocated obj
+;   bc: ptr to first valid hl obj, or NULL 
 ; registers:
 ;   
 soamalloc:
   ld hl, soamallocflags 
   ld d, 0 ; loop counter 
+  ld e, a ; required objs are in e now
 @next:
+    push hl
+    pop bc
+    ; check if obj is free 
+    ld a, [hl+]
 
+
+
+    ; check availability 
+    ld e, a
+    
+    
+
+@skip: 
     inc d
     ld a, d
-    cp a, OBJSMAX 
+    cp a, OBJSMAX ; check if all objecs have been used 
+    
     jr nz, @next REL
+  ld bc, NULL
+@found:
   ret
+
+; check size of sam allocation
+; inputs:
+;   a: required amount of objects
+;   d: loop counter
+;   hl: first free alloc flag
+; returns:
+;   a: 1 on success, 0 on failure
+;   d: is modified by amount of scanned objs
+;   hl: now points to the last checked obj 
+soamalloc_chkavail:
+  
+  ret 
 
 ; init player with the first free 
 ; actor found  
