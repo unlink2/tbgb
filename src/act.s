@@ -58,7 +58,6 @@ act_alloc:
 ; TODO: for now we just memcpy, but we should really dma soon
 soamtooam:
   ; FIXME: dma is broken rn 
-  ret 
   ld a, soam >> 8  
   ldh [DMA], a
   ld a, 40 ; 160-cycle wait 

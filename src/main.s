@@ -51,7 +51,6 @@ entry:
 
 
   call soamfreeall
-  call oamload_test 
 
   ; init player 
   call player_init
@@ -327,17 +326,6 @@ oamclear:
   jp nz, @loop
   ret
 
-oamload_test:
-  ld hl, OAMRAM
-  ld a, 100 + 16
-  ld [hl+], a
-  ld a, 10 + 8
-  ld [hl+], a
-  ld a, 1
-  ld [hl+], a
-  ld a, 0
-  ld [hl], a
-  ret
 
 nohandler:
   ret
