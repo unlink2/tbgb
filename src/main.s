@@ -345,5 +345,11 @@ panic:
 #include "tiles.s"
 #include "tilemaps.s"
 
+; lookup table for obj idex to oam address 
+soamidxlut: 
+.db 0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56 
+.db 60, 64, 68, 72, 76, 80, 84, 88, 92, 96, 100, 104, 108, 112, 116 
+.db 120, 124, 128, 132, 136, 140, 144, 148, 152, 156 
+
 ; fill bank
 .fill 0, 0x7FFF - $

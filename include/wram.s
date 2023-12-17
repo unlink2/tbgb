@@ -17,17 +17,10 @@ frame: .adv 1
 ; actor memory layout
 .se 0
 .de actflags, 1
-
-; offset in oam/shadow oam for first object
-; if actobj is 0xFF it means no obj was allocated for this 
-; actor.
-; Actors with 0xFF as the obj offset will get priority when 
-; objects allocating the next frame
-.de actobj, 1
+.de actunused1, 1
 .de acttype, 1
 .de actfn, 2
-; how many objects are required
-.de actreqobj, 1
+.de actrunused2, 1
 ; postions are x.xl and y.yl 
 ; fixed point integers 
 .de actxl, 1 
@@ -66,6 +59,8 @@ soam: .adv ACTMAX * SOAMSIZE
 soamallocflags: .adv OBJSMAX ; 40 bytes indicating the current allocation status of soam
 
 #define SOAM_FACTIVE 0b00000001
+#define SOAM_EINVAL 0xFF
 
 ; global offset for soam to ensure object cycling is happening consistently
-soamgoffset: .adv 1 
+soamgoffset: .adv 1
+

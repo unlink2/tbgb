@@ -69,36 +69,45 @@ soamfreeall:
 
 ; allocate the next free object 
 ; inputs:
-;   a: amount of objs required 
+;   a: prefered index. this index is checked first 
+;      and is returned if available
 ; returns:
-;   bc: ptr to first valid hl obj, or NULL 
+;   a: index to first free object or 0xFF if not found
 ; registers:
 ;   
 soamalloc:
+  ; check requested index first 
+  ld b, a
+  ld c, 0
+  ld d, a ; store requested index in d in case we find obj
   ld hl, soamallocflags 
-  ld d, 0 ; loop counter 
-  ld e, a ; required objs are in e now
-@next:
-    push hl
-    pop bc
+  add hl, bc ; hl + bc = requested alloc flag 
+  ld a, [hl]
+  and a, SOAM_FACTIVE 
+  jr nz, @found REL 
+
+  ; check all other objects now 
+  ld hl, soamallocflags 
+  ld d, 0 ; loop counter/obj index  
+@next: 
     ; check if obj is free 
-    ld a, [hl+]
+    ld a, [hl]
+    and a, SOAM_FACTIVE 
+    jr nz, @found REL
 
-
-
-    ; check availability 
-    ld e, a
-    
-    
-
-@skip: 
+    ; go to next 
     inc d
+    inc hl
     ld a, d
     cp a, OBJSMAX ; check if all objecs have been used 
     
     jr nz, @next REL
-  ld bc, NULL
+  ld a, SOAM_EINVAL
+  ret
 @found:
+  ld a, SOAM_FACTIVE
+  ld [hl], a ; set active 
+  ld a, d ; return index 
   ret
 
 ; check size of sam allocation
