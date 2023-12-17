@@ -42,7 +42,8 @@ entry:
   ld hl, SCRN0 
   ld bc, tilemap0_end - tilemap0
   call memcpy
-
+  
+  call soamfreeall
   call oamload_test 
 
   ; init player 

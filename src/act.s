@@ -2,7 +2,7 @@
 ;   all actor update functions expect the actor ptr to be located in 
 ;   the de register initially
 
-; actors and oam
+; actors and oam:
 ; actors keep all their data in the actor table 
 ; once a frame actors attempt to allocate 
 ; shadow oam objects for themselves 
@@ -58,6 +58,32 @@ act_alloc:
 ; TODO: for now we just memcpy, but we should really dma soon
 soamtooam:
   ret 
+
+; clear the soam arena 
+; same as memset
+soamfreeall:
+  ld a, 0
+  ld hl, soamflags
+  ld bc, OBJSMAX
+  jp memset 
+
+; allocate the next free object 
+; inputs:
+;   a: amount of objs required 
+; returns:
+;   bc: offset into soam for first allocated obj
+; registers:
+;   
+soamalloc:
+  ld hl, soamflags 
+  ld d, 0 ; loop counter 
+@next:
+
+    inc d
+    ld a, d
+    cp a, OBJSMAX 
+    jr nz, @next REL
+  ret
 
 ; init player with the first free 
 ; actor found  
