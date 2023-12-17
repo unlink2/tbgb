@@ -288,9 +288,9 @@ memcpy:
 ; registers:
 ;   a, b, hl, de
 memset:
-  ld b, a
+  ld d, a
 @next:
-  ld a, b
+  ld a, d
   ld [hl+], a
   dec bc
   ld a, b
