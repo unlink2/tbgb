@@ -43,6 +43,13 @@ entry:
   ld bc, tilemap0_end - tilemap0
   call memcpy
   
+  ; memcpy oam fn 
+  ld de, soamtooam 
+  ld hl, OAMDMAFN
+  ld bc, soamtooam_end - soamtooam
+  call memcpy
+
+
   call soamfreeall
   call oamload_test 
 
@@ -88,7 +95,8 @@ main:
   jp @forever 
 
 update:
-  
+  ; first free all soam entries 
+  call soamfreeall
 @update_act:
   ld bc, ACTSIZE
   ld hl, acttbl
@@ -218,12 +226,7 @@ callptr:
   jp hl
 
 draw:
-  ; TODO: improve copying to oam 
-  ld a, [acttbl + actx]
-  ld [OAMRAM + oamx], a
-
-  ld a, [acttbl + acty]
-  ld [OAMRAM + oamy], a
+  call OAMDMAFN
 
   ; draw current frame to top left corner
   ld a, [frame]

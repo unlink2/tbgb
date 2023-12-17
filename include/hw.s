@@ -33,6 +33,8 @@
 #define IE 0xFFFF
 #define IVBLANK 0b00000001
 
+#define DMA 0xFF46
+
 #define OBJSMAX 40
 
 .def int P1FDPAD = P1F5

@@ -57,7 +57,14 @@ act_alloc:
 ;   hl, af, bc, de
 ; TODO: for now we just memcpy, but we should really dma soon
 soamtooam:
+  ld a, soam >> 8  
+  ldh [DMA], a
+  ld a, 40 ; 160-cycle wait 
+@wait:
+  dec a
+  jr nz, @wait
   ret 
+soamtooam_end:
 
 ; clear the soam arena 
 ; same as memset
@@ -84,7 +91,7 @@ soamalloc:
   add hl, bc ; hl + bc = requested alloc flag 
   ld a, [hl]
   and a, SOAM_FACTIVE 
-  jr nz, @found REL 
+  jr z, @found REL 
 
   ; check all other objects now 
   ld hl, soamallocflags 
@@ -93,7 +100,7 @@ soamalloc:
     ; check if obj is free 
     ld a, [hl]
     and a, SOAM_FACTIVE 
-    jr nz, @found REL
+    jr z, @found REL
 
     ; go to next 
     inc d
@@ -109,19 +116,6 @@ soamalloc:
   ld [hl], a ; set active 
   ld a, d ; return index 
   ret
-
-; check size of sam allocation
-; inputs:
-;   a: required amount of objects
-;   d: loop counter
-;   hl: first free alloc flag
-; returns:
-;   a: 1 on success, 0 on failure
-;   d: is modified by amount of scanned objs
-;   hl: now points to the last checked obj 
-soamalloc_chkavail:
-  
-  ret 
 
 ; init player with the first free 
 ; actor found  
@@ -175,6 +169,9 @@ player_init:
 
   ret
 
+;
+; update player function
+; 
 player_update:
   ; move actor ptr to hl
   push de 
@@ -207,6 +204,7 @@ player_update:
  
   ;set hl to acty ptr
   pop hl
+  push hl
   ld de, acty 
   add hl, de
 
@@ -227,4 +225,30 @@ player_update:
     inc a
     ld [hl], a
 @notdown:
+
+  ; now move to oam
+  ld a, 0
+  call soamalloc 
+  cp a, SOAM_EINVAL 
+  jr z, @soaminval REL
+
+  ; set up src
+  pop de
+  ld hl, acty 
+  add hl, de
+  push hl
+  pop de
+
+  ;set up dst 
+  ld hl, soam
+  ld b, a
+  ld c, 0
+  add hl, bc
+
+  ; length 
+  ld bc, SOAMSIZE 
+  call memcpy
+
+@soaminval:
+
   ret
