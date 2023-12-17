@@ -121,7 +121,9 @@ update:
     ; jump to the function 
     ld bc, actfn 
     add hl, bc ; hl points to fn pointer now...
-    call callptr
+    call player_update
+    ; FIXME: this calls weird locations sometimes...
+    ; call callptr
 
     pop de
     pop bc
