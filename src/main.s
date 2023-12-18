@@ -151,7 +151,6 @@ vblank:
 
   call input
 
-  call soamtooam
   call draw
 
   ; reset update flags

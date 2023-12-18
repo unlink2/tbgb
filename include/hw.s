@@ -33,6 +33,8 @@
 #define IE 0xFFFF
 #define IVBLANK 0b00000001
 
+; location where code for dma needs to be memcyp'd to
+.def int DMAFN = 0xFF80 
 #define DMA 0xFF46
 
 #define OBJSMAX 40

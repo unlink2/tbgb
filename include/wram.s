@@ -61,9 +61,6 @@ acttbl: .adv ACTMAX * ACTSIZE
 ; global offset for soam to ensure object cycling is happening consistently
 soamgoffset: .adv 1
 
-.def int DMAFN = 0xFF80 
-
-
 inputs: .adv 1
 prev_inputs: .adv 1
 
