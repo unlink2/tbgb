@@ -240,11 +240,19 @@ player_update:
   push hl
   pop de
 
-  ;set up dst 
-  ld hl, soam
-  ld b, a
-  ld c, 0
-  add hl, bc
+  ;set up dst
+  ; a contains index to first free object 
+  ; we need the address offset 
+  ld hl, soamidxlut 
+  ld b, 0
+  ld c, a
+  add hl, bc ; lut + offset = location in lut 
+  ld a, [hl]
+
+  ld hl, soam 
+  ld b, 0
+  ld c, a
+  add hl, bc ; soam + offset = actual offset in hl now 
 
   ; length 
   ld bc, SOAMSIZE 
