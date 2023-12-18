@@ -57,7 +57,6 @@ act_alloc:
 ;   hl, af, bc, de
 ; TODO: for now we just memcpy, but we should really dma soon
 soamtooam:
-  ; FIXME: dma is broken rn 
   ld a, soam >> 8  
   ldh [DMA], a
   ld a, 40 ; 160-cycle wait 
@@ -112,8 +111,8 @@ soamaddr:
 ;   
 soamalloc:
   ; check requested index first 
-  ld b, a
-  ld c, 0
+  ld b, 0
+  ld c, a
   ld d, a ; store requested index in d in case we find obj
   ld hl, soamallocflags 
   add hl, bc ; hl + bc = requested alloc flag 
