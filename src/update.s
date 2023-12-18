@@ -1,5 +1,8 @@
 
 update:
+  ld hl, soamgoffset 
+  inc [hl]
+
   ; first free all soam entries 
   call soamfreeall
 @update_act:

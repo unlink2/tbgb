@@ -75,6 +75,33 @@ soamfreeall:
   ld bc, OBJSMAX
   jp memset 
 
+; obtain the soam address from an offset.
+; it also takes the global oam offset into account 
+; inputs:
+;   a: soam index
+; returns:
+;   hl: the resulting pointer to soam
+; registers:
+;   bc, hl, a
+soamaddr:
+  ;add a, soamgoffset 
+  ;and a, 0b10111 ; this mask will limit it to 0-39
+
+  ;set up dst
+  ; a contains index to first free object 
+  ; we need the address offset 
+  ld hl, soamidxlut 
+  ld b, 0
+  ld c, a
+  add hl, bc ; lut + offset = location in lut 
+  ld a, [hl]
+
+  ld hl, soam 
+  ld b, 0
+  ld c, a
+  add hl, bc ; soam + offset = actual offset in hl now 
+  ret
+
 ; allocate the next free object 
 ; inputs:
 ;   a: prefered index. this index is checked first 
@@ -240,19 +267,7 @@ player_update:
   push hl
   pop de
 
-  ;set up dst
-  ; a contains index to first free object 
-  ; we need the address offset 
-  ld hl, soamidxlut 
-  ld b, 0
-  ld c, a
-  add hl, bc ; lut + offset = location in lut 
-  ld a, [hl]
-
-  ld hl, soam 
-  ld b, 0
-  ld c, a
-  add hl, bc ; soam + offset = actual offset in hl now 
+  call soamaddr 
 
   ; length 
   ld bc, SOAMSIZE 
