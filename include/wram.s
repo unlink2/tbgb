@@ -31,7 +31,7 @@
 .de soamx, 1
 .de soamchr, 1
 .de soamflags, 1
-.de SOAMSIZE , 0
+.de SOAMSIZE, 0
 
 ; shadow oam
 ; at the end of the update cycle, each active actor 

@@ -290,31 +290,17 @@ player_update:
   pop hl ; base pointer to act
   ld de, acty
   add hl, de
-  push hl 
-
   ; load data in order: y, x, chr, flag
   ld a, [hl+] ; y
   ld b, a
   ld a, [hl+] ; x 
   ld c, a
-  ld a, 1 ; chr 
+  ld a, 2 ; chr 
   ld d, a
   ld a, 0 ; flag
   ld e, a
   ; prefer obj 0
   ld a, 0
-  push de 
   call soamsetto
-
-  ; next tile 
-  pop de
-  pop hl
-  ld a, [hl+] ; y 
-  add a, 8
-  ld b, a
-  ld a, [hl+] ; x
-  ld c, a
-  call soamsetto
-  
 
   ret
