@@ -21,8 +21,8 @@
 .de actxl, 1
 .de acty, 1
 .de actx, 1
-.de actchr, 1
-.de actoamflags, 1
+.de actunused3, 1
+.de actunused4, 1
 .de ACTSIZE, 0
 
 ; actor shadow oam 
