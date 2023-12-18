@@ -196,6 +196,41 @@ player_init:
 
   ret
 
+; allocate an oam object 
+; and copy values into it 
+; inputs:
+;   a: prefered oam index
+;   b, c: y, x
+;   d, e: tile, flags
+soamsetto:
+  push bc
+  push de
+  ; now move to oam
+  ld a, 0
+  call soamalloc 
+  cp a, SOAM_EINVAL 
+  jr z, @soaminval REL
+  
+  call soamaddr 
+
+  pop de
+  pop bc
+
+  ld a, b
+  ld [hl+], a ; x
+  ld a, c 
+  ld [hl+], a ; y
+  ld a, d
+  ld [hl+], a ; chr 
+  ld a, e
+  ld [hl+], a ; flags
+
+  ret
+@soaminval:
+  pop de
+  pop bc
+  ret
+
 ;
 ; update player function
 ; 
@@ -252,26 +287,20 @@ player_update:
     inc a
     ld [hl], a
 @notdown:
-
-  ; now move to oam
-  ld a, 0
-  call soamalloc 
-  cp a, SOAM_EINVAL 
-  jr z, @soaminval REL
-
-  ; set up src
-  pop de
-  ld hl, acty 
+  pop hl ; base pointer to act
+  ld de, acty
   add hl, de
-  push hl
-  pop de
-
-  call soamaddr 
-
-  ; length 
-  ld bc, SOAMSIZE 
-  call memcpy
-
-@soaminval:
-
+  
+  ; load data in order: y, x, chr, flag
+  ld a, [hl+] ; y
+  ld b, a
+  ld a, [hl+] ; x 
+  ld c, a
+  ld a, [hl+] ; chr 
+  ld d, a
+  ld a, [hl+] ; flag
+  ld e, a
+  ; prefer obj 0
+  ld a, 0
+  call soamsetto 
   ret
