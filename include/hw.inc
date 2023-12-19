@@ -1,5 +1,7 @@
 ; register defs
 
+#define OBJOFFSCRREN 16
+
 ; lcd registers 
 
 ; lcd y 

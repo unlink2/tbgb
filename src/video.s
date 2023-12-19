@@ -90,11 +90,11 @@ initwin:
 applyscroll:
   ; y position 
   ld a, [scrolly]
-  ld [RSCY], a
+  ldh [RSCY], a
 
   ; x position 
   ld a, [scrollx]
-  ld [RSCX], a
+  ldh [RSCX], a
 
   ret 
 
