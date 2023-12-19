@@ -51,6 +51,11 @@ draw:
   ld hl, SCRN0+3
   call dbghex
   
+  ; draw test tile 
+  ld a, [inputs]
+  ld hl, SCRN0 + 192
+  call dbghex
+
   ret
 
 ; draw a hex number to screen 
