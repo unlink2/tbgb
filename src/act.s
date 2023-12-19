@@ -233,8 +233,7 @@ player_update:
   push hl ; we need base hl again later 
   
   ; set hl to actx ptr
-  ld de, actx 
-  add hl, de
+  ldhlm actx 
 
   ; TODO: improve player handling
   ; by using hl as object ptr
@@ -257,10 +256,7 @@ player_update:
 @notright:
  
   ;set hl to acty ptr
-  pop hl
-  push hl
-  ld de, acty 
-  add hl, de
+  ldhlm acty
 
   ld a, [inputs]
   and a, BTNUP

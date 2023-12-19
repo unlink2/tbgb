@@ -22,8 +22,15 @@
 .de actflags, 1
 .de acttype, 1
 .de actfn, 2
+; 2 bytes of user-specific memory
+; can be used by each actor as needed
+.de actusr, 2 
 ; postions are x.xl and y.yl 
-; fixed point integers 
+; fixed point integers
+; this memory layout of yl, xl, y, x is
+; guarnateed
+; meaning that yl+2 will always be y
+; and xl+2 will always be x
 .de actyl, 1 
 .de actxl, 1
 .de acty, 1
@@ -73,4 +80,5 @@ prev_inputs: .adv 1
 update_flags: .adv 1
 frame: .adv 1
 
-
+scrolly: .adv 1
+scrollx: .adv 1

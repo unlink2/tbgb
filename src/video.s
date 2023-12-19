@@ -12,7 +12,7 @@ vblank:
 
   call draw
   
-  ; call scroll
+  call scroll
 
   ; reset update flags
   ld a, 0
@@ -83,23 +83,12 @@ initwin:
 
 ; scroll the screen 
 scroll:
-  ; hl = player actor 
-  ldhlfrom actpl 
-  push hl
-
-  ld bc, acty
-  add hl, bc
-  
   ; y position 
-  ld a, [hl]
+  ld a, [scrolly]
   ld [RSCY], a
-  
-  pop hl
-  ld bc, actx 
-  add hl, bc
 
   ; x position 
-  ld a, [hl]
+  ld a, [scrollx]
   ld [RSCX], a
 
   ret 
