@@ -11,6 +11,8 @@ vblank:
   call input
 
   call draw
+  
+  call scroll
 
   ; reset update flags
   ld a, 0
@@ -69,3 +71,35 @@ dbghex:
   ld [hl+], a
 
   ret
+
+; initialize window registers 
+initwin:
+  ld a, 0
+  ld [RWY], a
+
+  ld a, 10
+  ld [RWX], a
+  ret
+
+; scroll the screen 
+scroll:
+  ; hl = player actor 
+  ldhlfrom actpl 
+  push hl
+
+  ld bc, acty
+  add hl, bc
+  
+  ; y position 
+  ld a, [hl]
+  ld [RSCY], a
+  
+  pop hl
+  ld bc, actx 
+  add hl, bc
+
+  ; x position 
+  ld a, [hl]
+  ld [RSCX], a
+
+  ret 

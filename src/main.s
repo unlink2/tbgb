@@ -48,7 +48,8 @@ entry:
   ld hl, OAMDMAFN
   ld bc, soamtooam_end - soamtooam
   call memcpy
-
+  
+  call initwin
 
   call soamfreeall
 

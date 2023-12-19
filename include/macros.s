@@ -23,5 +23,21 @@
   ld [hl+], a
 #endmacro 
 
+; load ptr into hl  from $1
+#macro ldhlfrom
+  ld a, [$1]
+  ld l, a
+  ld a, [$1+1]
+  ld h, a
+#endmacro 
+
+; store ptr from hl at $1
+#macro ldhlto
+  ld a, l
+  ld [actpl], a
+  ld a, h
+  ld [actpl+1], a
+#endmacro
+
 ; relative jump: jr <label> RELB 
 #define REL - $ - 2 & 0xFF 

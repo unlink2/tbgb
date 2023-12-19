@@ -152,10 +152,7 @@ player_init:
   
   ; save pointer to player 
   ; for later use 
-  ld a, l
-  ld [actpl], a
-  ld a, h
-  ld [actpl+1], a
+  ldhlto actpl
   
   ; now init player data 
   inc hl ; no need for flags 

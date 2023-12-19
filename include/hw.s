@@ -1,7 +1,10 @@
 ; register defs
 
+; lcd registers 
+
 ; lcd y 
-#define RLY 0xFF44 
+#define RLY 0xFF44
+#define RLYC 0xFF45
 #define RLCD 0xFF40
 
 #define LCDCF_BGON 0b00000001
@@ -10,6 +13,15 @@
 
 #define RBGP 0xFF47
 #define ROBP0 0xFF48
+#define ROBP1 0xFF49
+
+; screen scroll y and x
+#define RSCY 0xFF42
+#define RSCX 0xFF43
+
+; window y and x
+#define RWY 0xFF4A
+#define RWX 0xFF4B
 
 ; P1: joy pad register
 #define RP1 0xFF00
