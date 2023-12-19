@@ -1,6 +1,7 @@
 ; register defs
 
-#define OBJOFFSCRREN 16
+#define SCRNW 159
+#define SCRNH 143
 
 ; lcd registers 
 

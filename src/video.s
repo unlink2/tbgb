@@ -11,7 +11,6 @@ vblank:
   call input
 
   call draw
-  
   call applyscroll
 
   ; reset update flags
@@ -98,4 +97,3 @@ applyscroll:
 
   ret 
 
-  
