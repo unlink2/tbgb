@@ -1,13 +1,13 @@
-#include "hw.s"
-#include "macros.s"
+#include "hw.inc"
+#include "macros.inc"
 
-#include "wram.s"
-#include "oam.s"
+#include "wram.inc"
+#include "oam.inc"
 
 .org 0x0
-#include "jmp.s"
+#include "jmp.inc"
 .fill 0, 0x100 - $
-#include "header.s"
+#include "header.inc"
  
 entry:
   ; wait for first vblank
@@ -102,8 +102,8 @@ main:
 
 #include "act.s"
 
-#include "tiles.s"
-#include "tilemaps.s"
+#include "tiles.inc"
+#include "tilemaps.inc"
 
 
 ; fill bank
