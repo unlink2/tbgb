@@ -79,10 +79,10 @@ dbghex:
 
 ; initialize window registers 
 initwin:
-  ld a, 0
+  ld a, 144 - 8
   ld [RWY], a
 
-  ld a, 10
+  ld a, 8
   ld [RWX], a
   ret
 
