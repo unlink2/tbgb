@@ -12,7 +12,7 @@ vblank:
 
   call draw
   
-  call scroll
+  call applyscroll
 
   ; reset update flags
   ld a, 0
@@ -29,7 +29,7 @@ vblankwait:
   ret
 
 lcdon:
-  ld a, LCDCF_ON | LCDCF_BGON | LCDCF_OBJON
+  ld a, LCDCF_ON | LCDCF_BGON | LCDCF_OBJON | LCDF_WINDOWON
   ld [RLCD], a 
   ret
 
@@ -82,7 +82,7 @@ initwin:
   ret
 
 ; scroll the screen 
-scroll:
+applyscroll:
   ; y position 
   ld a, [scrolly]
   ld [RSCY], a
@@ -92,3 +92,5 @@ scroll:
   ld [RSCX], a
 
   ret 
+
+  

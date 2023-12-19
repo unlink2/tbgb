@@ -275,14 +275,26 @@ player_update:
     inc a
     ld [hl], a
 @notdown:
+  
+  ; load to oam
   pop hl ; base pointer to act
   ld de, acty
   add hl, de
   ; load data in order: y, x, chr, flag
   ld a, [hl+] ; y
   ld b, a
-  ld a, [hl+] ; x 
+  
+  ; while we're at it set scrolly
+  add a, 144/2
+  ld [scrolly], a
+
+  ld a, [hl+] ; x
   ld c, a
+  
+  ; set scroll x
+  add a, 160/2
+  ld [scrollx], a
+
   ld a, 2 ; chr 
   ld d, a
   ld a, 0 ; flag
