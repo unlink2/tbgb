@@ -12,7 +12,7 @@ vblank:
 
   call draw
   
-  call scroll
+  ; call scroll
 
   ; reset update flags
   ld a, 0

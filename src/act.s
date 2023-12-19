@@ -153,44 +153,39 @@ player_init:
   ; save pointer to player 
   ; for later use 
   ldhlto actpl
+
+  push hl
   
   ; now init player data 
-  inc hl ; no need for flags 
-
-  ; player object is always 0
-  ld a, 0
-  ld [hl+], a
   
   ; type is player 
+  ldhlm acttype 
   ld a, ACT_TPLAYER
-  ld [hl+], a
+  ld [hl], a
 
   ; ld fn pointer 
+  ldhlm actfn 
   ldhlptr player_update 
   
   ; ignore unused byte for now...
-  inc hl 
 
   ; xl 
+  ldhlm actxl 
   ld a, 0
-  ld [hl+], a
+  ld [hl], a
   
   ; yl
-  ld [hl+], a
+  ldhlm actyl 
+  ld [hl], a
 
   ; TODO: set proper initial location
   ld a, 64
-  ld [hl+], a ; x pos 
-  ld [hl+], a ; y pos
+  ldhlm acty 
+  ld [hl], a ; x pos 
+  ldhlm actx 
+  ld [hl], a ; y pos
   
-  ; TODO: set sprite 
-  ld a, 1
-  ld [hl+], a 
-  
-  ; oam flags
-  ld a, 0
-  ld [hl+], a
-
+  pop hl
   ret
 
 ; allocate an oam object 

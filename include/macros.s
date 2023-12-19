@@ -34,9 +34,24 @@
 ; store ptr from hl at $1
 #macro ldhlto
   ld a, l
-  ld [actpl], a
+  ld [$1], a
   ld a, h
-  ld [actpl+1], a
+  ld [$1+1], a
+#endmacro
+
+; pop hl and push it again!
+; add offset to hl
+; registers:
+;   hl: modified
+;   sp: pop hl and push hl
+;   de: used to add to hl
+; inputs: 
+;   $1: the offset into hl
+#macro ldhlm
+  pop hl
+  push hl
+  ld de, $1
+  add hl, de
 #endmacro
 
 ; relative jump: jr <label> RELB 

@@ -2,6 +2,15 @@
 #define WRAM 0xC000
 .org WRAM
 
+; WRAM variables
+; note: if a .se defintion is in memory
+; *never* rely on the exact memory layout unless
+; the data is specifically documented as an array
+; e.g. when the size of the .de is > 1
+; or if the layout is specifically documented
+; in all other cases it is better to simply directly address
+; [hl+offset] to avoid breaking code in the future
+
 #define WRAMLEN 0xFFF
 
 ; max actors
@@ -11,21 +20,18 @@
 ; actor memory layout
 .se 0
 .de actflags, 1
-.de actunused1, 1
 .de acttype, 1
 .de actfn, 2
-.de actrunused2, 1
 ; postions are x.xl and y.yl 
 ; fixed point integers 
 .de actyl, 1 
 .de actxl, 1
 .de acty, 1
 .de actx, 1
-.de actunused3, 1
-.de actunused4, 1
 .de ACTSIZE, 0
 
-; actor shadow oam 
+; actor shadow oam
+; oam memory layout is guaranteed!
 .se 0 
 .de soamy, 1
 .de soamx, 1
