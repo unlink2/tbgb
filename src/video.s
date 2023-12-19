@@ -28,7 +28,7 @@ vblankwait:
   ret
 
 lcdon:
-  ld a, LCDCF_ON | LCDCF_BGON | LCDCF_OBJON | LCDF_WINDOWON
+  ld a, LCDCF_ON | LCDCF_BGON | LCDCF_OBJON ; | LCDF_WINDOWON
   ld [RLCD], a 
   ret
 
