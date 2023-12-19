@@ -285,14 +285,14 @@ player_update:
   ld b, a
   
   ; while we're at it set scrolly
-  add a, 144/2 + OBJOFFSCRREN
+  sub a, 144/2 + OBJOFFSCRREN - 8
   ld [scrolly], a
 
   ld a, [hl+] ; x
   ld c, a
   
   ; set scroll x
-  add a, 160/2 + OBJOFFSCRREN
+  sub a, 160/2 + OBJOFFSCRREN - 8
   ld [scrollx], a
 
   ld a, 2 ; chr 
