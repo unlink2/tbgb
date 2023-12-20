@@ -1,3 +1,25 @@
+; set up tiles in vram
+inittiles:
+  ; copy tiles 0
+  ld de, tiles0
+  ld hl, VRAM9000
+  ld bc, tiles0_end - tiles0
+  call memcpy
+  
+  ; copy oam tile data 
+  ld de, acts0
+  ld hl, VRAM
+  ld bc, acts0_end - acts0 
+  call memcpy
+
+  ; copy tilemap 0
+  ld de, tilemap0
+  ld hl, SCRN0 
+  ld bc, tilemap0_end - tilemap0
+  call memcpy
+
+  ret
+
 #macro emptytile
 .db 0b00000000
 .db 0b00000000

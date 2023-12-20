@@ -74,6 +74,12 @@ soamfreeall:
   ld bc, OBJSMAX
   jp memset 
 
+actfreeall:
+  ld a, 0
+  ld hl, acttbl 
+  ld bc, ACTMAX * ACTSIZE
+  jp memset
+
 ; obtain the soam address from an offset.
 ; it also takes the global oam offset into account 
 ; inputs:

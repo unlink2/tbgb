@@ -17,18 +17,7 @@ entry:
   ; initially disable lcd 
   call lcdoff
   
-  ; init sram 
-  ld a, 0x0A
-  ld [SRAM_ENABLE], a
-
-  ; clear wram
-  ld a, 0
-  ld hl, WRAM
-  ld bc, WRAMLEN
-  call memset 
-
-  ; clear oam 
-  call oamclear
+  call initmem 
 
   ; copy tiles 0
   ld de, tiles0
@@ -48,18 +37,12 @@ entry:
   ld bc, tilemap0_end - tilemap0
   call memcpy
   
-  ; memcpy oam fn 
-  ld de, soamtooam 
-  ld hl, OAMDMAFN
-  ld bc, soamtooam_end - soamtooam
-  call memcpy
   
   call initwin
 
   call soamfreeall
-
-  ; init player 
-  call player_init
+  
+  call init_mode_play
 
   ; draw first frame
   call vblank 
@@ -82,11 +65,7 @@ entry:
   ; enable interrupts 
   ld a, IVBLANK
   ld [IE], a
-  ei 
-  
-  ; initial game mode
-  ld a, MODE_PLAY 
-  ld [game_mode], a
+  ei  
 
   ; set flag for first frame to go ahead 
   ld a, 0
@@ -116,7 +95,7 @@ main:
 
 #include "tiles.inc"
 #include "tilemaps.inc"
-
+#include "mode.s"
 
 ; fill bank
 .fill 0, 0x7FFF - $

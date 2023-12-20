@@ -1,12 +1,39 @@
+; set up wram and sram
+; and clear all values that need clearing
+initmem:
+  ; init sram 
+  ld a, 0x0A
+  ld [SRAM_ENABLE], a
+
+  ; clear wram
+  ld a, 0
+  ld hl, WRAM
+  ld bc, WRAMLEN
+  call memset
+
+  ; clear oam 
+  call oamclear
+
+  ; memcpy oam dma fn 
+  ld de, soamtooam 
+  ld hl, OAMDMAFN
+  ld bc, soamtooam_end - soamtooam
+  call memcpy
+  ret
+
 
 oamclear:
+  ; clear oam
   ld a, 0
-  ld b, 160
+  ld bc, 160
   ld hl, OAMRAM
-@loop:
-  ld [hl+], a
-  dec b
-  jp nz, @loop
+  call memset
+
+  ; same for soam 
+  ld a, 0
+  ld bc, 160
+  ld hl, soam 
+  call memset
   ret
 
 ; memcpy:
