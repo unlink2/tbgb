@@ -1,9 +1,21 @@
-
 nohandler:
   ret
 
 panic:
   ret
+
+enableinterrupts:
+  ; enable interrupts 
+  ld a, IVBLANK
+  ld [IE], a
+  ei 
+  ret
+
+disableinterrutpts:
+  ld a, 0
+  ld [IE], a
+  di
+  ret 
 
 ; call address in hl
 ; inputs:

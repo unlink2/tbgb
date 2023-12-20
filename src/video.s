@@ -19,6 +19,19 @@ vblank:
 
   ret
 
+; initialize display registers such
+; as palettes 
+initdisplay:
+  ; init display regs
+  ld a, 0b11100100
+  ld [RBGP], a
+
+  ld a, 0b11100100 
+  ld [ROBP0], a
+
+  ld a, 0b11011000
+  ld [ROBP1], a
+  ret
 
 vblankwait:
   ld a, [RLY]

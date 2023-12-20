@@ -11,6 +11,8 @@
 #include "header.inc"
  
 entry:
+  call disableinterrutpts
+
   ; wait for first vblank
   call vblankwait
   
@@ -18,30 +20,10 @@ entry:
   call lcdoff
   
   call initmem 
-
-  ; copy tiles 0
-  ld de, tiles0
-  ld hl, VRAM9000
-  ld bc, tiles0_end - tiles0
-  call memcpy
-  
-  ; copy oam tile data 
-  ld de, acts0
-  ld hl, VRAM
-  ld bc, acts0_end - acts0 
-  call memcpy
-
-  ; copy tilemap 0
-  ld de, tilemap0
-  ld hl, SCRN0 
-  ld bc, tilemap0_end - tilemap0
-  call memcpy
-  
+  call inittiles
   
   call initwin
 
-  call soamfreeall
-  
   call init_mode_play
 
   ; draw first frame
@@ -49,23 +31,9 @@ entry:
 
   ; enable lcd
   call lcdon 
-
-  ; init display regs
-  ld a, 0b11100100
-  ld [RBGP], a
-
-  ld a, 0b11100100 
-  ld [ROBP0], a
-
-  ld a, 0b11011000
-  ld [ROBP1], a
-
-  call vblankwait
-
-  ; enable interrupts 
-  ld a, IVBLANK
-  ld [IE], a
-  ei  
+  call initdisplay
+  
+  call enableinterrupts
 
   ; set flag for first frame to go ahead 
   ld a, 0
