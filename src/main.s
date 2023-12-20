@@ -2,6 +2,7 @@
 #include "macros.inc"
 
 #include "wram.inc"
+#include "sram.inc"
 #include "oam.inc"
 
 .org 0x0
@@ -15,6 +16,10 @@ entry:
   
   ; initially disable lcd 
   call lcdoff
+  
+  ; init sram 
+  ld a, 0x0A
+  ld [SRAM_ENABLE], a
 
   ; clear wram
   ld a, 0

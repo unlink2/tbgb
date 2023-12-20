@@ -8,7 +8,11 @@ logo:
 logo_end:
 
 .str "tb"
+.fill 0, 0x147 - $
 
+; cartride type
+; MBC1+RAM+Battery
+.db 0x02 
 .fill 0, 0x14D - $
 .chksm
 .fill 0, 0x150 - $

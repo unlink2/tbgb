@@ -68,4 +68,9 @@
 .def int OBJSIZE = 4
 .def int OAMRAM_SIZE = OBJSMAX * OBJSIZE
 
+; MBC1 registers
 
+; write 0xA here to enable sram 
+#define SRAM_ENABLE 0x0000
+#define ROM_BANKSEL 0x2000
+#define SRAM_BANKSEL 0x4000
