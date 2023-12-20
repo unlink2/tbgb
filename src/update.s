@@ -4,7 +4,7 @@ update:
   
   ; general game update
   ; FIXME: make a jump talbe out of this 
-  ld a, game_mode
+  ld a, [game_mode]
   cp a, MODE_TITLE 
   call z, update_mode_title 
   
@@ -45,7 +45,6 @@ update:
     ld bc, actfn 
     add hl, bc ; hl points to fn pointer now...
     ;call player_update
-    ; FIXME: this calls weird locations sometimes...
     call callptr
 
     pop de

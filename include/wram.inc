@@ -67,7 +67,9 @@ soamallocflags: .adv OBJSMAX ; 40 bytes indicating the current allocation status
 #define ACT_FACTIVE 0b00000001
 
 ; actor types 
-#define ACT_TPLAYER 0x01
+.se 1
+.de ACT_TPLAYER, 1
+.de ACT_TTITLECURSOR, 1
 
 ; player actor pointer
 actpl: .adv 2

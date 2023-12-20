@@ -8,6 +8,8 @@
 init_mode_title:
   call oamclear 
   call actfreeall
+  
+  call title_cursor_init
 
   ; initial game mode
   ld a, MODE_TITLE 

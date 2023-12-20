@@ -318,3 +318,49 @@ player_update:
   call soamsetto 
 
   ret
+
+; create a title cursor 
+; there should only ever 
+; one cursor per scene because
+; they maniulate global state 
+title_cursor_init:
+  call act_alloc
+  hl_null_panic
+
+  push hl
+  ; init cursor 
+  
+  ; type is player 
+  ldhlm acttype 
+  ld a, ACT_TPLAYER
+  ld [hl], a
+
+  ; ld fn pointer 
+  ldhlm actfn 
+  ldhlptr title_cursor_update 
+  
+  ; ignore unused byte for now...
+
+  ; xl 
+  ldhlm actxl 
+  ld a, 0
+  ld [hl], a
+  
+  ; yl
+  ldhlm actyl 
+  ld [hl], a
+
+  ; TODO: set proper initial location
+  ld a, 64
+  ldhlm acty 
+  ld [hl], a ; x pos 
+  ldhlm actx 
+  ld [hl], a ; y pos
+  
+  pop hl
+
+  ret 
+
+title_cursor_update:
+
+  ret
