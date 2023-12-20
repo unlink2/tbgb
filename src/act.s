@@ -288,8 +288,27 @@ player_update:
   ld d, a
   ld a, 0 ; flag
   ld e, a
+  
+  ; will need them again in a second 
+  push bc
+  push de
+
   ; prefer obj 0
   ld a, 0
   call soamsetto
+  
+  ; bottom sprite 
+  pop de 
+  pop bc
+  ; move y position
+  ld a, b
+  add a, 8
+  ld b, a
+
+  ld a, 3 ; chr bottom
+  ld d, a
+  ; prefer obj 0
+  ld a, 1
+  call soamsetto 
 
   ret

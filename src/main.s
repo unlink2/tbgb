@@ -69,6 +69,9 @@ entry:
   ld a, 0b11100100 
   ld [ROBP0], a
 
+  ld a, 0b11011000
+  ld [ROBP1], a
+
   call vblankwait
 
   ; enable interrupts 
