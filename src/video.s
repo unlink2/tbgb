@@ -17,7 +17,6 @@ vblank:
   ld a, 0
   ld [update_flags], a
 
-
   ret
 
 

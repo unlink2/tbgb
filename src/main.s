@@ -78,6 +78,10 @@ entry:
   ld a, IVBLANK
   ld [IE], a
   ei 
+  
+  ; initial game mode
+  ld a, MODE_PLAY 
+  ld [game_mode], a
 
   ; set flag for first frame to go ahead 
   ld a, 0

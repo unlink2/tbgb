@@ -17,6 +17,13 @@
 ; 10 actors max.
 #define ACTMAX 10
 
+; game modes
+.se 0
+.de MODE_TITLE, 1
+.de MODE_PLAY, 1
+.de MODE_PAUSE, 1
+.de MODE_EDITOR, 1
+
 ; actor memory layout
 .se 0
 .de actflags, 1
@@ -82,3 +89,5 @@ frame: .adv 1
 
 scrolly: .adv 1
 scrollx: .adv 1
+
+game_mode: .adv 1
