@@ -332,14 +332,12 @@ title_cursor_init:
   
   ; type is player 
   ldhlm acttype 
-  ld a, ACT_TPLAYER
+  ld a, ACT_TTITLECURSOR
   ld [hl], a
 
   ; ld fn pointer 
   ldhlm actfn 
   ldhlptr title_cursor_update 
-  
-  ; ignore unused byte for now...
 
   ; xl 
   ldhlm actxl 
@@ -350,7 +348,6 @@ title_cursor_init:
   ldhlm actyl 
   ld [hl], a
 
-  ; TODO: set proper initial location
   ld a, 64
   ldhlm acty 
   ld [hl], a ; x pos 
@@ -362,5 +359,18 @@ title_cursor_init:
   ret 
 
 title_cursor_update:
-
+  push de 
+  pop hl
+  ; load data in order: y, x, chr, flag
+  ld a, [hl+] ; y
+  ld b, a
+  ld a, [hl+] ; x
+  ld c, a
+  ld a, 2 ; chr 
+  ld d, a
+  ld a, 0 ; flag
+  ld e, a
+  ; prefer obj 0
+  ld a, 0
+  call soamsetto
   ret
