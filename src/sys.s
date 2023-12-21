@@ -62,6 +62,13 @@ input:
 
   ret 
 
+; sets the global delay timer 
+; inputs:
+;   a: delay timer to set to 
+setdelay:
+  ld [global_delay], a
+  ret
+  
 
 
 ; poll p1 

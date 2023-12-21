@@ -61,10 +61,11 @@ main:
 #include "mem.s"
 
 #include "act.s"
+#include "mode.s"
 
+#include "strs.inc"
 #include "tiles.inc"
 #include "tilemaps.inc"
-#include "mode.s"
 
 ; fill bank
 .fill 0, 0x7FFF - $

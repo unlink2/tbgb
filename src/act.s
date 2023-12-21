@@ -353,10 +353,10 @@ title_cursor_init:
 
   ret 
 
-#define TILTE_CURSOR_DELAY 30 
-
+#define TITLE_CURSOR_DELAY 10 
+#define TITLE_CURSOR_MAX 3
 title_cursor_positions:
-  .db 64, 32, 64
+  .db 64, 64+8, 64+16
 title_cursor_update:
   push de 
   pop hl
@@ -375,10 +375,47 @@ title_cursor_update:
   and a, BTNSTART 
   jp z, @notstart
   
+
   ld hl, init_mode_play 
   call transition
   ret
 @notstart:
+  
+  ; down -> move cursor 
+  ld a, [inputs]
+  and a, BTNDOWN
+  jp z, @notdown
+
+  ; delay next input 
+  ld a, TITLE_CURSOR_DELAY
+  call setdelay
+  ld a, [hl]
+  inc a
+  cp a, TITLE_CURSOR_MAX 
+  jp nz, @notmaxdown
+  ld a, 0
+@notmaxdown:
+  ld [hl], a
+@notdown:
+
+  ; up -> move cursor
+  ld a, [inputs]
+  and a, BTNUP
+  jp z, @notup
+  
+  ; delay next input
+  ld a, TITLE_CURSOR_DELAY 
+  call setdelay
+
+  ld a, [hl]
+  dec a
+  
+  cp a, 0xFF
+  jp nz, @notmindown
+  ld a, TITLE_CURSOR_MAX - 1
+@notmindown:
+  ld [hl], a
+@notup:
 
 @no_inputs:
 
