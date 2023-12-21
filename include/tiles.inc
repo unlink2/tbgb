@@ -390,6 +390,8 @@ tiles0:
 .db 0b00000000
 .db 0b00000000
 
+emptytile
+
 ; tile 0
 .db 0b10101010
 .db 0b01010101

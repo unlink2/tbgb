@@ -8,6 +8,7 @@
 transition_clear:
   call oamclear
   call actfreeall
+  call clearscrn0 
   ret
 
 ; call to transition mode
@@ -21,9 +22,11 @@ transition_clear:
 ;   hl: jp target for transition
 transition:
   push hl
+
   call disableinterrutpts
   call vblankwait 
   call lcdoff
+
   call transition_clear  
 
   pop hl

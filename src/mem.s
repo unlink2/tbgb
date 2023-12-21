@@ -22,10 +22,10 @@ initmem:
   call soamfreeall
   ret
 
-initvram:
-  ld a, 0
-  ld hl, VRAM 
-  ld bc, 0x1FFF
+clearscrn0:
+  ld a, 0x10
+  ld hl, SCRN0 
+  ld bc, 1024 
   call memset
   ret
 
