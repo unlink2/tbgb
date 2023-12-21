@@ -94,3 +94,8 @@ game_mode: .adv 1
 ; this timer is always dec every frame 
 ; until it reaches 0
 global_delay: .adv 1
+
+; game flags
+.def int GFDEAD = 1
+
+game_flags: .adv 1
