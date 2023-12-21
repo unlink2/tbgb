@@ -375,8 +375,19 @@ title_cursor_update:
   and a, BTNSTART 
   jp z, @notstart
   
-
+  ld a, [hl]
   ld hl, init_mode_play 
+
+  cp a, TC_NEWGAME 
+  jr nz, @notnewgame REL
+  ld hl, init_mode_play 
+  
+@notnewgame:
+  cp a, TC_MAPED 
+  jr nz, @notmaped REL
+  ld hl, init_mode_editor
+@notmaped:
+@transition:
   call transition
   ret
 @notstart:
