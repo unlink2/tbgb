@@ -24,7 +24,7 @@ entry:
   
   call initwin
 
-  call init_mode_play
+  call init_mode_title
 
   ; draw first frame
   call vblank 

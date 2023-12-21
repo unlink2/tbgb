@@ -367,12 +367,14 @@ title_cursor_init:
 title_cursor_update:
   push de 
   pop hl
+  ld de, acty
+  add hl, de
   ; load data in order: y, x, chr, flag
   ld a, [hl+] ; y
   ld b, a
-  ld a, [hl+] ; x
+  ld a, [hl] ; x
   ld c, a
-  ld a, 2 ; chr 
+  ld a, 7 ; chr 
   ld d, a
   ld a, 0 ; flag
   ld e, a
