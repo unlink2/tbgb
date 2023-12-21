@@ -48,7 +48,21 @@ lcdoff:
 
 draw:
   call OAMDMAFN
+  
+  ; game mode specific draws 
+  ld a, [game_mode]
+  cp a, MODE_TITLE 
+  call z, draw_mode_title
+  cp a, MODE_PLAY
+  call z, draw_mode_play
+  cp a, MODE_PAUSE
+  call z, draw_mode_pause 
+  cp a, MODE_EDITOR 
+  call z, draw_mode_editor
 
+  ret
+
+draw_mode_play:
   ; draw current frame to top left corner
   ld a, [frame]
   ld hl, SCRN0
@@ -59,11 +73,21 @@ draw:
   ld hl, SCRN0+3
   call dbghex
   
+  ret 
+
+draw_mode_title:
+
   ; draw test tile 
   ld a, [inputs]
   ld hl, SCRN0 + 192
   call dbghex
 
+  ret
+
+draw_mode_pause:
+  ret
+
+draw_mode_editor:
   ret
 
 ; draw a hex number to screen 
