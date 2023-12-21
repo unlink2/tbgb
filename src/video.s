@@ -2,6 +2,18 @@ vblank:
   ld hl, frame
   inc [hl]
 
+  ; set animation timer 
+  ld a, [frame]
+  and a, 32
+  jr z, @anim_zero REL
+  
+  ld a, 1
+  jr @anim_done REL
+@anim_zero:
+  ld a, 0
+@anim_done:
+  ld [global_anim_timer], a
+
   ; skip the frame if the previous
   ; frame did not finish 
   ld a, [update_flags]

@@ -282,6 +282,8 @@ player_update:
     ld [hl], a
 @notdown:
   ; load to oam
+
+  ; left sprite
   pop hl ; base pointer to act
   ld de, acty
   add hl, de
@@ -290,7 +292,9 @@ player_update:
   ld b, a
   ld a, [hl+] ; x
   ld c, a
-  ld a, 2 ; chr 
+  ld a, [global_anim_timer]
+  ld d, 2 ; chr 
+  add a, d
   ld d, a
   ld a, 0 ; flag
   ld e, a
@@ -303,15 +307,17 @@ player_update:
   ld a, 0
   call soamsetto
   
-  ; bottom sprite 
+  ; right sprite 
   pop de 
   pop bc
-  ; move y position
-  ld a, b
+  ; move x position
+  ld a, c
   add a, 8
-  ld b, a
-
-  ld a, 3 ; chr bottom
+  ld c, a
+  
+  ld a, [global_anim_timer]
+  ld d, 4 ; chr bottom
+  add a, d
   ld d, a
   ; prefer obj 0
   ld a, 1

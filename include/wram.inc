@@ -88,6 +88,8 @@ prev_inputs: .adv 1
 
 update_flags: .adv 1
 frame: .adv 1
+; either 0 or 1
+global_anim_timer: .adv 1
 
 scrolly: .adv 1
 scrollx: .adv 1
