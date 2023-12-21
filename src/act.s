@@ -345,18 +345,7 @@ title_cursor_init:
   ldhlm actfn 
   ldhlptr title_cursor_update 
 
-  ; xl 
-  ldhlm actxl 
   ld a, 0
-  ld [hl], a
-  
-  ; yl
-  ldhlm actyl 
-  ld [hl], a
-
-  ld a, 64
-  ldhlm acty 
-  ld [hl], a ; x pos 
   ldhlm actx 
   ld [hl], a ; y pos
   
@@ -364,15 +353,45 @@ title_cursor_init:
 
   ret 
 
+#define TILTE_CURSOR_DELAY 30 
+
+title_cursor_positions:
+  .db 64, 32, 64
 title_cursor_update:
   push de 
   pop hl
+  ; hl now points to acty 
+  ; which is the cursor selection index
   ld de, acty
   add hl, de
-  ; load data in order: y, x, chr, flag
-  ld a, [hl+] ; y
+
+  ; inputs 
+  ld a, [global_delay]
+  cp a, 0
+  jp nz, @no_inputs
+  
+  ; start button -> run action at index 
+  ld a, [inputs]
+  and a, BTNSTART 
+  jp z, @notstart
+  
+  ld hl, init_mode_play 
+  call transition
+  ret
+@notstart:
+
+@no_inputs:
+
+  ; set up oam 
+  ld a, [hl+] ; y index 
+  ld e, a
+  ld d, 0
+  ld hl, title_cursor_positions 
+  add hl, de
+  ld a, [hl] ; load y position from hl + de
   ld b, a
-  ld a, [hl] ; x
+
+  ld a, 64 ; x
   ld c, a
   ld a, 7 ; chr 
   ld d, a
@@ -382,3 +401,5 @@ title_cursor_update:
   ld a, 0
   call soamsetto
   ret
+
+#undefine TITLE_CURSOR_DELAY

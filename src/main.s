@@ -1,6 +1,6 @@
 #include "hw.inc"
 #include "macros.inc"
-
+#include "act.inc"
 #include "wram.inc"
 #include "sram.inc"
 #include "oam.inc"
@@ -21,9 +21,10 @@ entry:
   
   call initmem 
   call inittiles
-  
+
   call initwin
 
+  call transition_clear
   call init_mode_title
 
   ; draw first frame

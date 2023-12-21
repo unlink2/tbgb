@@ -1,11 +1,4 @@
-vblank: 
-  ld a, 1
-  jr @anim_done REL
-@anim_zero:
-  ld a, 0
-@anim_done:
-  ld [global_anim_timer], a
-
+vblank:  
   ; skip the frame if the previous
   ; frame did not finish 
   ld a, [update_flags]

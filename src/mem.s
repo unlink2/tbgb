@@ -22,6 +22,12 @@ initmem:
   call soamfreeall
   ret
 
+initvram:
+  ld a, 0
+  ld hl, VRAM 
+  ld bc, 0x1FFF
+  call memset
+  ret
 
 oamclear:
   ; clear oam

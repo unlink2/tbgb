@@ -31,6 +31,11 @@ callptr:
   ld l, b
   jp hl
 
+; calls hl directly 
+; inputs:
+;   hl: the address to "call"
+callhl:
+  jp hl
 
 ; poll inputs
 ; returns:
