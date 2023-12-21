@@ -1,12 +1,4 @@
-vblank:
-  ld hl, frame
-  inc [hl]
-
-  ; set animation timer 
-  ld a, [frame]
-  and a, 32
-  jr z, @anim_zero REL
-  
+vblank: 
   ld a, 1
   jr @anim_done REL
 @anim_zero:

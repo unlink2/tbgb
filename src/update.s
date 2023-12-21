@@ -1,4 +1,28 @@
 update:
+  ; frame timing stuff
+  ld hl, frame
+  inc [hl]
+
+  ; set animation timer 
+  ld a, [frame]
+  and a, 32
+  jr z, @anim_zero REL
+  ld a, 1
+  jr @anim_done REL
+@anim_zero:
+  ld a, 0
+@anim_done:
+  ld [global_anim_timer], a
+
+  ; delay timer 
+  ld a, [global_delay]
+  cp a, 0
+  jr z, @no_global_delay_dec REL
+  dec a
+  ld [global_delay], a
+@no_global_delay_dec:
+
+  ; shadow oam offset
   ld hl, soamgoffset 
   inc [hl]
   

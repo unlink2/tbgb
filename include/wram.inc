@@ -88,10 +88,17 @@ prev_inputs: .adv 1
 
 update_flags: .adv 1
 frame: .adv 1
-; either 0 or 1
+; either 0 or 1. may be used to animate 
+; on global timer
 global_anim_timer: .adv 1
 
 scrolly: .adv 1
 scrollx: .adv 1
 
 game_mode: .adv 1
+
+; some inputs mayb want to 
+; use a delay timer
+; this timer is always dec every frame 
+; until it reaches 0
+global_delay: .adv 1
