@@ -131,6 +131,26 @@ emptytile
 .chr 00311111
 .chr 22233333
 
+; player move right frame 1
+.chr 00000000
+.chr 33300000
+.chr 31330000
+.chr 31313000
+.chr 11113000
+.chr 33331300
+.chr 11111310
+.chr 33333000
+
+; player move right frame 2
+.chr 01000000
+.chr 33300000
+.chr 31330000
+.chr 31313000
+.chr 11113000
+.chr 33331300
+.chr 11111300
+.chr 33333000
+
 acts0_end:
 
 tiles0:

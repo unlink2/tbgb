@@ -262,15 +262,34 @@ player_update:
     ld a, [hl] 
     dec a
     ld [hl], a
+
+    ; set tiles 
+    ld a, 10
+    ld [chrs], a
+    ld a, 8
+    ld [chrs+1], a
+
+    ; set flags
+    ld a, OAM_FXFLIP
+    ld [chrflags], a
+    ld [chrflags+1], a
 @notleft:
   
   ld a, [inputs]
   and a, BTNRIGHT
   jr z, @notright REL
   ; right input hit
+
+    ; position
     ld a, [hl]
     inc a
     ld [hl], a
+
+    ; set tiles 
+    ld a, 8
+    ld [chrs], a
+    ld a, 10
+    ld [chrs+1], a
 @notright:
  
   ;set hl to acty ptr

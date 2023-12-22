@@ -68,6 +68,9 @@
 .def int OBJSIZE = 4
 .def int OAMRAM_SIZE = OBJSMAX * OBJSIZE
 
+#define OAM_FYFLIP 0b01000000
+#define OAM_FXFLIP 0b00100000
+
 ; MBC1 registers
 
 ; write 0xA here to enable sram 
