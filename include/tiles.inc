@@ -21,22 +21,14 @@ inittiles:
   ret
 
 #macro emptytile
-.db 0b00000000
-.db 0b00000000
-.db 0b00000000
-.db 0b00000000
-.db 0b00000000
-.db 0b00000000
-.db 0b00000000
-.db 0b00000000
-.db 0b00000000
-.db 0b00000000
-.db 0b00000000
-.db 0b00000000
-.db 0b00000000
-.db 0b00000000
-.db 0b00000000
-.db 0b00000000
+.chr 0
+.chr 0
+.chr 0
+.chr 0
+.chr 0
+.chr 0
+.chr 0
+.chr 0
 #endmacro
 
 acts0:
@@ -75,30 +67,25 @@ emptytile
 .db 0x08, 0xF8, 0xE4, 0xFC, 0x04, 0xFC, 0xF8, 0xF8
 
 ; cursor part 
-.db 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x01 
-.db 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01
+.chr 00000000
+.chr 00000000
+.chr 00000000
+.chr 00000000
+.chr 00000003
+.chr 00000003
+.chr 00000003
+.chr 00000003
 
-; title screen cursor arrow 
-.db 0x70, 0x70, 0x78, 0x78, 0x7C, 0x7C, 0x7E, 0x7E 
-.db 0x7E, 0x7E, 0x7C, 0x7C, 0x78, 0x78, 0x70, 0x70
+; title screen cursor arrow
+.chr 00003000
+.chr 00003300
+.chr 00003330
+.chr 00003333
+.chr 00003333
+.chr 00003330
+.chr 00003300
+.chr 00003000
 
-; sprite 1
-.db 0b11000011
-.db 0b11000011
-.db 0b00111100
-.db 0b00111100
-.db 0b01111110
-.db 0b01111110
-.db 0b01101110
-.db 0b01111110
-.db 0b01011010
-.db 0b01111110
-.db 0b00111100
-.db 0b00111100
-.db 0b01011010
-.db 0b11011011
-.db 0b00000000
-.db 0b00011000
 acts0_end:
 
 tiles0:
@@ -392,29 +379,5 @@ tiles0:
 
 emptytile
 
-; tile 0
-.db 0b10101010
-.db 0b01010101
-.db 0
-.db 0
-.db 0
-.db 0
-.db 0
-.db 0
-.db 0
-.db 0
-.db 0
-.db 0
-.db 0
-.db 0
-.db 0
-.db 0
-
-; tile 1
-.db 0b01010101
-.db 0b01010101
-.db 0b01010101
-.db 0b01010101
-.db 0b01010101
 
 tiles0_end:
