@@ -264,7 +264,7 @@ player_update:
   push hl ; we need base hl again later 
   
   ; set hl to actx ptr
-  ldhlm actx 
+  ldhlm actxl 
   
   ; set default actor mode
   ld a, ACT_IDLE 
@@ -277,8 +277,18 @@ player_update:
   jr z, @notleft REL
   ; left input hit
     ld a, [hl] 
-    dec a
+    sub a, PLAYER_VEL_MAX
     ld [hl], a
+    jp nc, @notfullmove_left
+    
+      inc hl
+      inc hl
+      ld a, [hl]
+      dec a
+      ld [hl], a
+      dec hl
+      dec hl
+@notfullmove_left:
   
     ld a, ACT_MOVLEFT
     ld [tmp], a
@@ -291,8 +301,19 @@ player_update:
 
     ; position
     ld a, [hl]
-    inc a
+    add a, PLAYER_VEL_MAX 
     ld [hl], a
+    jp nc, @notfullmove_right 
+      
+      inc hl
+      inc hl
+      ld a, [hl]
+      inc a
+      ld [hl], a
+      dec hl
+      dec hl
+
+@notfullmove_right:
 
     ld a, ACT_MOVRIGHT
     ld [tmp], a

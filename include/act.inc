@@ -46,3 +46,5 @@
 .de ACT_IDLE, 1
 .de ACT_MOVLEFT, 1
 .de ACT_MOVRIGHT, 1
+
+#define PLAYER_VEL_MAX 128
