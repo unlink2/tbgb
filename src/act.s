@@ -240,9 +240,21 @@ player_update:
   
   ; set hl to actx ptr
   ldhlm actx 
+  
+  ; set default tiles and flags
+  ; for the idle animation
+  ld a, 2
+  ld [chrs], a
 
-  ; TODO: improve player handling
-  ; by using hl as object ptr
+  ld a, 4
+  ld [chrs+1], a
+
+  ld a, 0
+  ld [chrflags], a
+  ld [chrflags+1], a
+  
+  ; read inputs, move and modify 
+  ; tiles based on movement 
   ld a, [inputs]
   and a, BTNLEFT 
   jr z, @notleft REL
@@ -292,33 +304,39 @@ player_update:
   ld b, a
   ld a, [hl+] ; x
   ld c, a
+  
+  ld a, [chrs] ; chr 
+  ld d, a
   ld a, [global_anim_timer]
-  ld d, 2 ; chr 
   add a, d
   ld d, a
-  ld a, 0 ; flag
+  
+  ld a, [chrflags] ; flag
   ld e, a
   
   ; will need them again in a second 
   push bc
-  push de
 
   ; prefer obj 0
   ld a, 0
   call soamsetto
   
   ; right sprite 
-  pop de 
   pop bc
   ; move x position
   ld a, c
   add a, 8
   ld c, a
   
+  ld a, [chrs+1] ; chr bottom
+  ld d, a 
   ld a, [global_anim_timer]
-  ld d, 4 ; chr bottom
   add a, d
   ld d, a
+
+  ld a, [chrflags+1] ; f;ags 
+  ld e, a 
+
   ; prefer obj 0
   ld a, 1
   call soamsetto 

@@ -99,3 +99,10 @@ global_delay: .adv 1
 .def int GFDEAD = 1
 
 game_flags: .adv 1
+
+; temporary storage for 
+; tile and flag settings
+; may be used by actor update
+; calls 
+chrs: .adv 4
+chrflags: .adv 4
