@@ -24,25 +24,6 @@
 .de MODE_PAUSE, 1
 .de MODE_EDITOR, 1
 
-; actor memory layout
-.se 0
-.de actflags, 1
-.de acttype, 1
-.de actfn, 2
-; 2 bytes of user-specific memory
-; can be used by each actor as needed
-.de actusr, 2 
-; postions are x.xl and y.yl 
-; fixed point integers
-; this memory layout of yl, xl, y, x is
-; guarnateed
-; meaning that yl+2 will always be y
-; and xl+2 will always be x
-.de actyl, 1 
-.de actxl, 1
-.de acty, 1
-.de actx, 1
-.de ACTSIZE, 0
 
 ; actor shadow oam
 ; oam memory layout is guaranteed!
@@ -100,9 +81,14 @@ global_delay: .adv 1
 
 game_flags: .adv 1
 
-; temporary storage for 
-; tile and flag settings
-; may be used by actor update
-; calls 
-chrs: .adv 4
-chrflags: .adv 4
+; 4 bytes of tmp storage 
+; that can be used by sub routines as needed 
+tmp: .adv 4
+
+; 4 function parameters 
+; that can be used when registers are not
+; sufficient to pass to a function
+p0: .adv 2
+p1: .adv 2
+p2: .adv 2
+p3: .adv 2

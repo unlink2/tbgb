@@ -1,6 +1,27 @@
 ; actors falgs 
 #define ACT_FACTIVE 0b00000001
 
+; actor memory layout
+.se 0
+.de actflags, 1
+.de acttype, 1
+.de actfn, 2
+; 2 bytes of user-specific memory
+; can be used by each actor as needed
+.de actusr, 2 
+; postions are x.xl and y.yl 
+; fixed point integers
+; this memory layout of yl, xl, y, x is
+; guarnateed
+; meaning that yl+2 will always be y
+; and xl+2 will always be x
+.de actyl, 1 
+.de actxl, 1
+.de acty, 1
+.de actx, 1
+.de ACTSIZE, 0
+
+
 ; actor types 
 .se 1
 
@@ -19,3 +40,9 @@
 .se 0
 .de TC_NEWGAME, 1
 .de TC_MAPED, 1
+
+; actor animation state enum 
+.se 0
+.de ACT_IDLE, 1
+.de ACT_MOVLEFT, 1
+.de ACT_MOVRIGHT, 1

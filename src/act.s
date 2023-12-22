@@ -229,6 +229,31 @@ soamsetto:
   pop bc
   ret
 
+; read a value from the chr table 
+; inputs:
+;   hl: the table
+;   a: offset (actor state)
+;  returns:
+;   a: the value 
+readchrtbl:
+  push de
+  ld d, 0
+  ld e, a
+  add hl, de
+  ld a, [hl]
+  pop de
+  ret
+
+; animation tables for player 
+player_chr_left:
+.db 2, 10, 8
+player_chr_right:
+.db 4, 8, 10
+player_chrflags_left:
+.db 0, OAM_FXFLIP, 0
+player_chrflags_right:
+.db 0, OAM_FXFLIP, 0
+
 ;
 ; update player function
 ; 
@@ -241,17 +266,9 @@ player_update:
   ; set hl to actx ptr
   ldhlm actx 
   
-  ; set default tiles and flags
-  ; for the idle animation
-  ld a, 2
-  ld [chrs], a
-
-  ld a, 4
-  ld [chrs+1], a
-
-  ld a, 0
-  ld [chrflags], a
-  ld [chrflags+1], a
+  ; set default actor mode
+  ld a, ACT_IDLE 
+  ld [tmp], a
   
   ; read inputs, move and modify 
   ; tiles based on movement 
@@ -262,17 +279,9 @@ player_update:
     ld a, [hl] 
     dec a
     ld [hl], a
-
-    ; set tiles 
-    ld a, 10
-    ld [chrs], a
-    ld a, 8
-    ld [chrs+1], a
-
-    ; set flags
-    ld a, OAM_FXFLIP
-    ld [chrflags], a
-    ld [chrflags+1], a
+  
+    ld a, ACT_MOVLEFT
+    ld [tmp], a
 @notleft:
   
   ld a, [inputs]
@@ -285,11 +294,8 @@ player_update:
     inc a
     ld [hl], a
 
-    ; set tiles 
-    ld a, 8
-    ld [chrs], a
-    ld a, 10
-    ld [chrs+1], a
+    ld a, ACT_MOVRIGHT
+    ld [tmp], a
 @notright:
  
   ;set hl to acty ptr
@@ -312,55 +318,105 @@ player_update:
     inc a
     ld [hl], a
 @notdown:
-  ; load to oam
 
-  ; left sprite
+  ; load to soam
   pop hl ; base pointer to act
+  
+  ld de, player_chr_left
+  ld bc, player_chrflags_left
+  ld a, 0
+  ; y 
+  ld [p0], a
+  ; x
+  ld [p1], a
+  ; actor state 
+  ld a, [tmp]
+  ld [p2], a
+  call actdraw 
+
+
+  ld de, player_chr_right
+  ld bc, player_chrflags_right
+  ; y 
+  ld a, 0
+  ld [p0], a
+  ; x
+  ld a, 8
+  ld [p1], a
+  call actdraw 
+
+  ret
+
+; draw actor into soam based on its tate and a table
+; inputs;
+;   hl: actor 
+;   de: chr table (actor state -> chr mapping)
+;   bc: attr table (actor state -> tile flags)
+;   p0: y offset
+;   p1: x offset 
+;   p2: actpr state
+; registers:
+;   all gp registers are unchanged
+;   p0-p4 are unchanged
+actdraw:
+  push hl
+  push de
+  push bc
+  push af
+  
+  push de
   ld de, acty
   add hl, de
+  pop de
+  
+  push bc ; store bc here again because we need it for attr
+
   ; load data in order: y, x, chr, flag
   ld a, [hl+] ; y
   ld b, a
+  ld a, [p0]
+  add a, b
+  ld b, a ; b now holds the correct coordinate  
+
   ld a, [hl+] ; x
   ld c, a
+  ld a, [p1]
+  add a, c
+  ld c, a ; c now holds the correct coordinate
   
-  ld a, [chrs] ; chr 
+  push de
+  pop hl ; hl = chr table
+  ld a, [p2] ; p2 = actor state
+  ld d, 0
+  ld e, a
+  add hl, de ; hl+p2 points to chr
+
+  ld a, [hl] ; chr
   ld d, a
   ld a, [global_anim_timer]
   add a, d
   ld d, a
   
-  ld a, [chrflags] ; flag
+  pop hl ; hl = attr table 
+  push de
+  ld a, [p2] ; p2 = actor state 
+  ld d, 0
   ld e, a
-  
-  ; will need them again in a second 
-  push bc
+  add hl, de ; hl+p2 points to attr 
+
+  pop de 
+  ld a, [hl] ; attr
+  ld e, a
 
   ; prefer obj 0
   ld a, 0
   call soamsetto
   
-  ; right sprite 
+  pop af
   pop bc
-  ; move x position
-  ld a, c
-  add a, 8
-  ld c, a
-  
-  ld a, [chrs+1] ; chr bottom
-  ld d, a 
-  ld a, [global_anim_timer]
-  add a, d
-  ld d, a
-
-  ld a, [chrflags+1] ; f;ags 
-  ld e, a 
-
-  ; prefer obj 0
-  ld a, 1
-  call soamsetto 
-
-  ret
+  pop de
+  pop hl
+  ret 
 
 ; create a title cursor 
 ; there should only ever 
