@@ -43,8 +43,13 @@
 
 ; actor animation state enum 
 .se 0
-.de ACT_IDLE, 1
+.de ACT_IDLE_LEFT, 1
+.de ACT_IDLE_RIGHT, 1
 .de ACT_MOVLEFT, 1
 .de ACT_MOVRIGHT, 1
 
 #define PLAYER_VEL_MAX 128
+
+; player specific flags 
+.se 1
+.de PLAYER_FIDLE_LEFT, 1

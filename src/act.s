@@ -244,22 +244,33 @@ readchrtbl:
   pop de
   ret
 
+; set actor flags 
+; inputs:
+;   hl: actor base ptr 
+;   a: flag value
+; registers: hl is unchanged 
+actsetflags:
+  push hl
+  ld [hl], a 
+  pop hl
+  ret 
+
 ; animation tables for player 
 player_chr_left:
-.db 2, 10, 8
+.db 2, 4, 10, 8
 player_chr_right:
-.db 4, 8, 10
+.db 4, 2, 8, 10
 player_chrflags_left:
-.db 0, OAM_FXFLIP, 0
+.db 0, OAM_FXFLIP, OAM_FXFLIP, 0
 player_chrflags_right:
-.db 0, OAM_FXFLIP, 0
+.db 0, OAM_FXFLIP, OAM_FXFLIP, 0
 
 ;
 ; update player function
 ; 
 player_update:
   ; move actor ptr to hl
-  push de 
+  push de
   pop hl
   push hl ; we need base hl again later 
   
@@ -267,7 +278,7 @@ player_update:
   ldhlm actxl 
   
   ; set default actor mode
-  ld a, ACT_IDLE 
+  ld a, ACT_IDLE_RIGHT 
   ld [tmp], a
   
   ; read inputs, move and modify 
