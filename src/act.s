@@ -275,11 +275,16 @@ player_update:
   push hl ; we need base hl again later  
   
   ; set default actor mode
-  ldhlm actusr 
-  ld a, [hl]
-  and a, PLAYER_FIDLE_LEFT
+  ldhlm actvelxl 
+  ; check previous sign to decide if facing left or right
+  ld a, [hl] 
+  and a, 0b10000000 
+  jp z, @nocarry
+  scf
+@nocarry:
+  ld a, ACT_IDLE_LEFT
+  adc a, 0
   ld [tmp], a
-  
 
   ; set hl to actx ptr
   ldhlm actxl 
@@ -291,8 +296,11 @@ player_update:
   jp nz, @xmovement
   
   ldhlm actvelxl
-  ld a, 0
-  ld [hl], 0
+  ld a, [hl]
+  ; clear all but sign because
+  ; we use it to determine the facing direction
+  and a, 0b10000000
+  ld [hl], a
   jp @xmovement_done
 
 @xmovement:
@@ -302,12 +310,6 @@ player_update:
   jr z, @notleft REL
   ; left input hit
     ld a, 0b10000000 | PLAYER_VEL_MAX
-    ld [hl], a
-
-    ; set flag for last direction 
-    ldhlm actusr
-    ld a, [hl]
-    or a, PLAYER_FIDLE_LEFT 
     ld [hl], a
   
     ld a, ACT_MOVLEFT
@@ -324,12 +326,6 @@ player_update:
 
     ; position
     ld a, PLAYER_VEL_MAX
-    ld [hl], a
-  
-    ; reset flag for direction
-    ldhlm actusr
-    ld a, [hl]
-    and a, ~PLAYER_FIDLE_LEFT & 0xFF
     ld [hl], a
 
     ld a, ACT_MOVRIGHT

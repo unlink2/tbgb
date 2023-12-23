@@ -54,9 +54,3 @@
 
 #define PLAYER_VEL_MAX 127
 
-; player specific flags 
-.se 1
-.de PLAYER_FIDLE_LEFT, 1
-
-; player struct
-; actusr: player specific flags
