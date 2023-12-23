@@ -272,15 +272,18 @@ player_update:
   ; move actor ptr to hl
   push de
   pop hl
-  push hl ; we need base hl again later 
-  
-  ; set hl to actx ptr
-  ldhlm actxl 
+  push hl ; we need base hl again later  
   
   ; set default actor mode
-  ld a, ACT_IDLE_RIGHT 
+  ldhlm actusr 
+  ld a, [hl]
+  and a, PLAYER_FIDLE_LEFT
   ld [tmp], a
   
+
+  ; set hl to actx ptr
+  ldhlm actxl 
+
   ; read inputs, move and modify 
   ; tiles based on movement 
   ld a, [inputs]
@@ -291,20 +294,27 @@ player_update:
     sub a, PLAYER_VEL_MAX
     ld [hl], a
     jp nc, @notfullmove_left
-    
-      inc hl
-      inc hl
+      
+      ; apply full move
+      ldhlm actx
       ld a, [hl]
       dec a
       ld [hl], a
-      dec hl
-      dec hl
+
+      ; set flag for last direction 
+      ldhlm actusr
+      ld a, [hl]
+      or a, PLAYER_FIDLE_LEFT 
+      ld [hl], a
 @notfullmove_left:
   
     ld a, ACT_MOVLEFT
     ld [tmp], a
 @notleft:
-  
+   
+  ; right input
+  ldhlm actxl
+
   ld a, [inputs]
   and a, BTNRIGHT
   jr z, @notright REL
@@ -316,20 +326,24 @@ player_update:
     ld [hl], a
     jp nc, @notfullmove_right 
       
-      inc hl
-      inc hl
+      ; apply full move
+      ldhlm actx
       ld a, [hl]
       inc a
       ld [hl], a
-      dec hl
-      dec hl
-
+    
+      ; reset flag for direction
+      ldhlm actusr
+      ld a, [hl]
+      and a, ~PLAYER_FIDLE_LEFT & 0xFF
+      ld [hl], a
 @notfullmove_right:
 
     ld a, ACT_MOVRIGHT
     ld [tmp], a
 @notright:
  
+  ; up inputs
   ;set hl to acty ptr
   ldhlm acty
 
@@ -342,6 +356,8 @@ player_update:
     ld [hl], a
 @notup:
   
+  ; down inputs
+  ldhlm acty
   ld a, [inputs]
   and a, BTNDOWN 
   jr z, @notdown REL
