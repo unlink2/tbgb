@@ -8,7 +8,11 @@
 .de actfn, 2
 ; 2 bytes of user-specific memory
 ; can be used by each actor as needed
-.de actusr, 2 
+.de actusr, 2
+; actor velocity
+; signed integer 
+.de actvelxl, 1
+.de actvelyl, 1
 ; postions are x.xl and y.yl 
 ; fixed point integers
 ; this memory layout of yl, xl, y, x is
@@ -48,7 +52,7 @@
 .de ACT_MOVLEFT, 1
 .de ACT_MOVRIGHT, 1
 
-#define PLAYER_VEL_MAX 128
+#define PLAYER_VEL_MAX 127
 
 ; player specific flags 
 .se 1

@@ -287,33 +287,35 @@ player_update:
   ; read inputs, move and modify 
   ; tiles based on movement 
   ld a, [inputs]
+  and a, BTNLEFT | BTNRIGHT
+  jp nz, @xmovement
+  
+  ldhlm actvelxl
+  ld a, 0
+  ld [hl], 0
+  jp @xmovement_done
+
+@xmovement:
+  ldhlm actvelxl
+  ld a, [inputs]
   and a, BTNLEFT 
   jr z, @notleft REL
   ; left input hit
-    ld a, [hl] 
-    sub a, PLAYER_VEL_MAX
+    ld a, 0b10000000 | PLAYER_VEL_MAX
     ld [hl], a
-    jp nc, @notfullmove_left
-      
-      ; apply full move
-      ldhlm actx
-      ld a, [hl]
-      dec a
-      ld [hl], a
 
-      ; set flag for last direction 
-      ldhlm actusr
-      ld a, [hl]
-      or a, PLAYER_FIDLE_LEFT 
-      ld [hl], a
-@notfullmove_left:
+    ; set flag for last direction 
+    ldhlm actusr
+    ld a, [hl]
+    or a, PLAYER_FIDLE_LEFT 
+    ld [hl], a
   
     ld a, ACT_MOVLEFT
     ld [tmp], a
 @notleft:
    
   ; right input
-  ldhlm actxl
+  ldhlm actvelxl
 
   ld a, [inputs]
   and a, BTNRIGHT
@@ -321,55 +323,26 @@ player_update:
   ; right input hit
 
     ; position
-    ld a, [hl]
-    add a, PLAYER_VEL_MAX 
+    ld a, PLAYER_VEL_MAX
     ld [hl], a
-    jp nc, @notfullmove_right 
-      
-      ; apply full move
-      ldhlm actx
-      ld a, [hl]
-      inc a
-      ld [hl], a
-    
-      ; reset flag for direction
-      ldhlm actusr
-      ld a, [hl]
-      and a, ~PLAYER_FIDLE_LEFT & 0xFF
-      ld [hl], a
-@notfullmove_right:
+  
+    ; reset flag for direction
+    ldhlm actusr
+    ld a, [hl]
+    and a, ~PLAYER_FIDLE_LEFT & 0xFF
+    ld [hl], a
 
     ld a, ACT_MOVRIGHT
     ld [tmp], a
 @notright:
- 
-  ; up inputs
-  ;set hl to acty ptr
-  ldhlm acty
 
-  ld a, [inputs]
-  and a, BTNUP
-  jr z, @notup REL
-  ; up input hit 
-    ld a, [hl]
-    dec a
-    ld [hl], a
-@notup:
-  
-  ; down inputs
-  ldhlm acty
-  ld a, [inputs]
-  and a, BTNDOWN 
-  jr z, @notdown REL
-  ; down input hit 
-    ld a, [hl]
-    inc a
-    ld [hl], a
-@notdown:
+@xmovement_done:
+
+  pop hl ; base pointer to act
+  call actgravity 
+  call actapplyvel
 
   ; load to soam
-  pop hl ; base pointer to act
-  
   ld de, player_chr_left
   ld bc, player_chrflags_left
   ld a, 0
@@ -463,6 +436,74 @@ actdraw:
   pop af
   pop bc
   pop de
+  pop hl
+  ret 
+
+; apply gravity to the actor's y velocity 
+; inputs:
+;   hl: the actor 
+; registers: hl is unchanged 
+actgravity:
+  ret
+
+; applyes velocity on the x and y axis
+; inputs:
+;   hl: the actor 
+; registers: 
+;   hl is unchanged
+;   de is modified  
+;   bc is modified 
+actapplyvel:
+  push hl
+
+  ; x direction 
+  
+  ; velocity x 
+  ldhlm actvelxl 
+  ld a, [hl]
+  and a, 0b01111111
+  ld b, a
+  ld a, [hl]
+  
+  cp a, 0
+  jp z, @xdone
+  and a, 0b10000000
+  jp z, @actapplyvel_xright 
+
+  ; velocity is < 0
+  ldhlm actxl
+  ld a, [hl] 
+  sub a, b 
+  ld [hl], a
+  jp nc, @notfullmove_left
+    
+    ; apply full move
+    ldhlm actx
+    ld a, [hl]
+    dec a
+    ld [hl], a
+@notfullmove_left:
+
+  jp @xdone
+  
+  ; velocity is > 0 
+@actapplyvel_xright:
+  ; position
+  ldhlm actxl
+  ld a, [hl]
+  add a, b
+  ld [hl], a
+  jp nc, @notfullmove_right 
+      
+    ; apply full move
+    ldhlm actx
+    ld a, [hl]
+    inc a
+    ld [hl], a
+    
+@notfullmove_right:
+
+@xdone:
   pop hl
   ret 
 
