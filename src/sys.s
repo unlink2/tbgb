@@ -97,7 +97,15 @@ pollp1:
   ld a, d
 
   ret 
-  
+
+; TODO
+; generates a prng based on the 
+; previous value (seed) by using a simple xor shift
+; returns:
+;   a: the next random value 
+prng:
+  ld a, 0
+  ret
 
 ; actor update functions:
 ;   all actor update functions expect the actor ptr to be located in 
