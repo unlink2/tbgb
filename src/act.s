@@ -673,3 +673,7 @@ title_cursor_update:
   ret
 
 #undefine TITLE_CURSOR_DELAY
+
+; look up tables position -> tile
+actxtotile:
+actytotile:
