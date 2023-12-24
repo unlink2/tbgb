@@ -513,21 +513,13 @@ actapplyvel_axis:
 actapplyvel:
   push hl
 
-  ; x direction 
-  
-  ; velocity x 
   ldhlm actvelxl 
   call actapplyvel_axis 
   
   ldhlm actvelyl 
   call actapplyvel_axis
-  
-  ldhlm actvelyl 
-  
 
-
-@ydone:
-  pop hl
+pop hl
   ret 
 
 ; create a title cursor 
