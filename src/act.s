@@ -442,6 +442,13 @@ actdraw:
 ;   hl: the actor 
 ; registers: hl is unchanged 
 actgravity:
+  push hl
+  ldhlm actvelyl 
+
+  ;ld a, 127
+  ;ld [hl], a
+  
+  pop hl
   ret
 
 ; apply velocity to an axis
