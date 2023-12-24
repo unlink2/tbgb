@@ -62,4 +62,5 @@
 .de ACT_MOVRIGHT, 1
 
 #define PLAYER_VEL_MAX 127
-
+#define GRAVITY_MAX 127 
+#define GRAVITY_ACCEL 16

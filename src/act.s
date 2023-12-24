@@ -150,12 +150,31 @@ soamalloc:
   ld a, d ; return index 
   ret
 
+; default init for all actors
+; inputs:
+;   hl: act ptr
+act_init:
+  push hl
+  ; zero out the some common things
+  ldhlm actvelxl 
+  ld a, 0
+  ld [hl], 0
+
+  ldhlm actvelyl 
+  ld a, 0
+  ld [hl], 0
+  
+  pop hl
+  ret
+
 ; init player with the first free 
 ; actor found  
 player_init:
   call act_alloc
   hl_null_panic
   
+  call act_init
+
   ; save pointer to player 
   ; for later use 
   ldhlto actpl
@@ -191,6 +210,7 @@ player_init:
   ldhlm actx 
   ld [hl], a ; y pos
   
+
   pop hl
   ret
 
@@ -445,8 +465,13 @@ actgravity:
   push hl
   ldhlm actvelyl 
 
-  ;ld a, 127
-  ;ld [hl], a
+  ld a, [hl]
+  add a, GRAVITY_ACCEL 
+  cp a, GRAVITY_MAX 
+  jr c, @ok REL
+  ld a, GRAVITY_MAX
+@ok:
+  ld [hl], a
   
   pop hl
   ret
