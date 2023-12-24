@@ -6,6 +6,15 @@
 .de actflags, 1
 .de acttype, 1
 .de actfn, 2
+
+; collision shape of the actor 
+; x/y + actcolx/y = top left
+; x/y + actcolx/y + actcolw/h = bottom right
+.de actcolx, 1
+.de actcoly, 1
+.de actcolw, 1
+.de actcolh, 1
+
 ; 2 bytes of user-specific memory
 ; can be used by each actor as needed
 .de actusr, 2
