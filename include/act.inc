@@ -14,8 +14,8 @@
 .de actvelyl, 1
 ; postions are x.xl and y.yl 
 ; fixed point integers
-; this memory layout of yl, xl, y, x is
-; guarnateed
+; this memory layout of yl, xl, y, x, velyl and velxl is
+; guarnateed 
 ; meaning that yl+1 will always be y
 ; and xl+1 will always be x
 .de actyl, 1 

@@ -444,6 +444,58 @@ actdraw:
 actgravity:
   ret
 
+; apply velocity to an axis
+; inputs:
+;   hl: points to velocity
+; registers:
+;   hl: changed
+;   a: changed
+actapplyvel_axis:
+  ld a, [hl]
+  and a, 0b01111111
+  ld b, a
+  ld a, [hl]
+  
+  cp a, 0
+  jp z, @movedone
+  and a, 0b10000000
+  jp z, @actapplyvel_plus 
+
+  ; velocity is < 0
+  inc hl ; actxl 
+  ld a, [hl] 
+  sub a, b 
+  ld [hl], a
+  jp nc, @notfullmove_sub
+    
+    ; apply full move
+    inc hl ; actx
+    ld a, [hl]
+    dec a
+    ld [hl], a
+@notfullmove_sub:
+
+  jp @movedone
+  
+  ; velocity is > 0 
+@actapplyvel_plus:
+  ; position
+  inc hl ; actxl
+  ld a, [hl]
+  add a, b
+  ld [hl], a
+  jp nc, @notfullmove_add 
+      
+    ; apply full move
+    inc hl ; actx
+    ld a, [hl]
+    inc a
+    ld [hl], a
+    
+@notfullmove_add:
+@movedone:
+  ret
+
 ; applyes velocity on the x and y axis
 ; inputs:
 ;   hl: the actor 
@@ -458,50 +510,10 @@ actapplyvel:
   
   ; velocity x 
   ldhlm actvelxl 
-  ld a, [hl]
-  and a, 0b01111111
-  ld b, a
-  ld a, [hl]
+  call actapplyvel_axis 
   
-  cp a, 0
-  jp z, @xdone
-  and a, 0b10000000
-  jp z, @actapplyvel_xright 
-
-  ; velocity is < 0
-  ldhlm actxl
-  ld a, [hl] 
-  sub a, b 
-  ld [hl], a
-  jp nc, @notfullmove_left
-    
-    ; apply full move
-    ldhlm actx
-    ld a, [hl]
-    dec a
-    ld [hl], a
-@notfullmove_left:
-
-  jp @xdone
-  
-  ; velocity is > 0 
-@actapplyvel_xright:
-  ; position
-  ldhlm actxl
-  ld a, [hl]
-  add a, b
-  ld [hl], a
-  jp nc, @notfullmove_right 
-      
-    ; apply full move
-    ldhlm actx
-    ld a, [hl]
-    inc a
-    ld [hl], a
-    
-@notfullmove_right:
-
-@xdone:
+  ldhlm actvelyl 
+  call actapplyvel_axis
   
   ldhlm actvelyl 
   
