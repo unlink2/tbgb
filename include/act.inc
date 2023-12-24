@@ -11,17 +11,17 @@
 .de actusr, 2
 ; actor velocity
 ; signed integer 
-.de actvelxl, 1
 .de actvelyl, 1
 ; postions are x.xl and y.yl 
 ; fixed point integers
 ; this memory layout of yl, xl, y, x is
 ; guarnateed
-; meaning that yl+2 will always be y
-; and xl+2 will always be x
+; meaning that yl+1 will always be y
+; and xl+1 will always be x
 .de actyl, 1 
-.de actxl, 1
 .de acty, 1
+.de actvelxl, 1
+.de actxl, 1
 .de actx, 1
 .de ACTSIZE, 0
 

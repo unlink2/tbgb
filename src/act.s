@@ -395,7 +395,9 @@ actdraw:
   add a, b
   ld b, a ; b now holds the correct coordinate  
 
-  ld a, [hl+] ; x
+  inc hl
+  inc hl
+  ld a, [hl] ; x
   ld c, a
   ld a, [p1]
   add a, c
@@ -500,6 +502,12 @@ actapplyvel:
 @notfullmove_right:
 
 @xdone:
+  
+  ldhlm actvelyl 
+  
+
+
+@ydone:
   pop hl
   ret 
 
