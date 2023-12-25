@@ -674,6 +674,6 @@ title_cursor_update:
 
 #undefine TITLE_CURSOR_DELAY
 
-; look up tables position -> tile
-actxtotile:
-actytotile:
+; look up tables pixel position -> tile position 
+actpostotile:
+.rep i, 256, 1, .db i / 8
