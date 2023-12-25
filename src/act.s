@@ -674,6 +674,20 @@ title_cursor_update:
 
 #undefine TITLE_CURSOR_DELAY
 
+; coordinate lookup tables 
+; use like this:
+; - convert x/y coordinates to tile 
+; - convert y tile coordinate to vram offset using lo and hi 
+; - add x coordinate to the result -> this is the vram location of 
+;   the current tile
+; - add the resulting value to the base address of the 
+;   tile data to obtain the tile at the specified location
+
 ; look up tables pixel position -> tile position 
 actpostotile:
 .rep i, 256, 1, .db i / 8
+; look up table tile y coordinate -> row
+acttiletovraml: ; low nibble
+.rep i, 32, 1, .db (i * 32) & 0xFF
+acttiletovramh: ; hi nibble
+.rep i, 32, 1, .db ((i * 32) >> 8) & 0xFF
