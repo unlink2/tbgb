@@ -694,13 +694,13 @@ actpostotilepos:
   ld hl, acttiletovraml 
   add hl, de
   ld a, [hl]
-  ld b, a ; store in b for now 
+  ld c, a ; store in c for now 
 
   ; load high nibble of address into a
   ld hl, acttiletovramh 
   add hl, de
   ld a, [hl]
-  ld c, a ; store in c for now
+  ld b, a ; store in b for now
 
   ; bc = y offset 
   
@@ -716,6 +716,8 @@ actpostotilepos:
   ld h, 0
   ld l, a ; hl = x offset 
 
+  push bc 
+  pop de
   add hl, de
   
   pop de
