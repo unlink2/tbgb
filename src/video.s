@@ -73,6 +73,20 @@ draw_mode_play:
   ld hl, SCRN0+3
   call dbghex
   
+  ; draw tile offset for player 
+  ldhlfrom actpl
+  call actpostotilepos
+  push hl ; need again in a bit
+  ld a, h
+  ld hl, SCRN0+6 
+  call dbghex
+
+  pop hl
+  ld a, l
+  ld hl, SCRN0+8
+  call dbghex
+
+
   ret 
 
 draw_mode_title:

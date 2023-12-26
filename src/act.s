@@ -672,6 +672,55 @@ title_cursor_update:
   call soamsetto
   ret
 
+; converts actor position to tile position 
+; inputs:
+;   hl: actor ptr 
+; returns:
+;   hl: ram offset
+actpostotilepos:
+  push hl
+  
+  ; first load y coordinate 
+  ldhlm acty 
+  ld a, [hl]
+  ld d, 0
+  ld e, a ; de = offset for y
+  ld hl, actpostotile 
+  add hl, de
+  ld a, [hl]
+  ld e, a ; de = offset for y to vram 
+  
+  ; load low nibble of address into a 
+  ld hl, acttiletovraml 
+  add hl, de
+  ld a, [hl]
+  ld b, a ; store in b for now 
+
+  ; load high nibble of address into a
+  ld hl, acttiletovramh 
+  add hl, de
+  ld a, [hl]
+  ld c, a ; store in c for now
+
+  ; bc = y offset 
+  
+  ; then load x coordinate 
+  ldhlm actx 
+  ld a, [hl]
+  ld d, 0
+  ld e, a ; de = offset for x
+  ld hl, actpostotile
+  add hl, de 
+  ld a, [hl] ; a is now the x offset 
+
+  ld h, 0
+  ld l, a ; hl = x offset 
+
+  add hl, de
+  
+  pop de
+  ret
+
 #undefine TITLE_CURSOR_DELAY
 
 ; coordinate lookup tables 
