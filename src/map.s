@@ -6,7 +6,7 @@ mapload:
   ; TODO: in the futue maps may be compressed
   ; for now we just memcpy 
   ld hl, mapbuf 
-  ld bc, MAP_W * MAP_H
+  ld bc, MAP_SIZE 
   call memcpy
 
   ret
@@ -45,4 +45,5 @@ mapfulldraw:
 
 ; this is a demo map 18x18 tiles 
 testmap:
+.rep i, MAP_SIZE, 1, .db 2
 

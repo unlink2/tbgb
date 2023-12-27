@@ -4,4 +4,4 @@
 #define MAP_W 20
 #define MAP_H 16
 
-
+#define MAP_SIZE MAP_W * MAP_H
