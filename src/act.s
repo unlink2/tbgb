@@ -692,16 +692,16 @@ actpostotilepos:
   ld hl, actpostotile 
   add hl, de
   ld a, [hl]
-  ld e, a ; de = offset for y to vram 
+  ld e, a ; de = offset for y to map data 
   
   ; load low nibble of address into a 
-  ld hl, acttiletovraml 
+  ld hl, acttiletomapl 
   add hl, de
   ld a, [hl]
   ld c, a ; store in c for now 
 
   ; load high nibble of address into a
-  ld hl, acttiletovramh 
+  ld hl, acttiletomaph 
   add hl, de
   ld a, [hl]
   ld b, a ; store in b for now
@@ -735,8 +735,8 @@ actpostotilepos:
 ; coordinate lookup tables 
 ; use like this:
 ; - convert x/y coordinates to tile 
-; - convert y tile coordinate to vram offset using lo and hi 
-; - add x coordinate to the result -> this is the vram location of 
+; - convert y tile coordinate to map data offset using lo and hi 
+; - add x coordinate to the result -> this is the map data location of 
 ;   the current tile
 ; - add the resulting value to the base address of the 
 ;   tile data to obtain the tile at the specified location
@@ -745,7 +745,7 @@ actpostotilepos:
 actpostotile:
 .rep i, 256, 1, .db i / 8
 ; look up table tile y coordinate -> row
-acttiletovraml: ; low nibble
-.rep i, 32, 1, .db (i * 32) 
-acttiletovramh: ; hi nibble
-.rep i, 32, 1, .db ((i * 32) >> 8)
+acttiletomapl: ; low nibble
+.rep i, 20, 1, .db (i * 20) 
+acttiletomaph: ; hi nibble
+.rep i, 20, 1, .db ((i * 20) >> 8)
