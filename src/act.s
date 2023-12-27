@@ -677,12 +677,16 @@ title_cursor_update:
 ;   hl: actor ptr 
 ; returns:
 ;   hl: ram offset
+;   a: 0 on success, > 0 on error
 actpostotilepos:
   push hl
   
+  ; TODO: bail if sprite is clearly out of bounds
+
   ; first load y coordinate 
   ldhlm acty 
   ld a, [hl]
+  sub a, 16 ; - 16 for offscreen values
   ld d, 0
   ld e, a ; de = offset for y
   ld hl, actpostotile 
@@ -720,6 +724,9 @@ actpostotilepos:
   pop de
   add hl, de
   
+  ; success
+  ld a, 0 
+
   pop de
   ret
 
@@ -739,6 +746,6 @@ actpostotile:
 .rep i, 256, 1, .db i / 8
 ; look up table tile y coordinate -> row
 acttiletovraml: ; low nibble
-.rep i, 32, 1, .db (i * 32) & 0xFF
+.rep i, 32, 1, .db (i * 32) 
 acttiletovramh: ; hi nibble
-.rep i, 32, 1, .db ((i * 32) >> 8) & 0xFF
+.rep i, 32, 1, .db ((i * 32) >> 8)
