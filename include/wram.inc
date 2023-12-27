@@ -93,3 +93,5 @@ p0: .adv 2
 p1: .adv 2
 p2: .adv 2
 p3: .adv 2
+
+mapbuf: .adv MAP_W * MAP_H 

@@ -59,4 +59,11 @@ init_mode_play:
   ld a, MODE_PLAY 
   ld [game_mode], a
 
+  ; load a map
+  ld de, testmap
+  call mapload 
+
+  ; draw map 
+  call mapfulldraw
+
   ret

@@ -1,6 +1,7 @@
 #include "hw.inc"
 #include "macros.inc"
 #include "act.inc"
+#include "map.inc"
 #include "wram.inc"
 #include "sram.inc"
 #include "oam.inc"
@@ -62,6 +63,7 @@ main:
 
 #include "act.s"
 #include "mode.s"
+#include "map.s"
 
 #include "strs.inc"
 #include "tiles.inc"
