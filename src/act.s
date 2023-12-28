@@ -674,18 +674,21 @@ title_cursor_update:
 
 ; converts actor position to tile position 
 ; inputs:
-;   hl: actor ptr 
+;   bc: y/x coordinates
 ; returns:
 ;   hl: ram offset
 ;   a: 0 on success, > 0 on error
 actpostotilepos:
-  push hl
-  
+  ld a, b
+  ld [tmp], a ; tmp = y coordinate 
+
+  ld a, c
+  ld [tmp+1], a ; tmp = x coordinate 
+
   ; TODO: bail if sprite is clearly out of bounds
 
   ; first load y coordinate 
-  ldhlm acty 
-  ld a, [hl]
+  ld a, [tmp]
   sub a, 16 ; - 16 for offscreen values
   ld d, 0
   ld e, a ; de = offset for y
@@ -709,8 +712,7 @@ actpostotilepos:
   ; bc = y offset 
   
   ; then load x coordinate 
-  ldhlm actx 
-  ld a, [hl]
+  ld a, [tmp+1]
   ld d, 0
   ld e, a ; de = offset for x
   ld hl, actpostotile
@@ -727,7 +729,6 @@ actpostotilepos:
   ; success
   ld a, 0 
 
-  pop de
   ret
 
 #undefine TITLE_CURSOR_DELAY

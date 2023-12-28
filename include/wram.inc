@@ -83,6 +83,8 @@ game_flags: .adv 1
 
 ; 4 bytes of tmp storage 
 ; that can be used by sub routines as needed 
+; tmp should *never* be used in interrupts 
+; to avoid data corruption
 tmp: .adv 4
 
 

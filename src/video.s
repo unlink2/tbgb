@@ -75,7 +75,16 @@ draw_mode_play:
   
   ; draw tile offset for player 
   ldhlfrom actpl
+  push hl
+  ldhlm acty 
+  ld a, [hl]
+  ld b, a
+  ldhlm actx 
+  ld a, [hl]
+  ld c, a
+  pop hl
   call actpostotilepos
+
   push hl ; need again in a bit
   ld a, h
   ld hl, SCRN0+6 
