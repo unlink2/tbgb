@@ -442,7 +442,25 @@ tiles0:
 .db 0b00000000
 .db 0b00000000
 
-emptytile
+; we will not need any more text probably...
 
+; empty tile 
+emptytile 
+
+; bottom floor
+.chr 33333333
+.chr 31332333
+.chr 33333333
+.chr 33333233
+.chr 32333333
+.chr 33333333
+.chr 33333333
+.chr 31333313
+.chr 33331333
 
 tiles0_end:
+
+; tile map 
+.se 0x10
+.de EMPTY_TILE, 1
+.de FLOOR1, 1

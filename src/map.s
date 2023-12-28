@@ -45,5 +45,6 @@ mapfulldraw:
 
 ; this is a demo map 18x18 tiles 
 testmap:
-.rep i, MAP_SIZE, 1, .db 2
+.rep i, MAP_SIZE-MAP_W, 1, .db EMPTY_TILE
+.rep i, MAP_W, 1, .db FLOOR1
 
