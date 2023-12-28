@@ -447,6 +447,17 @@ tiles0:
 ; empty tile 
 emptytile 
 
+; bg 1
+.chr 00000000 
+.chr 00100000 
+.chr 00000100 
+.chr 00010000 
+.chr 00000000 
+.chr 00100000 
+.chr 00000100 
+.chr 10000000 
+.chr 00000000 
+
 ; bottom floor
 .chr 33333333
 .chr 31332333
@@ -463,6 +474,7 @@ tiles0_end:
 ; tile map 
 .se 0x10
 .de EMPTY_TILE, 1
+.de BG1, 1
 .de FLOOR1, 1
 
 ; tile map flags
