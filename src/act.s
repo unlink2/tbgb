@@ -463,8 +463,23 @@ actdraw:
 ; registers: hl is unchanged 
 actgravity:
   push hl
-  ldhlm actvelyl 
 
+  ; check bottom collision
+  ldhlm acty 
+  ld a, [hl]
+  ld b, a
+  ldhlm actx 
+  ld a, [hl]
+  ld c, a
+  call mapflagsat
+  ldhlm actvelyl 
+  and a, TILE_COLLIDER 
+  jr z, @nocollider REL
+  
+  ld a, 0
+  jr @ok REL
+
+@nocollider:
   ld a, [hl]
   add a, GRAVITY_ACCEL 
   cp a, GRAVITY_MAX 
@@ -679,16 +694,17 @@ title_cursor_update:
 ;   hl: ram offset
 ;   a: 0 on success, > 0 on error
 actpostotilepos:
-  ld a, b
-  ld [tmp], a ; tmp = y coordinate 
-
   ld a, c
-  ld [tmp+1], a ; tmp = x coordinate 
+  push af ; x coordinate 
+
+  ld a, b
+  push af ; y coordinate 
+
 
   ; TODO: bail if sprite is clearly out of bounds
 
   ; first load y coordinate 
-  ld a, [tmp]
+  pop af
   sub a, 16 ; - 16 for offscreen values
   ld d, 0
   ld e, a ; de = offset for y
@@ -712,7 +728,7 @@ actpostotilepos:
   ; bc = y offset 
   
   ; then load x coordinate 
-  ld a, [tmp+1]
+  pop af
   ld d, 0
   ld e, a ; de = offset for x
   ld hl, actpostotile
@@ -740,7 +756,9 @@ actpostotilepos:
 ;   a: tile flags
 ; registers:
 ;   bc is preserved 
+;   hl is preserved 
 mapflagsat:
+  push hl
   push bc 
   
   call actpostotilepos 
@@ -756,6 +774,7 @@ mapflagsat:
   add hl, de
   ld a, [hl] ; a = tile flag 
 
+  pop hl
   pop bc 
   ret
 

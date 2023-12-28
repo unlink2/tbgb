@@ -87,7 +87,6 @@ game_flags: .adv 1
 ; to avoid data corruption
 tmp: .adv 4
 
-
 ; 4 function parameters 
 ; that can be used when registers are not
 ; sufficient to pass to a function
