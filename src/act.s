@@ -733,13 +733,30 @@ actpostotilepos:
 
 #undefine TITLE_CURSOR_DELAY
 
-; checks collision between a coordinate 
-; and the map
+; get map flags for position
 ; inputs:
 ;   b/c: y/x coordinates 
 ; returns:
-;   a: collision direction or 0 if no collision was detected
-actmapcollission:
+;   a: tile flags
+; registers:
+;   bc is preserved 
+mapflagsat:
+  push bc 
+  
+  call actpostotilepos 
+  ld de, mapbuf
+  add hl, de
+
+  ; a = tile index 
+  ld a, [hl]
+
+  ld h, 0
+  ld l, a ; hl = tile flag offset 
+  ld de, tileflags ; de = tile flags lut
+  add hl, de
+  ld a, [hl] ; a = tile flag 
+
+  pop bc 
   ret
 
 ; coordinate lookup tables 

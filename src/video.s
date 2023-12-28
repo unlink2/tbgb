@@ -73,7 +73,7 @@ draw_mode_play:
   ld hl, SCRN0+3
   call dbghex
   
-  ; draw tile offset for player 
+  ; draw tile flags at player position  
   ldhlfrom actpl
   push hl
   ldhlm acty 
@@ -83,17 +83,11 @@ draw_mode_play:
   ld a, [hl]
   ld c, a
   pop hl
-  call actpostotilepos
+  call mapflagsat
 
-  push hl ; need again in a bit
-  ld a, h
   ld hl, SCRN0+6 
   call dbghex
 
-  pop hl
-  ld a, l
-  ld hl, SCRN0+8
-  call dbghex
 
 
   ret 

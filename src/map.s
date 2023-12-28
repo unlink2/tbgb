@@ -46,12 +46,15 @@ mapfulldraw:
 ; these flags configure a tile 
 ; for collision, damage and other such things
 tileflags:
-; 0-9 a-f
-.rep i, 0xF, 0
+; 0-9 a-f = no flags
+.rep i, 16, 1, .db 0
 ; empty tile 
+.db 0
+; BG1
 .db 0
 ; FLOOR1
 .db TILE_COLLIDER
+.db 0x69
 
 ; this is a demo map 18x18 tiles 
 testmap:
