@@ -464,3 +464,8 @@ tiles0_end:
 .se 0x10
 .de EMPTY_TILE, 1
 .de FLOOR1, 1
+
+; tile map flags
+.se 1
+.de TILE_COLLIDER, 1
+.de TILE_KILL, 2

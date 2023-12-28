@@ -732,6 +732,15 @@ actpostotilepos:
 
 #undefine TITLE_CURSOR_DELAY
 
+; checks collision between a coordinate 
+; and the map
+; inputs:
+;   b/c: y/x coordinates 
+; returns:
+;   a: collision direction or 0 if no collision was detected
+actmapcollission:
+  ret
+
 ; coordinate lookup tables 
 ; use like this:
 ; - convert x/y coordinates to tile 

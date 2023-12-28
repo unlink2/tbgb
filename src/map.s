@@ -43,6 +43,16 @@ mapfulldraw:
 
   ret 
 
+; these flags configure a tile 
+; for collision, damage and other such things
+tileflags:
+; 0-9 a-f
+.rep i, 0xF, 0
+; empty tile 
+.db 0
+; FLOOR1
+.db TILE_COLLIDER
+
 ; this is a demo map 18x18 tiles 
 testmap:
 .rep i, MAP_SIZE-MAP_W, 1, .db EMPTY_TILE
