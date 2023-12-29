@@ -705,7 +705,9 @@ actpostotilepos:
 
   ; first load y coordinate 
   pop af
-  sub a, 16 ; - 16 for offscreen values
+
+  ; - 16 for offscreen values and another -16 to make the sprite appear in the right spot
+  sub a, 32 
   ld d, 0
   ld e, a ; de = offset for y
   ld hl, actpostotile 

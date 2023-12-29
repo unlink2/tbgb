@@ -7,7 +7,8 @@
 .de acttype, 1
 .de actfn, 2
 
-; collision shape of the actor 
+; collision shape of the actor
+; relative to actor's position
 ; x/y + actcolx/y = top left
 ; x/y + actcolx/y + actcolw/h = bottom right
 .de actcolx, 1
