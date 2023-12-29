@@ -213,14 +213,14 @@ player_init:
   ; set up collision rectangle 
 
   ; col x/y 0,0
-  ld a, 0
+  ld a, 2
   ldhlm actcolx 
   ld [hl], a
   ldhlm actcoly 
   ld [hl], a
   
   ; col w/h 15,7
-  ld a, 15
+  ld a, 10
   ldhlm actcolw 
   ld [hl], a
 
@@ -513,6 +513,30 @@ actgravity:
   
   ; make the same call again, but with the far end of the collision box 
   ; x + col x + col width 
+  ldhlm acty 
+  ld a, [hl]
+  ld b, a
+
+  ; y + col y 
+  ldhlm actcoly 
+  ld a, [hl]
+  add a, b 
+
+  ; y + col h
+  ldhlm actcolh 
+  ld a, [hl]
+  add a, b
+  ld b, a ; b = y + coly + colh
+
+  ; x + colx 
+  ldhlm actx 
+  ld a, [hl]
+  ld c, a
+  
+  ldhlm actcolx 
+  ld a, [hl]
+  add a, c
+  ld c, a
   ldhlm actcolw 
   ld a, [hl]
   add a, c
@@ -783,6 +807,7 @@ actpostotilepos:
   
   ; then load x coordinate 
   pop af
+  sub a, 8 ; -8 to adjust for offscreen values
   ld d, 0
   ld e, a ; de = offset for x
   ld hl, actpostotile
