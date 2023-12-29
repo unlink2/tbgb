@@ -210,6 +210,23 @@ player_init:
   ldhlm actx 
   ld [hl], a ; y pos
   
+  ; set up collision rectangle 
+
+  ; col x/y 0,0
+  ld a, 0
+  ldhlm actcolx 
+  ld [hl], a
+  ldhlm actcoly 
+  ld [hl], a
+  
+  ; col w/h 15,7
+  ld a, 15
+  ldhlm actcolw 
+  ld [hl], a
+
+  ld a, 7
+  ldhlm actcolh 
+  ld [hl], a
 
   pop hl
   ret
@@ -468,18 +485,45 @@ actgravity:
   ldhlm acty 
   ld a, [hl]
   ld b, a
+
+  ; y + col y 
+  ldhlm actcoly 
+  ld a, [hl]
+  add a, b 
+
+  ; y + col h
+  ldhlm actcolh 
+  ld a, [hl]
+  add a, b
+  ld b, a ; b = y + coly + colh
+
+  ; x + colx 
   ldhlm actx 
   ld a, [hl]
   ld c, a
-  call mapflagsat
-  ldhlm actvelyl 
-  and a, TILE_COLLIDER 
-  jr z, @nocollider REL
   
-  ld a, 0
-  jr @ok REL
+  ldhlm actcolx 
+  ld a, [hl]
+  add a, c
+  ld c, a
+
+  call mapflagsat
+  and a, TILE_COLLIDER 
+  jr nz, @collision REL
+  
+  ; make the same call again, but with the far end of the collision box 
+  ; x + col x + col width 
+  ldhlm actcolw 
+  ld a, [hl]
+  add a, c
+  ld c, a
+
+  call mapflagsat
+  and a, TILE_COLLIDER 
+  jr nz, @collision REL
 
 @nocollider:
+  ldhlm actvelyl 
   ld a, [hl]
   add a, GRAVITY_ACCEL 
   cp a, GRAVITY_MAX 
@@ -490,6 +534,14 @@ actgravity:
   
   pop hl
   ret
+
+@collision:
+  ldhlm actvelyl 
+  ld a, 0
+  ld [hl], a
+
+  pop hl
+  ret 
 
 ; apply velocity to an axis
 ; inputs:
