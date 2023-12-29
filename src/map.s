@@ -59,5 +59,7 @@ tileflags:
 ; this is a demo map 18x18 tiles 
 testmap:
 .rep i, MAP_SIZE-MAP_W, 1, .db BG1 
-.rep i, MAP_W, 1, .db FLOOR1
+.db 0, 0, 0
+.rep i, MAP_W - 3 - 4, 1, .db FLOOR1
+.db 0,0,0,0
 
