@@ -769,7 +769,7 @@ title_cursor_update:
 ; returns:
 ;   hl: ram offset
 ;   a: 0 on success, > 0 on error
-actpostotilepos:
+postotile:
   ld a, c
   push af ; x coordinate 
 
@@ -840,7 +840,7 @@ mapflagsat:
   push hl
   push bc 
   
-  call actpostotilepos 
+  call postotile 
   ld de, mapbuf
   add hl, de
 
