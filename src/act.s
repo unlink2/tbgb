@@ -371,8 +371,14 @@ player_update:
 
 @xmovement_done:
 
+@ymovement:
+
+@ymovement_done:
   pop hl ; base pointer to act
-  call actgravity 
+  push hl
+  call actcheckyaxis 
+
+  pop hl ; base pointer to act
   call actapplyvel
 
   ; load to soam
@@ -472,13 +478,22 @@ actdraw:
   pop bc
   pop de
   pop hl
-  ret 
+  ret
 
-; apply gravity to the actor's y velocity 
+; 
+actjump:
+  ret
+
+; check y axis movement
 ; inputs:
 ;   hl: the actor 
 ; registers: hl is unchanged 
-actgravity:
+; returns:
+;   a: 0 if movement is ok
+;   a: 1 if movement collided to down 
+;   a: 2 if movement collided up
+;   a: >0 if collider was hit in general
+actcheckyaxis:
   push hl
 
   ; check bottom collision
@@ -547,23 +562,12 @@ actgravity:
   jr nz, @collision REL
 
 @nocollider:
-  ldhlm actvelyl 
-  ld a, [hl]
-  add a, GRAVITY_ACCEL 
-  cp a, GRAVITY_MAX 
-  jr c, @ok REL
-  ld a, GRAVITY_MAX
-@ok:
-  ld [hl], a
-  
+  ld a, 0
   pop hl
   ret
 
 @collision:
-  ldhlm actvelyl 
-  ld a, 0
-  ld [hl], a
-
+  ld a, 1 
   pop hl
   ret 
 
