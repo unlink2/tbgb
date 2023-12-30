@@ -474,8 +474,8 @@ tiles0_end:
 ; tile map 
 .se 0x10
 .de EMPTY_TILE, 1
-.de BG1, 1
-.de FLOOR1, 1
+.de BG1, 1 ; background 1
+.de FL1, 1 ; floor 1
 
 ; tile map flags
 .se 1
