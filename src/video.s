@@ -83,7 +83,7 @@ draw_mode_play:
   ld a, [hl]
   ld c, a
   pop hl
-  call mapflagsat
+  call tileflagsat
 
   ld hl, SCRN0+6 
   call dbghex

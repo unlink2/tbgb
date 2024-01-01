@@ -95,4 +95,6 @@ p1: .adv 2
 p2: .adv 2
 p3: .adv 2
 
-mapbuf: .adv MAP_SIZE 
+mapbuf: .adv MAP_SIZE
+; contains map flags, one byte per tile
+mapflags: .adv MAP_SIZE 

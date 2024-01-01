@@ -7,31 +7,14 @@
 .de acttype, 1
 .de actfn, 2
 
-; collision shape of the actor
-; relative to actor's position
-; x/y + actcolx/y = top left
-; x/y + actcolx/y + actcolw/h = bottom right
-.de actcolx, 1
-.de actcoly, 1
-.de actcolw, 1
-.de actcolh, 1
-
 ; 2 bytes of user-specific memory
 ; can be used by each actor as needed
 .de actusr, 2
-; actor velocity
-; signed integer 
-.de actvelyl, 1
-; postions are x.xl and y.yl 
-; fixed point integers
-; this memory layout of yl, xl, y, x, velyl and velxl is
-; guarnateed 
-; meaning that yl+1 will always be y
-; and xl+1 will always be x
-.de actyl, 1 
+
+; actor positioning is only tacked on the pixel grid 
+; because it is enough for simple 
+; turn-based movement 
 .de acty, 1
-.de actvelxl, 1
-.de actxl, 1
 .de actx, 1
 .de ACTSIZE, 0
 
@@ -54,12 +37,3 @@
 .se 0
 .de TC_NEWGAME, 1
 .de TC_MAPED, 1
-
-; actor animation state enum 
-.se 0
-.de ACT_IDLE_LEFT, 1
-.de ACT_IDLE_RIGHT, 1
-.de ACT_MOVLEFT, 1
-.de ACT_MOVRIGHT, 1
-
-#define PLAYER_VEL_MAX 127

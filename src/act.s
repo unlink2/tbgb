@@ -155,14 +155,6 @@ soamalloc:
 ;   hl: act ptr
 act_init:
   push hl
-  ; zero out the some common things
-  ldhlm actvelxl 
-  ld a, 0
-  ld [hl], 0
-
-  ldhlm actvelyl 
-  ld a, 0
-  ld [hl], 0
   
   pop hl
   ret
@@ -194,15 +186,6 @@ player_init:
   
   ; ignore unused byte for now...
 
-  ; xl 
-  ldhlm actxl 
-  ld a, 0
-  ld [hl], a
-  
-  ; yl
-  ldhlm actyl 
-  ld [hl], a
-
   ; TODO: set proper initial location
   ld a, 64
   ldhlm acty 
@@ -211,22 +194,6 @@ player_init:
   ld [hl], a ; y pos
   
   ; set up collision rectangle 
-
-  ; col x/y 0,0
-  ld a, 2
-  ldhlm actcolx 
-  ld [hl], a
-  ldhlm actcoly 
-  ld [hl], a
-  
-  ; col w/h 15,7
-  ld a, 10
-  ldhlm actcolw 
-  ld [hl], a
-
-  ld a, 7
-  ldhlm actcolh 
-  ld [hl], a
 
   pop hl
   ret
@@ -292,15 +259,6 @@ actsetflags:
   pop hl
   ret 
 
-; animation tables for player 
-player_chr_left:
-.db 2, 4, 10, 8
-player_chr_right:
-.db 4, 2, 8, 10
-player_chrflags_left:
-.db 0, OAM_FXFLIP, OAM_FXFLIP, 0
-player_chrflags_right:
-.db 0, OAM_FXFLIP, OAM_FXFLIP, 0
 
 ;
 ; update player function
@@ -308,339 +266,24 @@ player_chrflags_right:
 player_update:
   ; move actor ptr to hl
   push de
-  pop hl
-  push hl ; we need base hl again later  
-  
-  ; set default actor mode
-  ldhlm actvelxl 
-  ; check previous sign to decide if facing left or right
-  ld a, [hl] 
-  and a, 0b10000000 
-  jp z, @nocarry
-  scf
-@nocarry:
-  ld a, ACT_IDLE_LEFT
-  adc a, 0
-  ld [tmp], a
 
-  ; set hl to actx ptr
-  ldhlm actxl 
-
-  ; read inputs, move and modify 
-  ; tiles based on movement 
-  ld a, [inputs]
-  and a, BTNLEFT | BTNRIGHT
-  jp nz, @xmovement
-  
-  ldhlm actvelxl
-  ld a, [hl]
-  ; clear all but sign because
-  ; we use it to determine the facing direction
-  and a, 0b10000000
-  ld [hl], a
-  jp @xmovement_done
-
-@xmovement:
-  ldhlm actvelxl
-  ld a, [inputs]
-  and a, BTNLEFT 
-  jr z, @notleft REL
-  ; left input hit
-    ld a, 0b10000000 | PLAYER_VEL_MAX
-    ld [hl], a
-  
-    ld a, ACT_MOVLEFT
-    ld [tmp], a
-@notleft:
-   
-  ; right input
-  ldhlm actvelxl
-
-  ld a, [inputs]
-  and a, BTNRIGHT
-  jr z, @notright REL
-  ; right input hit
-
-    ; position
-    ld a, PLAYER_VEL_MAX
-    ld [hl], a
-
-    ld a, ACT_MOVRIGHT
-    ld [tmp], a
-@notright:
-
-@xmovement_done:
-
-@ymovement:
-
-@ymovement_done:
-  pop hl ; base pointer to act
-  push hl
-  call actcheckyaxis 
-
-  pop hl ; base pointer to act
-  call actapplyvel
-
-  ; load to soam
-  ld de, player_chr_left
-  ld bc, player_chrflags_left
-  ld a, 0
-  ; y 
-  ld [p0], a
-  ; x
-  ld [p1], a
-  ; actor state 
-  ld a, [tmp]
-  ld [p2], a
-  call actdraw 
-
-
-  ld de, player_chr_right
-  ld bc, player_chrflags_right
-  ; y 
-  ld a, 0
-  ld [p0], a
-  ; x
-  ld a, 8
-  ld [p1], a
-  call actdraw 
-
-  ret
-
-; draw actor into soam based on its tate and a table
-; inputs;
-;   hl: actor 
-;   de: chr table (actor state -> chr mapping)
-;   bc: attr table (actor state -> tile flags)
-;   p0: y offset
-;   p1: x offset 
-;   p2: actpr state
-; registers:
-;   all gp registers are unchanged
-;   p0-p4 are unchanged
-actdraw:
-  push hl
-  push de
-  push bc
-  push af
-  
-  push de
-  ld de, acty
-  add hl, de
-  pop de
-  
-  push bc ; store bc here again because we need it for attr
-
-  ; load data in order: y, x, chr, flag
-  ld a, [hl+] ; y
+  ldhlm acty 
+  ld a, [hl+] ; y index 
   ld b, a
-  ld a, [p0]
-  add a, b
-  ld b, a ; b now holds the correct coordinate  
-
-  inc hl
-  inc hl
   ld a, [hl] ; x
   ld c, a
-  ld a, [p1]
-  add a, c
-  ld c, a ; c now holds the correct coordinate
-  
-  push de
-  pop hl ; hl = chr table
-  ld a, [p2] ; p2 = actor state
-  ld d, 0
-  ld e, a
-  add hl, de ; hl+p2 points to chr
-
-  ld a, [hl] ; chr
+  ld a, 8 ; chr 
   ld d, a
-  ld a, [global_anim_timer]
-  add a, d
-  ld d, a
-  
-  pop hl ; hl = attr table 
-  push de
-  ld a, [p2] ; p2 = actor state 
-  ld d, 0
+  ld a, 0 ; flag
   ld e, a
-  add hl, de ; hl+p2 points to attr 
-
-  pop de 
-  ld a, [hl] ; attr
-  ld e, a
-
   ; prefer obj 0
   ld a, 0
   call soamsetto
   
-  pop af
-  pop bc
-  pop de
   pop hl
+
   ret
 
-; 
-actjump:
-  ret
-
-; check y axis movement
-; inputs:
-;   hl: the actor 
-; registers: hl is unchanged 
-; returns:
-;   a: 0 if movement is ok
-;   a: 1 if movement collided to down 
-;   a: 2 if movement collided up
-;   a: >0 if collider was hit in general
-actcheckyaxis:
-  push hl
-
-  ; check bottom collision
-  ldhlm acty 
-  ld a, [hl]
-  ld b, a
-
-  ; y + col y 
-  ldhlm actcoly 
-  ld a, [hl]
-  add a, b 
-
-  ; y + col h
-  ldhlm actcolh 
-  ld a, [hl]
-  add a, b
-  ld b, a ; b = y + coly + colh
-
-  ; x + colx 
-  ldhlm actx 
-  ld a, [hl]
-  ld c, a
-  
-  ldhlm actcolx 
-  ld a, [hl]
-  add a, c
-  ld c, a
-
-  call mapflagsat
-  and a, TILE_COLLIDER 
-  jr nz, @collision REL
-  
-  ; make the same call again, but with the far end of the collision box 
-  ; x + col x + col width 
-  ldhlm acty 
-  ld a, [hl]
-  ld b, a
-
-  ; y + col y 
-  ldhlm actcoly 
-  ld a, [hl]
-  add a, b 
-
-  ; y + col h
-  ldhlm actcolh 
-  ld a, [hl]
-  add a, b
-  ld b, a ; b = y + coly + colh
-
-  ; x + colx 
-  ldhlm actx 
-  ld a, [hl]
-  ld c, a
-  
-  ldhlm actcolx 
-  ld a, [hl]
-  add a, c
-  ld c, a
-  ldhlm actcolw 
-  ld a, [hl]
-  add a, c
-  ld c, a
-
-  call mapflagsat
-  and a, TILE_COLLIDER 
-  jr nz, @collision REL
-
-@nocollider:
-  ld a, 0
-  pop hl
-  ret
-
-@collision:
-  ld a, 1 
-  pop hl
-  ret 
-
-; apply velocity to an axis
-; inputs:
-;   hl: points to velocity
-; registers:
-;   hl: changed
-;   a: changed
-actapplyvel_axis:
-  ld a, [hl]
-  and a, 0b01111111
-  ld b, a
-  ld a, [hl]
-  
-  cp a, 0
-  jp z, @movedone
-  and a, 0b10000000
-  jp z, @actapplyvel_plus 
-
-  ; velocity is < 0
-  inc hl ; actxl 
-  ld a, [hl] 
-  sub a, b 
-  ld [hl], a
-  jp nc, @notfullmove_sub
-    
-    ; apply full move
-    inc hl ; actx
-    ld a, [hl]
-    dec a
-    ld [hl], a
-@notfullmove_sub:
-
-  jp @movedone
-  
-  ; velocity is > 0 
-@actapplyvel_plus:
-  ; position
-  inc hl ; actxl
-  ld a, [hl]
-  add a, b
-  ld [hl], a
-  jp nc, @notfullmove_add 
-      
-    ; apply full move
-    inc hl ; actx
-    ld a, [hl]
-    inc a
-    ld [hl], a
-    
-@notfullmove_add:
-@movedone:
-  ret
-
-; applyes velocity on the x and y axis
-; inputs:
-;   hl: the actor 
-; registers: 
-;   hl is unchanged
-;   de is modified  
-;   bc is modified 
-actapplyvel:
-  push hl
-
-  ldhlm actvelxl 
-  call actapplyvel_axis 
-  
-  ldhlm actvelyl 
-  call actapplyvel_axis
-
-pop hl
-  ret 
 
 ; create a title cursor 
 ; there should only ever 
@@ -840,7 +483,7 @@ postotile:
 ; registers:
 ;   bc is preserved 
 ;   hl is preserved 
-mapflagsat:
+tileflagsat:
   push hl
   push bc 
   

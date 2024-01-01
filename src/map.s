@@ -9,6 +9,11 @@ mapload:
   ld bc, MAP_SIZE 
   call memcpy
 
+  ld hl, mapflags 
+  ld bc, MAP_SIZE 
+  ld a, 0
+  call memset 
+
   ret
 
 ; draw map row at index n 
