@@ -2,6 +2,10 @@
 ;   all actor update functions expect the actor ptr to be located in 
 ;   the de register initially
 
+; actor state functions:
+;   all actor state functions expect the actor ptr to be located in 
+;   the de register initially 
+
 ; actors and oam:
 ; actors keep all their data in the actor table 
 ; once a frame actors attempt to allocate 
@@ -193,9 +197,18 @@ player_init:
   ldhlm actx 
   ld [hl], a ; y pos
   
-  ; set up collision rectangle 
+  ; set default state 0
+  ldhlm actstate0 
+  ld de, actstate_nop 
+  ld a, e
+  ld [hl+], a
+  ld a, d
+  ld [hl], a
 
   pop hl
+  ; transition player to state 0
+  call actstate_to_s0
+
   ret
 
 ; allocate an oam object 
@@ -233,32 +246,51 @@ soamsetto:
   pop bc
   ret
 
-; read a value from the chr table 
-; inputs:
-;   hl: the table
-;   a: offset (actor state)
-;  returns:
-;   a: the value 
-readchrtbl:
-  push de
-  ld d, 0
-  ld e, a
-  add hl, de
-  ld a, [hl]
-  pop de
-  ret
+; nop actor state 
+actstate_nop:
+  push de 
+  pop hl 
 
-; set actor flags 
-; inputs:
-;   hl: actor base ptr 
-;   a: flag value
-; registers: hl is unchanged 
-actsetflags:
-  push hl
-  ld [hl], a 
-  pop hl
   ret 
 
+; transition the actor back to its default state 
+; inputs:
+;   hl: actor ptr 
+; registers:
+;   hl remains unchanged 
+actstate_to_s0:
+  ; load default state into bc 
+  push hl
+
+  ldhlm actstate0
+  ld a, [hl+]
+  ld c, a 
+  ld a, [hl+]
+  ld b, a 
+
+  ; bc = state0
+  pop hl
+  call actstate_to 
+
+  
+  ret
+
+; transition actor to any state
+; inputs:
+;   hl: actor ptr 
+;   bc: next state 
+actstate_to:
+  push hl
+  
+  ldhlm actstatefn 
+  
+  ld a, c
+  ld [hl+], a
+
+  ld a, b
+  ld [hl], a
+  pop hl
+  ret 
 
 ;
 ; update player function
@@ -267,19 +299,27 @@ player_update:
   ; move actor ptr to hl
   push de
 
+  ; load current actor state call 
+  ldhlm actstatefn 
+  call callptr
+
   ldhlm acty 
   ld a, [hl+] ; y index 
   ld b, a
   ld a, [hl] ; x
   ld c, a
-  ld a, 8 ; chr 
+  ld a, 2 ; chr 
   ld d, a
+  ld a, [global_anim_timer] 
+  add a, d
+  ld d, a ; a + global anim = real tile
   ld a, 0 ; flag
   ld e, a
   ; prefer obj 0
   ld a, 0
   call soamsetto
   
+  ; pop hl one more time 
   pop hl
 
   ret

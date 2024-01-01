@@ -50,46 +50,28 @@ emptytile
 .db 0b11001100
 .db 0b11001100
 
-; player idle top left frame 1
-.chr 00000033
-.chr 00000311
-.chr 00000313
-.chr 00003113
-.chr 00003111
-.chr 00031113
-.chr 00031111
-.chr 00003333
+; player frame 1
+.chr 00300300
+.chr 00300300
+.chr 00333300
+.chr 00322303
+.chr 00333330
+.chr 00333300
+.chr 00300300
+.chr 00300300
 
+; player frame 2
+.chr 00300300
+.chr 00300300
+.chr 00333300
+.chr 00322300
+.chr 00333333
+.chr 00333300
+.chr 00300300
+.chr 00300300
 
-; player idle top left frame 2
-.chr 00000000
-.chr 00000333
-.chr 00003111
-.chr 00031111
-.chr 00031111
-.chr 00311111
-.chr 00311111
-.chr 00033333
-
-; player idle top right frame 1
-.chr 33000000
-.chr 11300000
-.chr 13300000
-.chr 13130000
-.chr 11130000
-.chr 33113000
-.chr 11113000
-.chr 33330000
-
-; player idle top right frame 2
-.chr 00000000
-.chr 33300000
-.chr 31330000
-.chr 31313000
-.chr 11113000
-.chr 33331300
-.chr 11111300
-.chr 33333000
+emptytile 
+emptytile 
 
 ; cursor part 
 .chr 00000000
@@ -111,45 +93,6 @@ emptytile
 .chr 00003300
 .chr 00003000
 
-; player move left frame 1
-.chr 00000000
-.chr 02000333
-.chr 00003111
-.chr 20031111
-.chr 00031111
-.chr 00311111
-.chr 00311111
-.chr 22233333
-
-; player move left frame 2
-.chr 00000000
-.chr 20000333
-.chr 00203111
-.chr 00031111
-.chr 00031111
-.chr 00311111
-.chr 00311111
-.chr 22233333
-
-; player move right frame 1
-.chr 00000000
-.chr 33300000
-.chr 31330000
-.chr 31313000
-.chr 11113000
-.chr 33331300
-.chr 11111310
-.chr 33333000
-
-; player move right frame 2
-.chr 01000000
-.chr 33300000
-.chr 31330000
-.chr 31313000
-.chr 11113000
-.chr 33331300
-.chr 11111300
-.chr 33333000
 
 acts0_end:
 
