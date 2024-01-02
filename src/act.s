@@ -342,7 +342,7 @@ actstate_to_s0:
 
   ldhlm actstate0fn
   ld a, [hl+]
-  ld c, a 
+  ld c, a
   ld a, [hl+]
   ld b, a 
 
@@ -357,9 +357,20 @@ actstate_to_s0:
 ; inputs:
 ;   hl: actor ptr 
 ;   bc: next state 
+;   de: state data (d -> actstate+0, e-> actstate+1)
 actstate_to:
   push hl
+  push de
   
+  ld de, actstate 
+  add hl, de ; hl = actstate+0
+  pop de
+  ld a, d
+  ld [hl+], a
+  ld a, e
+  ld [hl], a
+  
+
   ldhlm actstatefn 
   
   ld a, c
@@ -374,15 +385,66 @@ actstate_to:
 ; and transition to input handling state 
 ; for the next frame
 ; transitions to:
-;   act_state_move if dpad is pressed 
+;   act_state_move if dpad is pressed
+; inputs:
+;   de: actor ptr 
 player_state_input:
+  push de
+  pop hl ; hl = act ptr 
+
+  ld a, [inputs]
+  ; up input
+  and a, BTNUP 
+  jp z, @notup
+  
+  ; transition to state 
+  ; move for 8 pixels/frames 
+  ; in the up direction 
+  ld d, 8
+  ld e, ACT_DIRUP
+
+  ld bc, act_state_move 
+  call actstate_to
+  
+@notup:
+
   ret 
 
 ; move the player in a specific direction 
 ; state vars:
 ;   actstate+0: how many frames to move for 
 ;   actstate+1: which direction to move in (see ACT_DIRECTION) 
+; inputs:
+;   de: actor ptr 
 act_state_move:
+  push de
+
+  ld hl, actstate 
+  add hl, de ; hl = actstate+0
+  ld a, [hl]
+  cp a, 0
+  jp z, @todefault 
+  dec a
+  ld [hl+], a ; hl = actstate+1 
+  
+  ; TODO: handle collision here 
+  ; if collision is detected do not move!
+
+  ld a, [hl]
+  cp a, ACT_DIRUP 
+  jp nz, @notup
+    
+    ; move up 
+    ldhlm acty 
+    ld a, [hl]
+    dec a
+    ld [hl], a
+@notup:
+  pop hl 
+  ret 
+@todefault: 
+  pop hl
+  call actstate_to_s0
   ret 
 
 ;
