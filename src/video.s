@@ -72,23 +72,6 @@ draw_mode_play:
   ld a, [inputs]
   ld hl, SCRN0+3
   call dbghex
-  
-  ; draw tile flags at player position  
-  ldhlfrom actpl
-  push hl
-  ldhlm acty 
-  ld a, [hl]
-  ld b, a
-  ldhlm actx 
-  ld a, [hl]
-  ld c, a
-  pop hl
-  call tileflagsat
-
-  ld hl, SCRN0+6 
-  call dbghex
-
-
 
   ret 
 

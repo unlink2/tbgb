@@ -56,6 +56,71 @@ act_alloc:
   ld [hl], a
   ret
 
+; update the active actor
+actupdate:
+  ldhlfrom actactive
+
+  ; if active actor is not active, skip
+  ld a, [hl]
+  and a, ACT_FACTIVE
+  jp z, @skip
+  
+  push hl
+
+  ; load current actor state call 
+  ldhlm actstatefn 
+
+  ; de is current actor ptr 
+  ; as expected by update call 
+  pop de 
+  call callptr
+@skip:
+  ret
+
+; draw all actors 
+actdraw:
+  ; first free all soam entries 
+  call soamfreeall
+@draw_act:
+  ld bc, ACTSIZE
+  ld hl, acttbl
+  ld d, 0 ; loop counter 
+@next:
+  ld a, [hl]
+  and a, ACT_FACTIVE
+  jp z, @skip
+
+    ; if found, store hl 
+    ; bc and d for later 
+    ; FIXME: surely we can do better here 
+    push hl
+    push bc
+    push de
+    
+    ; pop hl into de because the actors expect
+    ; the actor ptr to be in de initially
+    push hl
+    pop de
+
+    ; jump to the function 
+    ld bc, actdrawfn 
+    add hl, bc ; hl points to fn pointer now...
+    call callptr
+
+    pop de
+    pop bc
+    pop hl
+@skip:
+  
+  ; go to next actor
+  add hl, bc
+  ; inc loop counter 
+  inc d 
+  ld a, d
+  cp a, ACTMAX
+  jr nz, @next REL
+  ret
+
 ; dam shadow oam to oam
 ; registers:
 ;   hl, af, bc, de
@@ -173,7 +238,7 @@ player_init:
 
   ; save pointer to player 
   ; for later use 
-  ldhlto actpl
+  ldhlto actactive
 
   push hl
   
@@ -185,8 +250,8 @@ player_init:
   ld [hl], a
 
   ; ld fn pointer 
-  ldhlm actfn 
-  ldhlptr player_update 
+  ldhlm actdrawfn 
+  ldhlptr player_draw 
   
   ; ignore unused byte for now...
 
@@ -198,7 +263,7 @@ player_init:
   ld [hl], a ; y pos
   
   ; set default state 0
-  ldhlm actstate0 
+  ldhlm actstate0fn 
   ld de, actstate_nop 
   ld a, e
   ld [hl+], a
@@ -262,7 +327,7 @@ actstate_to_s0:
   ; load default state into bc 
   push hl
 
-  ldhlm actstate0
+  ldhlm actstate0fn
   ld a, [hl+]
   ld c, a 
   ld a, [hl+]
@@ -295,13 +360,9 @@ actstate_to:
 ;
 ; update player function
 ; 
-player_update:
+player_draw:
   ; move actor ptr to hl
   push de
-
-  ; load current actor state call 
-  ldhlm actstatefn 
-  call callptr
 
   ldhlm acty 
   ld a, [hl+] ; y index 
@@ -333,6 +394,10 @@ title_cursor_init:
   call act_alloc
   hl_null_panic
 
+  ; save pointer to player 
+  ; for later use 
+  ldhlto actactive
+
   push hl
   ; init cursor 
   
@@ -342,17 +407,29 @@ title_cursor_init:
   ld [hl], a
 
   ; ld fn pointer 
-  ldhlm actfn 
-  ldhlptr title_cursor_update 
+  ldhlm actdrawfn 
+  ldhlptr title_cursor_draw 
 
   ld a, 0
   ldhlm actx 
   ld [hl], a ; y pos
-  
+ 
+
+  ; set default state 0
+  ldhlm actstate0fn 
+  ld de, title_cursor_update 
+  ld a, e
+  ld [hl+], a
+  ld a, d
+  ld [hl], a
+
   pop hl
+  ; transition player to state 0
+  call actstate_to_s0
 
   ret 
 
+; TODO: split title curosr into draw and update function
 #define TITLE_CURSOR_DELAY 10 
 #define TITLE_CURSOR_MAX 3
 title_cursor_positions:
@@ -429,6 +506,12 @@ title_cursor_update:
 @notup:
 
 @no_inputs:
+  ret
+
+title_cursor_draw:
+  ; top of stack: ptr to act 
+  push de 
+  ldhlm acty 
 
   ; set up oam 
   ld a, [hl+] ; y index 
@@ -448,6 +531,8 @@ title_cursor_update:
   ; prefer obj 0
   ld a, 0
   call soamsetto
+
+  pop hl
   ret
 
 ; converts actor position to tile position 

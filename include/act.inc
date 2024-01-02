@@ -7,9 +7,12 @@
 .de acttype, 1
 
 ; actor function pointers
-; fn, state0, and statefn layout is guaranteed
-.de actfn, 2
-.de actstate0, 2
+; draw, state0, and statefn layout is guaranteed
+.de actdrawfn, 2
+; state 0 is the default state 
+; each actor can define a default state it wants to return to 
+; if no other satate is required
+.de actstate0fn, 2
 ; the actor state is the current state the actor is in
 ; a state may transition to any other state function 
 ; or it may return to the default statue function
