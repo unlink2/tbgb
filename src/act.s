@@ -56,7 +56,15 @@ act_alloc:
   ld [hl], a
   ret
 
+; determine the next actor
+; to set active 
+actnext:
+  ret
+
 ; update the active actor
+; this will ever only call update on a single actor 
+; actors need to release their "lock" as active actor manually 
+; by calling actnext when they are done updating 
 actupdate:
   ldhlfrom actactive
 
@@ -74,10 +82,15 @@ actupdate:
   ; as expected by update call 
   pop de 
   call callptr
+  ret 
 @skip:
+  ; if we skipped this actor skip to the next one 
+  call actnext 
   ret
 
-; draw all actors 
+; draw all actors to soam
+; this is not the actual vram draw call 
+; and can safely be called at any point 
 actdraw:
   ; first free all soam entries 
   call soamfreeall
@@ -264,7 +277,7 @@ player_init:
   
   ; set default state 0
   ldhlm actstate0fn 
-  ld de, actstate_nop 
+  ld de, player_state_input 
   ld a, e
   ld [hl+], a
   ld a, d
@@ -355,6 +368,21 @@ actstate_to:
   ld a, b
   ld [hl], a
   pop hl
+  ret 
+
+; read player input
+; and transition to input handling state 
+; for the next frame
+; transitions to:
+;   act_state_move if dpad is pressed 
+player_state_input:
+  ret 
+
+; move the player in a specific direction 
+; state vars:
+;   actstate+0: how many frames to move for 
+;   actstate+1: which direction to move in (see ACT_DIRECTION) 
+act_state_move:
   ret 
 
 ;

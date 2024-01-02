@@ -22,7 +22,10 @@
 ; 2 bytes of user-specific memory
 ; can be used by each actor as needed
 .de actusr, 2
-
+; 2 bytes that can be used as paramters for 
+; states. The documentation for what the bytes do should be part 
+; of the state function
+.de actstate, 2 
 ; actor positioning is only tacked on the pixel grid 
 ; because it is enough for simple 
 ; turn-based movement 
@@ -50,3 +53,10 @@
 .se 0
 .de TC_NEWGAME, 1
 .de TC_MAPED, 1
+
+; ACT_DIRECTION 
+.se 0 
+.de ACT_DIRLEFT, 1
+.de ACT_DIRRIGHT, 1
+.de ACT_DIRUP, 1
+.de ACT_DIRDOWN, 1
