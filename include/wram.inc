@@ -14,8 +14,7 @@
 #define WRAMLEN 0xFFF
 
 ; max actors
-; 10 actors max.
-#define ACTMAX 10
+#define ACTMAX 16
 
 ; game modes
 .se 0
@@ -85,19 +84,9 @@ global_delay: .adv 1
 
 game_flags: .adv 1
 
-; 4 bytes of tmp storage 
-; that can be used by sub routines as needed 
-; tmp should *never* be used in interrupts 
-; to avoid data corruption
-tmp: .adv 4
+; currnet turn
+turn_count: .adv 1
 
-; 4 function parameters 
-; that can be used when registers are not
-; sufficient to pass to a function
-p0: .adv 2
-p1: .adv 2
-p2: .adv 2
-p3: .adv 2
 
 mapbuf: .adv MAP_SIZE
 ; contains map flags, one byte per tile

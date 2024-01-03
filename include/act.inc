@@ -19,6 +19,22 @@
 ; which is stored in actstate0
 .de actstatefn, 2 
 
+; 8 bytes for actor stats
+; this includes 
+
+; max/current hp
+.de actstat_hpmax, 1
+.de actstat_hpcur, 1
+
+; max/current mp
+.de actstat_mpmax, 1
+.de actstat_mpcur, 1
+
+.de actstat_str, 1
+.de actstat_agi, 1
+.de actstat_int, 1
+.de actstat_lck, 1
+
 ; 2 bytes of user-specific memory
 ; can be used by each actor as needed
 .de actusr, 2
