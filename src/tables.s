@@ -16,8 +16,9 @@
 .db $8 ; lck
 .db $9 ; dmg 
 .db $10 ; tile 
-.str $11 ; name 
+; name 
+.str $11 
 
 #endmacro 
 
-itmdef 1, 2, 3, 4, 5, 6, 7, 8, 9, "test", 12
+itmdef 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, "test"
