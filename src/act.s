@@ -269,7 +269,7 @@ player_init:
   ; ignore unused byte for now...
 
   ; TODO: set proper initial location
-  ld a, 64
+  ld a, 0x39
   ldhlm acty 
   ld [hl], a ; x pos 
   ldhlm actx 
@@ -395,19 +395,44 @@ player_state_input:
   ld a, [inputs]
   ; up input
   and a, BTNUP 
-  jp z, @notup
+  jr z, @notup REL
   
-  ; transition to state 
-  ; move for 8 pixels/frames 
-  ; in the up direction 
-  ld d, 8
-  ld e, ACT_DIRUP
-
-  ld bc, act_state_move 
-  call actstate_to
-  
+    ld e, ACT_DIRUP
+    jr @movement REL
 @notup:
 
+  ld a, [inputs]
+  and a, BTNDOWN 
+  jr z, @notdown REL
+
+    ld e, ACT_DIRDOWN 
+    jr @movement REL
+@notdown:
+  
+  ld a, [inputs]
+  and a, BTNLEFT 
+  jr z, @notleft REL
+    
+    ld e, ACT_DIRLEFT 
+    jr @movement REL
+@notleft:
+
+  ld a, [inputs]
+  and a, BTNRIGHT 
+  jr z, @notright REL
+
+    ld e, ACT_DIRRIGHT 
+    jr @movement REL
+@notright:
+
+  ret 
+@movement:
+  ; transition to state 
+  ; move for 8 pixels/frames 
+  ; in a direction set in e  
+  ld d, 8
+  ld bc, act_state_move 
+  call actstate_to
   ret 
 
 ; move the player in a specific direction 
@@ -432,15 +457,55 @@ act_state_move:
 
   ld a, [hl]
   cp a, ACT_DIRUP 
-  jp nz, @notup
+  jr nz, @notup REL
     
     ; move up 
     ldhlm acty 
     ld a, [hl]
     dec a
     ld [hl], a
+    pop hl 
+    jr @done REL
 @notup:
-  pop hl 
+  cp a, ACT_DIRDOWN 
+  jr nz, @notdown REL
+
+    pop hl
+    ld de, acty 
+    add hl, de
+    ld a, [hl]
+    inc a
+    ld [hl], a 
+    jr @done REL
+@notdown:
+  
+  cp a, ACT_DIRLEFT 
+  jr nz, @notleft REL
+    
+    pop hl
+    ld de, actx
+    add hl, de 
+
+    ld a, [hl]
+    dec a
+    ld [hl], a
+    jr @done REL
+@notleft:
+  
+  cp a, ACT_DIRRIGHT 
+  jr nz, @notright REL
+
+    pop hl
+    ld de, actx
+    add hl, de
+
+    ld a, [hl]
+    inc a
+    ld [hl], a
+    jr @done REL
+@notright: 
+  pop hl ; fallback pop hl if no case was hit
+@done: 
   ret 
 @todefault: 
   pop hl
