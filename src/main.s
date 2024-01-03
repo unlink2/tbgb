@@ -1,6 +1,7 @@
 #include "hw.inc"
 #include "macros.inc"
 #include "act.inc"
+#include "inventory.inc"
 #include "map.inc"
 #include "wram.inc"
 #include "sram.inc"
@@ -68,6 +69,7 @@ main:
 #include "strs.inc"
 #include "tiles.inc"
 #include "tilemaps.inc"
+#include "tables.s"
 
 ; fill bank
 .fill 0, 0x7FFF - $

@@ -23,12 +23,12 @@
 ; this includes 
 
 ; max/current hp
-.de actstat_hpmax, 1
-.de actstat_hpcur, 1
+.de actstat_hpmax, 2
+.de actstat_hpcur, 2
 
 ; max/current mp
-.de actstat_mpmax, 1
-.de actstat_mpcur, 1
+.de actstat_mpmax, 2
+.de actstat_mpcur, 2
 
 .de actstat_str, 1
 .de actstat_agi, 1

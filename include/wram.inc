@@ -87,7 +87,8 @@ game_flags: .adv 1
 ; currnet turn
 turn_count: .adv 1
 
+inventory: .adv INVSIZE * MAX_INV
 
 mapbuf: .adv MAP_SIZE
 ; contains map flags, one byte per tile
-mapflags: .adv MAP_SIZE 
+mapflags: .adv MAP_SIZE
