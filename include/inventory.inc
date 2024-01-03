@@ -43,6 +43,8 @@
 ; expects using actor in hl
 .de itmusefn, 2 
 ; what the item provides when equiped 
+; signed integer, stat removal as a disatvantage 
+; is possible!
 .de itmhp, 1
 .de itmmp, 1
 .de itmstr, 1
