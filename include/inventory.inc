@@ -38,10 +38,10 @@
 ; what kind of item it is 
 .de itmtype, 1
 ; level of quality 
-.de quality, 1
+.de itmquality, 1
 ; function pointer to on use
 ; expects using actor in hl
-.de usefn, 2 
+.de itmusefn, 2 
 ; what the item provides when equiped 
 .de itmhp, 1
 .de itmmp, 1
