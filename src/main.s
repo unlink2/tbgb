@@ -62,6 +62,7 @@ main:
 #include "sys.s"
 #include "mem.s"
 
+#include "inventory.s"
 #include "act.s"
 #include "mode.s"
 #include "map.s"

@@ -50,8 +50,10 @@
 .de itmstr, 1
 .de itmint, 1
 .de itmlck, 1
+; damage is always a range, where this value is the lower start
+; the upper bound depends on the quality
 .de itmdmg, 1
 ; meta data 
-.de itmtile, 1
-.de itmname, 8 
+; item name string pointer
+.de itmname, 2 
 .de ITMSIZE, 0
