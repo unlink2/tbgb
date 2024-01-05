@@ -512,9 +512,13 @@ act_state_move:
   call actstate_to_s0
   ret 
 
+; player animation frames
+player_frames:
+.db 2, 3
 ;
 ; update player function
-; 
+;
+
 player_draw:
   ; move actor ptr to hl
   push de
@@ -524,10 +528,15 @@ player_draw:
   ld b, a
   ld a, [hl] ; x
   ld c, a
-  ld a, 2 ; chr 
-  ld d, a
-  ld a, [global_anim_timer] 
-  add a, d
+
+  ; 
+  ld hl, player_frames
+  ld a, [global_anim_timer]
+  ld d, 0
+  ld e, a
+  add hl, de
+
+  ld a, [hl] ; chr 
   ld d, a ; a + global anim = real tile
   ld a, 0 ; flag
   ld e, a

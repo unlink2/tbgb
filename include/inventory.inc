@@ -35,12 +35,16 @@
 
 ; item table entry 
 .se 0
+
 ; what kind of item it is 
 .de itmtype, 1
+
 ; level of quality 
 .de itmquality, 1
+
 ; function pointer to on use
 ; expects using actor in hl
+; and the item being used in de
 .de itmusefn, 2 
 ; what the item provides when equiped 
 ; signed integer, stat removal as a disatvantage 
@@ -50,9 +54,11 @@
 .de itmstr, 1
 .de itmint, 1
 .de itmlck, 1
+
 ; damage is always a range, where this value is the lower start
 ; the upper bound depends on the quality
 .de itmdmg, 1
+
 ; meta data 
 ; item name string pointer
 .de itmname, 2 
