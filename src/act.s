@@ -66,7 +66,10 @@ actnext:
 ; actors need to release their "lock" as active actor manually 
 ; by calling actnext when they are done updating 
 actupdate:
-  ldhlfrom actactive
+  ld a, [actactive]
+  ld l, a
+  ld a, [actactive+1]
+  ld h, a
 
   ; if active actor is not active, skip
   ld a, [hl]
