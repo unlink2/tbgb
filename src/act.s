@@ -251,7 +251,10 @@ player_init:
 
   ; save pointer to player 
   ; for later use 
-  ldhlto actactive
+  ld a, l
+  ld [actactive], a
+  ld a, h
+  ld [actactive+1], a
 
   push hl
   
@@ -560,7 +563,10 @@ title_cursor_init:
 
   ; save pointer to player 
   ; for later use 
-  ldhlto actactive
+  ld a, l
+  ld [actactive], a
+  ld a, h
+  ld [actactive+1], a
 
   push hl
   ; init cursor 

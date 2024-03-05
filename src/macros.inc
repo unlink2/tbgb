@@ -31,14 +31,6 @@
   ld h, a
 #endmacro 
 
-; store ptr from hl at $1
-#macro ldhlto
-  ld a, l
-  ld [$1], a
-  ld a, h
-  ld [$1+1], a
-#endmacro
-
 ; pop hl and push it again!
 ; add offset to hl
 ; registers:
