@@ -26,6 +26,14 @@ mapload:
   call memcpy 
 #endmacro 
 
+; generates a screen worth of map data 
+; each of the in-game maps 
+; can fit on a single screen 
+; and can be determanistically be generated using 
+; a seed and calls to prng
+mapgenerate:
+  ret 
+
 ; load the current map into vram
 mapfulldraw:
   ; we need to copy row by row into vram 
@@ -59,7 +67,6 @@ tileflags:
 .db 0
 ; FLOOR1
 .db TILE_COLLIDER
-.db 0x69
 
 ; this is a demo map 18x18 tiles 
 testmap:

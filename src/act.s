@@ -575,7 +575,10 @@ title_cursor_init:
   ; init cursor 
   
   ; type is player 
-  ldhlm acttype 
+  pop hl
+  push hl
+  ld de, acttype
+  add hl, de
   ld a, ACT_TTITLECURSOR
   ld [hl], a
 

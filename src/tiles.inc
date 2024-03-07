@@ -13,10 +13,10 @@ inittiles:
   call memcpy
 
   ; copy tilemap 0
-  ld de, tilemap0
-  ld hl, SCRN0 
-  ld bc, tilemap0_end - tilemap0
-  call memcpy
+  ;ld de, tilemap0
+  ;ld hl, SCRN0 
+  ;ld bc, tilemap0_end - tilemap0
+  ;call memcpy
 
   ret
 
