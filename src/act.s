@@ -524,12 +524,15 @@ player_frames:
 ;
 ; update player function
 ;
-
 player_draw:
   ; move actor ptr to hl
   push de
 
-  ldhlm acty 
+  pop hl
+  push hl
+  ld de, acty 
+  add hl, de
+
   ld a, [hl+] ; y index 
   ld b, a
   ld a, [hl] ; x
