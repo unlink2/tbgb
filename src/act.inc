@@ -26,15 +26,6 @@
 .de actstat_hpmax, 2
 .de actstat_hpcur, 2
 
-; max/current mp
-.de actstat_mpmax, 2
-.de actstat_mpcur, 2
-
-.de actstat_str, 1
-.de actstat_agi, 1
-.de actstat_int, 1
-.de actstat_lck, 1
-
 ; 2 bytes of user-specific memory
 ; can be used by each actor as needed
 .de actusr, 2
@@ -42,6 +33,8 @@
 ; states. The documentation for what the bytes do should be part 
 ; of the state function
 .de actstate, 2 
+
+; actor movement 
 
 ; actor's real x and y location 
 ; y and x memory layout is guaranteed! 
@@ -53,6 +46,15 @@
 ; xs and ys memory layout is guaranteed!
 .de actxs, 1
 .de actys, 1
+
+; x/y velocity 
+.de actvelocityx, 1
+.de actvelocityy, 1
+
+; xs/ys velocity
+.de actvelocityxs, 1
+.de actvelocityys, 1
+
 .de ACTSIZE, 0
 
 
