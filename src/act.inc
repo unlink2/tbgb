@@ -42,12 +42,17 @@
 ; states. The documentation for what the bytes do should be part 
 ; of the state function
 .de actstate, 2 
-; actor positioning is only tacked on the pixel grid 
-; because it is enough for simple 
-; turn-based movement 
+
+; actor's real x and y location 
 ; y and x memory layout is guaranteed! 
 .de acty, 1
 .de actx, 1
+
+; sub-pixel position 
+; if this overflows the actual x and y position are incremented
+; xs and ys memory layout is guaranteed!
+.de actxs, 1
+.de actys, 1
 .de ACTSIZE, 0
 
 
