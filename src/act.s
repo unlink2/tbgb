@@ -57,7 +57,9 @@ act_alloc:
   ret
 
 
-; loop all actors and update them 
+; loop all actors and update them
+; if an actor is not marked as active it will 
+; simply be skipped. Otherwise its current statefn is called 
 actupdate:
   ld bc, ACTSIZE
   ld hl, acttbl
