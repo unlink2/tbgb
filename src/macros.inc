@@ -26,20 +26,5 @@
   ld [hl+], a
 #endmacro 
 
-; pop hl and push it again!
-; add offset to hl
-; registers:
-;   hl: modified
-;   sp: pop hl and push hl
-;   de: used to add to hl
-; inputs: 
-;   $1: the offset into hl
-#macro ldhlm
-  pop hl
-  push hl
-  ld de, $1
-  add hl, de
-#endmacro
-
 ; relative jump: jr <label> RELB 
 #define REL - $ - 2 & 0xFF 

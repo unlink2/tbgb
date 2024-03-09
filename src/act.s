@@ -366,7 +366,11 @@ actstate_to_s0:
   ; load default state into bc 
   push hl
 
-  ldhlm actstate0fn
+  pop hl
+  push hl
+  ld de, actstate0fn
+  add hl, de
+
   ld a, [hl+]
   ld c, a
   ld a, [hl+]
@@ -396,8 +400,10 @@ actstate_to:
   ld a, e
   ld [hl], a
   
-
-  ldhlm actstatefn 
+  pop hl
+  push hl
+  ld de, actstatefn 
+  add hl, de
   
   ld a, c
   ld [hl+], a
@@ -486,7 +492,10 @@ act_state_move:
   jr nz, @notup REL
     
     ; move up 
-    ldhlm acty 
+    pop hl
+    push hl
+    ld de, acty
+    add hl, de
     ld a, [hl]
     dec a
     ld [hl], a
@@ -599,16 +608,25 @@ title_cursor_init:
   ld [hl], a
 
   ; ld fn pointer 
-  ldhlm actdrawfn 
+  pop hl
+  push hl
+  ld de, actdrawfn
+  add hl, de
   ldhlptr title_cursor_draw 
 
   ld a, 0
-  ldhlm actx 
+  pop hl
+  push hl
+  ld de, actx 
+  add hl, de
   ld [hl], a ; y pos
  
 
   ; set default state 0
-  ldhlm actstate0fn 
+  pop hl
+  push hl
+  ld de, actstate0fn
+  add hl, de
   ld de, title_cursor_update 
   ld a, e
   ld [hl+], a
@@ -703,7 +721,10 @@ title_cursor_update:
 title_cursor_draw:
   ; top of stack: ptr to act 
   push de 
-  ldhlm acty 
+  pop hl
+  push hl
+  ld de, acty 
+  add hl, de
 
   ; set up oam 
   ld a, [hl+] ; y index 
