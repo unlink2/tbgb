@@ -56,39 +56,46 @@ act_alloc:
   ld [hl], a
   ret
 
-; determine the next actor
-; to set active 
-actnext:
-  ret
 
-; update the active actor
-; this will ever only call update on a single actor 
-; actors need to release their "lock" as active actor manually 
-; by calling actnext when they are done updating 
+; loop all actors and update them 
 actupdate:
-  ld a, [actactive]
-  ld l, a
-  ld a, [actactive+1]
-  ld h, a
-
-  ; if active actor is not active, skip
+  ld bc, ACTSIZE
+  ld hl, acttbl
+  ld d, 0 ; loop counter 
+@next:
   ld a, [hl]
   and a, ACT_FACTIVE
   jp z, @skip
-  
-  push hl
 
-  ; load current actor state call 
-  ldhlm actstatefn 
+    ; if found, store hl 
+    ; bc and d for later 
+    ; FIXME: surely we can do better here 
+    push hl
+    push bc
+    push de
+    
+    ; pop hl into de because the actors expect
+    ; the actor ptr to be in de initially
+    push hl
+    pop de
 
-  ; de is current actor ptr 
-  ; as expected by update call 
-  pop de 
-  call callptr
-  ret 
+    ; jump to the function 
+    ld bc, actstatefn
+    add hl, bc ; hl points to fn pointer now...
+    call callptr
+
+    pop de
+    pop bc
+    pop hl
 @skip:
-  ; if we skipped this actor skip to the next one 
-  call actnext 
+  
+  ; go to next actor
+  add hl, bc
+  ; inc loop counter 
+  inc d 
+  ld a, d
+  cp a, ACTMAX
+  jr nz, @next REL
   ret
 
 ; draw all actors to soam
@@ -251,13 +258,6 @@ player_init:
   hl_null_panic
   
   call act_init
-
-  ; save pointer to player 
-  ; for later use 
-  ld a, l
-  ld [actactive], a
-  ld a, h
-  ld [actactive+1], a
 
   push hl
   
@@ -566,13 +566,6 @@ player_draw:
 title_cursor_init:
   call act_alloc
   hl_null_panic
-
-  ; save pointer to player 
-  ; for later use 
-  ld a, l
-  ld [actactive], a
-  ld a, h
-  ld [actactive+1], a
 
   push hl
   ; init cursor 

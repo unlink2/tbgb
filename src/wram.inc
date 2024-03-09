@@ -43,13 +43,6 @@ soamallocflags: .adv OBJSMAX ; 40 bytes indicating the current allocation status
 
 .def int OAMDMAFN = 0xFF80 
 
-
-; currently active actor 
-; only the active actor may update its 
-; state
-; all others are simply drawn but not changed
-actactive: .adv 2 
-
 ; actor memory 
 acttbl: .adv ACTMAX * ACTSIZE
 
