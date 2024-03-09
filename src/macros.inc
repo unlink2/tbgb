@@ -13,9 +13,12 @@
   jp z, rst_panic
 #endmacro
 
-; store pointer
+; store pointer at hl and hl+1
 ; inputs:
 ;   $1 = pointer address
+; registers:
+;   a is overwritten
+;   hl is overwritten
 #macro ldhlptr
   ld a, $1 & 0xFF
   ld [hl+], a

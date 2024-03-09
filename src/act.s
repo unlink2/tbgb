@@ -266,25 +266,43 @@ player_init:
   ; now init player data 
   
   ; type is player 
-  ldhlm acttype 
+  pop hl
+  push hl
+  ld de, acttype 
+  add hl, de
+
   ld a, ACT_TPLAYER
   ld [hl], a
 
   ; ld fn pointer 
-  ldhlm actdrawfn 
+  pop hl
+  push hl
+  ld de, actdrawfn 
+  add hl, de
   ldhlptr player_draw 
   
   ; ignore unused byte for now...
 
   ; TODO: set proper initial location
   ld a, 0x39
-  ldhlm acty 
-  ld [hl], a ; x pos 
-  ldhlm actx 
+  pop hl
+  push hl
+  ld de, acty
+  add hl, de
+  ld [hl], a ; x pos
+
+
+  pop hl
+  push hl
+  ld de, actx
+  add hl, de
   ld [hl], a ; y pos
   
   ; set default state 0
-  ldhlm actstate0fn 
+  pop hl
+  push hl
+  ld de, actstate0fn
+  add hl, de
   ld de, player_state_input 
   ld a, e
   ld [hl+], a
