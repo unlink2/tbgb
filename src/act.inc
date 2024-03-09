@@ -44,8 +44,17 @@
 ; sub-pixel position 
 ; if this overflows the actual x and y position are incremented
 ; xs and ys memory layout is guaranteed!
-.de actxs, 1
 .de actys, 1
+.de actxs, 1
+
+; actor velocity:
+;   actor velocity is an unsigned integer 
+;   split into an x and y part 
+;   the movement direction is decided by the direction flags 
+;   which sets the bits for ACT_DIR_LEFT_RIGHT and ACT_DIR_UP_DOWN 
+;   respectively 
+
+.de actveldir, 1
 
 ; x/y velocity 
 .de actvelocityx, 1
@@ -76,6 +85,10 @@
 .se 0
 .de TC_NEWGAME, 1
 .de TC_MAPED, 1
+
+; actor direction bits 
+.def int ACT_DIR_LEFT_RIGHT = 1 ; 0 = left, 1 = right
+.def int ACT_DIR_UP_DOWN = 2 ; 0 = up, 1 = down
 
 ; ACT_DIRECTION 
 .se 0 
