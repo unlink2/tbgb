@@ -49,20 +49,16 @@
 
 ; actor velocity:
 ;   actor velocity is an unsigned integer 
-;   split into an x and y part 
-;   the movement direction is decided by the direction flags 
-;   which sets the bits for ACT_DIR_LEFT_RIGHT and ACT_DIR_UP_DOWN 
-;   respectively 
-
-.de actveldir, 1
-
-; x/y velocity 
-.de actvelocityx, 1
-.de actvelocityy, 1
+;   split into an x and y part
+;   in either direction
+;   velocity only operates on the sub-pixels of the game 
+;   meaning the max velocity in either direction is 1 pixel per frame
 
 ; xs/ys velocity
-.de actvelocityxs, 1
-.de actvelocityys, 1
+.de actvelocity_xs_left, 1
+.de actvelocity_ys_up, 1
+.de actvelocity_xs_right, 1
+.de actvelocity_ys_down, 1
 
 .de ACTSIZE, 0
 
@@ -85,14 +81,3 @@
 .se 0
 .de TC_NEWGAME, 1
 .de TC_MAPED, 1
-
-; actor direction bits 
-.def int ACT_DIR_LEFT_RIGHT = 1 ; 0 = left, 1 = right
-.def int ACT_DIR_UP_DOWN = 2 ; 0 = up, 1 = down
-
-; ACT_DIRECTION 
-.se 0 
-.de ACT_DIRLEFT, 1
-.de ACT_DIRRIGHT, 1
-.de ACT_DIRUP, 1
-.de ACT_DIRDOWN, 1

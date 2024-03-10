@@ -67,7 +67,7 @@ actupdate:
 @next:
   ld a, [hl]
   and a, ACT_FACTIVE
-  jp z, @skip
+  jr z, @skip REL
 
     ; if found, store hl 
     ; bc and d for later 
@@ -422,129 +422,25 @@ actstate_to:
 ;   de: actor ptr 
 player_state_input:
   push de
-  pop hl ; hl = act ptr 
 
   ld a, [inputs]
   ; up input
-  and a, BTNUP 
-  jr z, @notup REL
-  
-    ld e, ACT_DIRUP
-    jr @movement REL
-@notup:
+  ; and a, BTNUP 
+  ; jr z, @notup REL
+ 
+ @movement:
+  ; pop act address into de 
+  pop de 
+  call act_substate_move
 
-  ld a, [inputs]
-  and a, BTNDOWN 
-  jr z, @notdown REL
-
-    ld e, ACT_DIRDOWN 
-    jr @movement REL
-@notdown:
-  
-  ld a, [inputs]
-  and a, BTNLEFT 
-  jr z, @notleft REL
-    
-    ld e, ACT_DIRLEFT 
-    jr @movement REL
-@notleft:
-
-  ld a, [inputs]
-  and a, BTNRIGHT 
-  jr z, @notright REL
-
-    ld e, ACT_DIRRIGHT 
-    jr @movement REL
-@notright:
-
-  ret 
-@movement:
-  ; transition to state 
-  ; move for 8 pixels/frames 
-  ; in a direction set in e  
-  ld d, 8
-  ld bc, act_state_move 
-  call actstate_to
   ret 
 
 ; move the player in a specific direction 
 ; state vars:
-;   actstate+0: how many frames to move for 
-;   actstate+1: which direction to move in (see ACT_DIRECTION) 
 ; inputs:
 ;   de: actor ptr 
-act_state_move:
-  push de
-
-  ld hl, actstate 
-  add hl, de ; hl = actstate+0
-  ld a, [hl]
-  cp a, 0
-  jp z, @todefault 
-  dec a
-  ld [hl+], a ; hl = actstate+1 
-  
-  ; TODO: handle collision here 
-  ; if collision is detected do not move!
-
-  ld a, [hl]
-  cp a, ACT_DIRUP 
-  jr nz, @notup REL
-    
-    ; move up 
-    pop hl
-    push hl
-    ld de, acty
-    add hl, de
-    ld a, [hl]
-    dec a
-    ld [hl], a
-    pop hl 
-    jr @done REL
-@notup:
-  cp a, ACT_DIRDOWN 
-  jr nz, @notdown REL
-
-    pop hl
-    ld de, acty 
-    add hl, de
-    ld a, [hl]
-    inc a
-    ld [hl], a 
-    jr @done REL
-@notdown:
-  
-  cp a, ACT_DIRLEFT 
-  jr nz, @notleft REL
-    
-    pop hl
-    ld de, actx
-    add hl, de 
-
-    ld a, [hl]
-    dec a
-    ld [hl], a
-    jr @done REL
-@notleft:
-  
-  cp a, ACT_DIRRIGHT 
-  jr nz, @notright REL
-
-    pop hl
-    ld de, actx
-    add hl, de
-
-    ld a, [hl]
-    inc a
-    ld [hl], a
-    jr @done REL
-@notright: 
-  pop hl ; fallback pop hl if no case was hit
-@done: 
-  ret 
-@todefault: 
-  pop hl
-  call actstate_to_s0
+act_substate_move:
+   
   ret 
 
 ; player animation frames
