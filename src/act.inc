@@ -23,16 +23,11 @@
 ; this includes 
 
 ; max/current hp
-.de actstat_hpmax, 2
 .de actstat_hpcur, 2
 
 ; 2 bytes of user-specific memory
 ; can be used by each actor as needed
 .de actusr, 2
-; 2 bytes that can be used as paramters for 
-; states. The documentation for what the bytes do should be part 
-; of the state function
-.de actstate, 2 
 
 ; actor movement 
 

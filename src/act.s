@@ -389,19 +389,6 @@ actstate_to_s0:
 ;   bc: next state 
 ;   de: state data (d -> actstate+0, e-> actstate+1)
 actstate_to:
-  push hl
-  push de
-  
-  ld de, actstate 
-  add hl, de ; hl = actstate+0
-  pop de
-  ld a, d
-  ld [hl+], a
-  ld a, e
-  ld [hl], a
-  
-  pop hl
-  push hl
   ld de, actstatefn 
   add hl, de
   
@@ -410,7 +397,6 @@ actstate_to:
 
   ld a, b
   ld [hl], a
-  pop hl
   ret 
 
 ; read player input
