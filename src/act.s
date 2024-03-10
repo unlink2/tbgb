@@ -422,25 +422,79 @@ actstate_to:
 ;   de: actor ptr 
 player_state_input:
   push de
+  
+  ld hl, actvelocity_ys_up 
+  add hl, de ; hl now points at ys up 
 
   ld a, [inputs]
   ; up input
-  ; and a, BTNUP 
-  ; jr z, @notup REL
- 
- @movement:
+  and a, BTNUP 
+  jr z, @notup REL
+  
+  ; load max velocity for now  
+  ld a, 0xFF 
+  ld [hl+], a ; hl = ys down
+  jr @updone REL
+@notup:
+  ld a, 0
+  ld [hl+], a ; hl = ys down
+@updone:
   ; pop act address into de 
   pop de 
   call act_substate_move
 
   ret 
 
-; move the player in a specific direction 
+; move the actor in a specific direction 
 ; state vars:
 ; inputs:
-;   de: actor ptr 
+;   de: actor ptr
+; registers changed:
+;   de, hl, scratch
 act_substate_move:
+  push de
+  
+  ; load y and x velocities and store them in scratch memory 
+  ld hl, actvelocity_ys_up
+  add hl, de
+  ld a, [hl+] ; ys up 
+  ld [scratch], a
+
+  ld a, [hl+] ; ys down
+  ld [scratch+1], a
+
+  ld a, [hl+] ; xs left
+  ld [scratch+2], a
+
+  ld a, [hl+] ; xs right 
+  ld [scratch+3], a
+  
+  pop hl
+
+  ; y position
+@y_up:
+  ld de, actys
+  add hl, de
+
+  ; y up movement
+  ld a, [scratch]
+  ld b, a
+  ld a, [hl]
+  sub a, b
+  ld [hl+], a
+  inc hl ; hl now points at y
+  
+  ; add carry at y position
+  ld b, 0
+  ld a, [hl]
+  sbc a, b
+  ld [hl], a
+
+  dec hl
+  dec hl ; hl points back at ys
    
+
+
   ret 
 
 ; player animation frames
@@ -463,7 +517,6 @@ player_draw:
   ld a, [hl] ; x
   ld c, a
 
-  ; 
   ld hl, player_frames
   ld a, [global_anim_timer]
   ld d, 0

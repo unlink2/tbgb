@@ -85,3 +85,9 @@ inventory: .adv INVSIZE * MAX_INV
 mapbuf: .adv MAP_SIZE
 ; contains map flags, one byte per tile
 mapflags: .adv MAP_SIZE
+
+
+#define SCRATCH_MAX 8
+; temporary memory that can be used 
+; by routines as they see fit
+scratch: .adv SCRATCH_MAX
