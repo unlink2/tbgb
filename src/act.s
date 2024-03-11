@@ -399,6 +399,26 @@ actstate_to:
   ld [hl], a
   ret 
 
+
+; process a single player input
+; inputs:
+;   a: zero or not zero for input
+;   hl: pointing to velocity byte  
+; returns:
+;   hl+1
+player_substate_input_proc:
+  jr z, @not REL
+
+  ; load max velocity for now  
+  ld a, 0xFF  
+  ld [hl+], a ; hl = ys down
+  jr @done REL
+@not:
+  ld a, 0
+  ld [hl+], a ; hl = ys down 
+@done:
+  ret 
+
 ; read player input
 ; and transition to input handling state 
 ; for the next frame
@@ -412,19 +432,17 @@ player_state_input:
   ld hl, actvelocity_ys_up 
   add hl, de ; hl now points at ys up 
 
-  ld a, [inputs]
   ; up input
+  ld a, [inputs]
   and a, BTNUP 
-  jr z, @notup REL
+  call player_substate_input_proc 
   
-  ; load max velocity for now  
-  ld a, 0xFF 
-  ld [hl+], a ; hl = ys down
-  jr @updone REL
-@notup:
-  ld a, 0
-  ld [hl+], a ; hl = ys down
-@updone:
+  ; down input
+  ld a, [inputs]
+  and a, BTNDOWN
+  call player_substate_input_proc
+
+
   ; pop act address into de 
   pop de 
   call act_substate_move
