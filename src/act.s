@@ -429,8 +429,7 @@ player_substate_input_proc:
 player_state_input:
   push de
   
-  ld hl, actvelocity_ys_up 
-  add hl, de ; hl now points at ys up 
+  ld hl, player_velocity_ys_up  ; hl now points at ys up 
 
   ; up input
   ld a, [inputs]
@@ -454,7 +453,7 @@ player_state_input:
 
   ; pop act address into de 
   pop de 
-  call act_substate_move
+  call player_act_substate_move
 
   ret 
 
@@ -516,37 +515,18 @@ act_substate_move_add:
 ;   de: actor ptr
 ; registers changed:
 ;   de, hl, scratch
-act_substate_move:
-  push de
-  
-  ; load y and x velocities and store them in scratch memory 
-  ld hl, actvelocity_ys_up
-  add hl, de
-  ld a, [hl+] ; ys up 
-  ld [scratch], a
-
-  ld a, [hl+] ; ys down
-  ld [scratch+1], a
-
-  ld a, [hl+] ; xs left
-  ld [scratch+2], a
-
-  ld a, [hl+] ; xs right 
-  ld [scratch+3], a
-  
-  pop hl
-
-  ld de, actys
+player_act_substate_move:
+  ld hl, actys
   add hl, de ; hl = ys 
 
   ; y position
   
   ; up 
-  ld a, [scratch] ; a = velocity up 
+  ld a, [player_velocity_ys_up] ; a = velocity up 
   call act_substate_move_sub
    
   ; down
-  ld a, [scratch+1]
+  ld a, [player_velocity_ys_down]
   call act_substate_move_add
   
   inc hl ; hl = xs
@@ -554,11 +534,11 @@ act_substate_move:
   ; x position
   
   ; left 
-  ld a, [scratch+2]
+  ld a, [player_velocity_xs_left]
   call act_substate_move_sub
 
   ; right 
-  ld a, [scratch+3]
+  ld a, [player_velocity_xs_right]
   call act_substate_move_add
 
   ret 

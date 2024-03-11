@@ -86,6 +86,24 @@ mapbuf: .adv MAP_SIZE
 ; contains map flags, one byte per tile
 mapflags: .adv MAP_SIZE
 
+; =========================
+; player specific variables 
+; =========================
+
+; actor velocity:
+;   player velocity is an unsigned integer 
+;   split into an x and y part
+;   in either direction
+;   velocity only operates on the sub-pixels of the game 
+;   meaning the max velocity in either direction is 1 pixel per frame
+;   memory layout of velocity is guaranteed!
+
+; xs/ys velocity
+player_velocity_ys_up: .adv 1
+player_velocity_ys_down: .adv 1
+player_velocity_xs_left: .adv 1
+player_velocity_xs_right: .adv 1
+player_hpmax: .adv 1
 
 #define SCRATCH_MAX 8
 ; temporary memory that can be used 

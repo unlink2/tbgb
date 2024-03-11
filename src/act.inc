@@ -42,21 +42,6 @@
 .de acty, 1
 .de actx, 1
 
-
-; actor velocity:
-;   actor velocity is an unsigned integer 
-;   split into an x and y part
-;   in either direction
-;   velocity only operates on the sub-pixels of the game 
-;   meaning the max velocity in either direction is 1 pixel per frame
-;   memory layout of velocity is guaranteed!
-
-; xs/ys velocity
-.de actvelocity_ys_up, 1
-.de actvelocity_ys_down, 1
-.de actvelocity_xs_left, 1
-.de actvelocity_xs_right, 1
-
 .de ACTSIZE, 0
 
 
