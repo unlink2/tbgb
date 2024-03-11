@@ -442,11 +442,72 @@ player_state_input:
   and a, BTNDOWN
   call player_substate_input_proc
 
+  ; left input
+  ld a, [inputs]
+  and a, BTNLEFT
+  call player_substate_input_proc
+  
+  ; right input 
+  ld a, [inputs]
+  and a, BTNRIGHT
+  call player_substate_input_proc
 
   ; pop act address into de 
   pop de 
   call act_substate_move
 
+  ret 
+
+; move current actor in a specific direction
+; by substracting 
+; inputs:
+;   hl: points to xs or ys of actor 
+;   a: velocity 
+; returns:
+;   hl is preserved 
+act_substate_move_sub:
+  push hl
+
+  ; y up movement
+  ld b, a
+  ld a, [hl]
+  sub a, b
+  ld [hl+], a
+  inc hl ; hl now points at y
+  
+  ; add carry at y position
+  ld b, 0
+  ld a, [hl]
+  sbc a, b
+  ld [hl], a
+
+  pop hl
+  ret 
+
+; move current actor in a specific direction
+; by addition
+; inputs:
+;   hl: points to xs or ys of actor 
+;   a: velocity 
+; returns:
+;   hl is preserved 
+act_substate_move_add:
+  push hl
+
+  ; y up movement
+  ld b, a
+  ld a, [hl]
+  add a, b
+  ld [hl+], a
+  inc hl ; hl now points at y
+  
+  ; add carry at y position
+  ld b, 0
+  ld a, [hl]
+  adc a, b
+  ld [hl], a
+
+  pop hl
   ret 
 
 ; move the actor in a specific direction 
@@ -475,29 +536,30 @@ act_substate_move:
   
   pop hl
 
-  ; y position
-@y_up:
   ld de, actys
-  add hl, de
+  add hl, de ; hl = ys 
 
-  ; y up movement
-  ld a, [scratch]
-  ld b, a
-  ld a, [hl]
-  sub a, b
-  ld [hl+], a
-  inc hl ; hl now points at y
+  ; y position
   
-  ; add carry at y position
-  ld b, 0
-  ld a, [hl]
-  sbc a, b
-  ld [hl], a
-
-  dec hl
-  dec hl ; hl points back at ys
+  ; up 
+  ld a, [scratch] ; a = velocity up 
+  call act_substate_move_sub
    
+  ; down
+  ld a, [scratch+1]
+  call act_substate_move_add
+  
+  inc hl ; hl = xs
 
+  ; x position
+  
+  ; left 
+  ld a, [scratch+2]
+  call act_substate_move_sub
+
+  ; right 
+  ld a, [scratch+3]
+  call act_substate_move_add
 
   ret 
 
