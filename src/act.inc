@@ -44,7 +44,6 @@
 
 .de ACTSIZE, 0
 
-
 ; actor types 
 .se 1
 

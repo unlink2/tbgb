@@ -303,7 +303,7 @@ player_init:
   push hl
   ld de, actstate0fn
   add hl, de
-  ld de, player_state_input 
+  ld de, player_state_update
   ld a, e
   ld [hl+], a
   ld a, d
@@ -400,6 +400,13 @@ actstate_to:
   ret 
 
 
+player_state_update:
+  call player_substate_input
+  call player_substate_gravity
+  call player_act_substate_move
+
+  ret
+
 ; process a single player input
 ; inputs:
 ;   a: zero or not zero for input
@@ -419,6 +426,16 @@ player_substate_input_proc:
 @done:
   ret 
 
+player_substate_gravity:
+  push de
+  
+  ; for now just use constat gravity
+  ld a, 0x7F
+  ld [player_velocity_ys_down], a
+
+  pop de
+  ret
+
 ; read player input
 ; and transition to input handling state 
 ; for the next frame
@@ -426,7 +443,7 @@ player_substate_input_proc:
 ;   act_state_move if dpad is pressed
 ; inputs:
 ;   de: actor ptr 
-player_state_input:
+player_substate_input:
   push de
   
   ld hl, player_velocity_ys_up  ; hl now points at ys up 
@@ -452,8 +469,7 @@ player_state_input:
   call player_substate_input_proc
 
   ; pop act address into de 
-  pop de 
-  call player_act_substate_move
+  pop de
 
   ret 
 
@@ -509,6 +525,8 @@ act_substate_move_add:
   pop hl
   ret 
 
+
+
 ; move the actor in a specific direction 
 ; state vars:
 ; inputs:
@@ -516,6 +534,8 @@ act_substate_move_add:
 ; registers changed:
 ;   de, hl, scratch
 player_act_substate_move:
+  push de
+
   ld hl, actys
   add hl, de ; hl = ys 
 
@@ -540,7 +560,8 @@ player_act_substate_move:
   ; right 
   ld a, [player_velocity_xs_right]
   call act_substate_move_add
-
+  
+  pop de
   ret 
 
 ; player animation frames
@@ -854,3 +875,9 @@ acttiletomapl: ; low nibble
 .rep i, 20, 1, .db (i * 20) 
 acttiletomaph: ; hi nibble
 .rep i, 20, 1, .db ((i * 20) >> 8)
+
+; lookup table for actor collision based on actor type
+; e.g. ACT_TPLAYER
+;   each entry is 4 bytes wide and is a pixel offset 
+;   from the actors position 
+actcollut: 
