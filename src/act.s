@@ -61,6 +61,9 @@ act_alloc:
 ; if an actor is not marked as active it will 
 ; simply be skipped. Otherwise its current statefn is called 
 actupdate:
+  ; free all soam entries
+  call soamfreeall
+
   ld bc, ACTSIZE
   ld hl, acttbl
   ld d, 0 ; loop counter 
@@ -100,51 +103,6 @@ actupdate:
   jr nz, @next REL
   ret
 
-; draw all actors to soam
-; this is not the actual vram draw call 
-; and can safely be called at any point 
-actdraw:
-  ; first free all soam entries 
-  call soamfreeall
-@draw_act:
-  ld bc, ACTSIZE
-  ld hl, acttbl
-  ld d, 0 ; loop counter 
-@next:
-  ld a, [hl]
-  and a, ACT_FACTIVE
-  jp z, @skip
-
-    ; if found, store hl 
-    ; bc and d for later 
-    ; FIXME: surely we can do better here 
-    push hl
-    push bc
-    push de
-    
-    ; pop hl into de because the actors expect
-    ; the actor ptr to be in de initially
-    push hl
-    pop de
-
-    ; jump to the function 
-    ld bc, actdrawfn 
-    add hl, bc ; hl points to fn pointer now...
-    call callptr
-
-    pop de
-    pop bc
-    pop hl
-@skip:
-  
-  ; go to next actor
-  add hl, bc
-  ; inc loop counter 
-  inc d 
-  ld a, d
-  cp a, ACTMAX
-  jr nz, @next REL
-  ret
 
 ; dam shadow oam to oam
 ; registers:
@@ -273,13 +231,6 @@ player_init:
 
   ld a, ACT_TPLAYER
   ld [hl], a
-
-  ; ld fn pointer 
-  pop hl
-  push hl
-  ld de, actdrawfn 
-  add hl, de
-  ldhlptr player_draw 
   
   ; ignore unused byte for now...
 
@@ -368,7 +319,7 @@ player_state_update:
   call player_substate_input
   call player_substate_gravity
   call player_act_substate_move
-
+  call player_draw
   ret
 
 ; process a single player input
@@ -587,13 +538,6 @@ title_cursor_init:
   ld a, ACT_TTITLECURSOR
   ld [hl], a
 
-  ; ld fn pointer 
-  pop hl
-  push hl
-  ld de, actdrawfn
-  add hl, de
-  ldhlptr title_cursor_draw 
-
   ld a, 0
   pop hl
   push hl
@@ -617,6 +561,7 @@ title_cursor_positions:
 title_cursor_update:
   push de 
   pop hl
+  push hl ; this push is for draw call later
   ; hl now points to acty 
   ; which is the cursor selection index
   ld de, acty
@@ -645,6 +590,7 @@ title_cursor_update:
   ld hl, init_mode_editor
 @notmaped:
 @transition:
+  pop de ; pop draw call push in this case
   call transition
   ret
 @notstart:
@@ -686,6 +632,8 @@ title_cursor_update:
 @notup:
 
 @no_inputs:
+  pop de ; de points to act again
+  call title_cursor_draw
   ret
 
 title_cursor_draw:

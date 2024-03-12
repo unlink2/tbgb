@@ -6,10 +6,6 @@
 .de actflags, 1
 .de acttype, 1
 
-; actor function pointers
-; draw, state0, and statefn layout is guaranteed
-.de actdrawfn, 2
-
 ; the actor state is the current state the actor is in
 ; a state may transition to any other state function 
 ; or it may return to the default statue function

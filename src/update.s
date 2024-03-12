@@ -43,7 +43,6 @@ update:
   
   ; update the active actor only 
   call actupdate
-  call actdraw 
 
   ret
 
