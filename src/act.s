@@ -297,21 +297,11 @@ player_init:
   ld de, actx
   add hl, de
   ld [hl], a ; y pos
-  
-  ; set default state 0
-  pop hl
-  push hl
-  ld de, actstate0fn
-  add hl, de
-  ld de, player_state_update
-  ld a, e
-  ld [hl+], a
-  ld a, d
-  ld [hl], a
 
   pop hl
+  ld bc, player_state_update
   ; transition player to state 0
-  call actstate_to_s0
+  call actstate_to
 
   ret
 
@@ -357,37 +347,11 @@ actstate_nop:
 
   ret 
 
-; transition the actor back to its default state 
-; inputs:
-;   hl: actor ptr 
-; registers:
-;   hl remains unchanged 
-actstate_to_s0:
-  ; load default state into bc 
-  push hl
-
-  pop hl
-  push hl
-  ld de, actstate0fn
-  add hl, de
-
-  ld a, [hl+]
-  ld c, a
-  ld a, [hl+]
-  ld b, a 
-
-  ; bc = state0
-  pop hl
-  call actstate_to 
-
-  
-  ret
 
 ; transition actor to any state
 ; inputs:
 ;   hl: actor ptr 
 ;   bc: next state 
-;   de: state data (d -> actstate+0, e-> actstate+1)
 actstate_to:
   ld de, actstatefn 
   add hl, de
@@ -638,20 +602,10 @@ title_cursor_init:
   ld [hl], a ; y pos
  
 
-  ; set default state 0
   pop hl
-  push hl
-  ld de, actstate0fn
-  add hl, de
-  ld de, title_cursor_update 
-  ld a, e
-  ld [hl+], a
-  ld a, d
-  ld [hl], a
-
-  pop hl
+  ld bc, title_cursor_update
   ; transition player to state 0
-  call actstate_to_s0
+  call actstate_to
 
   ret 
 

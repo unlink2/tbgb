@@ -9,10 +9,7 @@
 ; actor function pointers
 ; draw, state0, and statefn layout is guaranteed
 .de actdrawfn, 2
-; state 0 is the default state 
-; each actor can define a default state it wants to return to 
-; if no other satate is required
-.de actstate0fn, 2
+
 ; the actor state is the current state the actor is in
 ; a state may transition to any other state function 
 ; or it may return to the default statue function
@@ -21,9 +18,6 @@
 
 ; 8 bytes for actor stats
 ; this includes 
-
-; max/current hp
-.de actstat_hpcur, 2
 
 ; 2 bytes of user-specific memory
 ; can be used by each actor as needed
