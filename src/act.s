@@ -391,21 +391,25 @@ player_substate_input:
 ; move current actor in a specific direction
 ; by substracting 
 ; inputs:
-;   hl: points to xs or ys of actor 
+;   hl: points to x or y of actor 
+;   de: points to xs or ys of actor
 ;   a: velocity 
 ; returns:
 ;   hl is preserved 
-act_substate_move_sub:
+player_substate_move_sub:
   push hl
-
+  push hl
+  
+  ld hl, 0 ; hl = xs or ys
+  add hl, de
   ; y up movement
   ld b, a
   ld a, [hl]
   sub a, b
-  ld [hl+], a
-  inc hl ; hl now points at y
+  ld [hl], a
   
   ; add carry at y position
+  pop hl ; hl = x or y
   ld b, 0
   ld a, [hl]
   sbc a, b
@@ -417,21 +421,25 @@ act_substate_move_sub:
 ; move current actor in a specific direction
 ; by addition
 ; inputs:
-;   hl: points to xs or ys of actor 
+;   hl: points to x or y of actor
+;   de: points to xs or ys of actor
 ;   a: velocity 
 ; returns:
 ;   hl is preserved 
-act_substate_move_add:
+player_substate_move_add:
   push hl
-
+  push hl
+  
+  ld hl, 0 ; hl = xs or ys
+  add hl, de
   ; y up movement
   ld b, a
   ld a, [hl]
   add a, b
-  ld [hl+], a
-  inc hl ; hl now points at y
+  ld [hl], a
   
   ; add carry at y position
+  pop hl ; hl = x or y
   ld b, 0
   ld a, [hl]
   adc a, b
@@ -451,30 +459,32 @@ act_substate_move_add:
 player_act_substate_move:
   push de
 
-  ld hl, actys
-  add hl, de ; hl = ys 
+  ld hl, acty
+  add hl, de ; hl = y
+  ld de, player_ys
 
   ; y position
   
   ; up 
   ld a, [player_velocity_ys_up] ; a = velocity up 
-  call act_substate_move_sub
+  call player_substate_move_sub
    
   ; down
   ld a, [player_velocity_ys_down]
-  call act_substate_move_add
+  call player_substate_move_add
   
-  inc hl ; hl = xs
+  inc hl ; hl = x
+  ld de, player_xs
 
   ; x position
   
   ; left 
   ld a, [player_velocity_xs_left]
-  call act_substate_move_sub
+  call player_substate_move_sub
 
   ; right 
   ld a, [player_velocity_xs_right]
-  call act_substate_move_add
+  call player_substate_move_add
   
   pop de
   ret 

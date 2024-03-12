@@ -21,12 +21,6 @@
 
 ; actor movement 
 
-; sub-pixel position 
-; if this overflows the actual x and y position are incremented
-; xs and ys memory layout is guaranteed!
-.de actys, 1
-.de actxs, 1
-
 ; actor's real x and y location 
 ; y and x memory layout is guaranteed! 
 .de acty, 1
