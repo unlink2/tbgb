@@ -98,6 +98,12 @@ mapflags: .adv MAP_SIZE
 ;   meaning the max velocity in either direction is 1 pixel per frame
 ;   memory layout of velocity is guaranteed!
 
+; sub-pixel position 
+; if this overflows the actual x and y position are incremented
+; xs and ys memory layout is guaranteed!
+.de player_ys, 1
+.de player_xs, 1
+
 ; xs/ys velocity
 player_velocity_ys_up: .adv 1
 player_velocity_ys_down: .adv 1

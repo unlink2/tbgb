@@ -780,6 +780,12 @@ acttiletomaph: ; hi nibble
 
 ; lookup table for actor collision based on actor type
 ; e.g. ACT_TPLAYER
-;   each entry is 4 bytes wide and is a pixel offset 
-;   from the actors position 
-actcollut: 
+;   each entry is 2 bytes wide and is a pixel offset
+;   the 2 bytes are as built as follows:
+;     11: offset_right  111111: width
+;     11: offset_down 111111: height
+;   this means the upper 2 bits of each byte allow for a 
+;   minor offset from the actor's actual position
+;   the remaining bits are simplt a singed integer
+actcollision:
+.db 0x00 | 0x08, 0x00 | 0x08 ; player 
