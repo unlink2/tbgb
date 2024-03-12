@@ -77,15 +77,6 @@ global_delay: .adv 1
 
 game_flags: .adv 1
 
-; currnet turn
-turn_count: .adv 1
-
-inventory: .adv INVSIZE * MAX_INV
-
-mapbuf: .adv MAP_SIZE
-; contains map flags, one byte per tile
-mapflags: .adv MAP_SIZE
-
 ; =========================
 ; player specific variables 
 ; =========================
@@ -115,3 +106,11 @@ player_hpmax: .adv 1
 ; temporary memory that can be used 
 ; by routines as they see fit
 scratch: .adv SCRATCH_MAX
+
+; ====================
+; Map buffer
+; ====================
+
+mapbuf: .adv MAP_SIZE
+; contains map flags, one byte per tile
+mapflags: .adv MAP_SIZE
