@@ -109,6 +109,13 @@ dbghex:
 
   ret
 
+; prints a 0-terminated string to the screen
+; inputs:
+;   hl: screen address
+;   de: string ptr 
+puts:
+  ret
+
 ; initialize window registers 
 initwin:
   ld a, 144 - 8

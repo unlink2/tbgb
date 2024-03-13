@@ -3,6 +3,9 @@
 .rep i, 26, 1, .scc i + 'a' = i + 10
 .rep i, 26, 1, .scc i + 'A' = i + 10
 
+; map space to empty tile
+.scc 0x20 = 0x30 
+
 SNEW_GAME:
 .str "New Game"
 SMAP_EDITOR:
