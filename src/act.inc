@@ -12,8 +12,8 @@
 ; which is stored in actstate0
 .de actstatefn, 2 
 
-; 8 bytes for actor stats
-; this includes 
+; pointer to collision offsets
+.de actcollisin, 2
 
 ; 2 bytes of user-specific memory
 ; can be used by each actor as needed

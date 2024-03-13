@@ -798,4 +798,6 @@ acttiletomaph: ; hi nibble
 ;   minor offset from the actor's actual position
 ;   the remaining bits are simplt a singed integer
 actcollision:
-.db 0x00 | 0x08, 0x00 | 0x08 ; player 
+; player 
+.db 0x08
+.db 0x08 
