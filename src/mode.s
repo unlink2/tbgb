@@ -45,7 +45,7 @@ init_mode_title:
   
   ; draw menu text 
   
-  ld bc, SCRN0 + 16
+  ld bc, SCRN0 + 32 + 15
   ld de, STITLE
   call puts
 
