@@ -22,7 +22,7 @@ make # to compile all targets
 
 ### Building assets
 
-To build the assets simply check out the assets repository and run `make tiles`.
+To build the assets simply check out the `assets repository` into the `assets` directory and run `make tiles`.
 This is only required if changes to the tileset were made. All 'compiled' tile directories are already included in this repository!
 
 ## License
