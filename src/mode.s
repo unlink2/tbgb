@@ -42,6 +42,20 @@ init_mode_title:
   ; initial game mode
   ld a, MODE_TITLE 
   ld [game_mode], a
+  
+  ; draw menu text 
+  
+  ld bc, SCRN0 + 16
+  ld de, STITLE
+  call puts
+
+  ld bc, SCRN0 + 200
+  ld de, SNEW_GAME 
+  call puts
+
+  ld bc, SCRN0 + 232
+  ld de, SMAP_EDITOR
+  call puts
 
   ret
 

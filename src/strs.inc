@@ -6,7 +6,13 @@
 ; map space to empty tile
 .scc 0x20 = 0x30 
 
+STITLE:
+.str "tbgb"
+.db 0
+
 SNEW_GAME:
 .str "New Game"
+.db 0
 SMAP_EDITOR:
 .str "Map Editor"
+.db 0

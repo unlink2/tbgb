@@ -111,9 +111,30 @@ dbghex:
 
 ; prints a 0-terminated string to the screen
 ; inputs:
-;   hl: screen address
+;   bc: screen address
 ;   de: string ptr 
 puts:
+@putchr:
+  ld hl, 0
+  add hl, de
+  ld a, [hl]
+
+  ; is null terminaor?
+  cp a, 0
+  jr z, @end REL
+  
+  ld hl, 0
+  add hl, bc
+  
+  ld [hl], a
+
+  ; next addresses 
+  inc de
+  inc bc 
+
+  jr @putchr REL
+
+@end:
   ret
 
 ; initialize window registers 
