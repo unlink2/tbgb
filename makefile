@@ -4,4 +4,4 @@ BDIR=bin/
 
 all:
 	mkdir -p $(BDIR)
-	ulas -v -o $(BDIR)/$(BIN) -l bin/lst.txt -s bin/syms.txt -i ./src src/main.s 
+	ulas -v -o $(BDIR)/$(BIN) -l bin/tb.lst -s bin/tb.mlb -S mlb -i ./src src/main.s 
