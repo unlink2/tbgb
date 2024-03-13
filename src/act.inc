@@ -46,3 +46,4 @@
 .se 0
 .de TC_NEWGAME, 1
 .de TC_MAPED, 1
+

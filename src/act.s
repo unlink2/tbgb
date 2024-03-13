@@ -250,9 +250,19 @@ player_init:
   ld [hl], a ; y pos
 
   pop hl
+  push hl
   ld bc, player_state_update
   ; transition player to state 0
   call actstate_to
+
+  pop hl
+  ld de, actcollisin
+  add hl, de
+  ld bc, player_collision
+  ld a, c
+  ld [hl+], a
+  ld a, b
+  ld [hl], a
 
   ret
 
@@ -488,6 +498,16 @@ player_act_substate_move:
   
   pop de
   ret 
+
+; check top left collision for current actor's 
+; top left collision rect location
+; inputs:
+;   
+; returns:
+;   a = 0 -> no collision
+;   a = 1 -> collision
+act_substate_check_collision_top_left:
+  ret
 
 ; player animation frames
 player_frames:
@@ -790,14 +810,16 @@ acttiletomaph: ; hi nibble
 
 ; lookup table for actor collision based on actor type
 ; e.g. ACT_TPLAYER
-;   each entry is 2 bytes wide and is a pixel offset
-;   the 2 bytes are as built as follows:
-;     11: offset_right  111111: width
-;     11: offset_down 111111: height
-;   this means the upper 2 bits of each byte allow for a 
-;   minor offset from the actor's actual position
-;   the remaining bits are simplt a singed integer
-actcollision:
+;   each entry is 4 bytes wide 
+;   with the following values
+;   0 -> left offset
+;   1 -> top offset
+;   2 -> width
+;   3 -> height
+
+player_collision:
 ; player 
-.db 0x08
-.db 0x08 
+.db 0x00 ; left offset 
+.db 0x00 ; top offset 
+.db 0x08 ; width
+.db 0x08 ; height 
