@@ -492,10 +492,12 @@ player_act_substate_move:
   call act_substate_check_collision_bottom_left
   cp a, 0 
   jr z, @no_collision_down REL
+  
   ; if collision happened restore previous y 
-  ld de, acty
   push hl
+  ld de, acty
   add hl, de
+  ld a, [scratch]
   ld [hl], a
   pop hl
 
@@ -536,14 +538,39 @@ player_act_substate_move:
 act_substate_check_collision_bottom_left:
   push hl
   push de
+  
+  push hl
+  ld de, acty
+  add hl, de
+  ld a, [hl+]
+  ld b, a
+  ld a, [hl]
+  ld c, a ; bc is x/y coordinate 
+  
+  pop hl
 
-  ld a, [hl+] ; a = left offset 
-  add a, c ; x + left 
-  ld c, a ; back to c 
+  ; TODO: this is still broken
+  ld de, actcollisin 
+  add hl, de ; hl = collision rect
 
-  ld a, [hl] ; a = top offset 
+  ld a, [hl+]
+  ld e, a
+  ld a, [hl]
+  ld d, a
+  ld hl, 0
+  add hl, de ; hl = collision rectangle
+
+  ld a, [hl+] ; a = y offset 
   add a, b ; y = top 
   ld b, a ; back to b
+
+  ld a, [hl+] ; a = x offset 
+  add a, c ; x + left 
+  ld c, a ; back to c 
+  
+  ld a, [hl] ; a = height 
+  add a, c ; y + width 
+  ld c, a
   
   call tileflagsat
   and a, TILE_COLLIDER
@@ -855,14 +882,14 @@ acttiletomaph: ; hi nibble
 ; e.g. ACT_TPLAYER
 ;   each entry is 4 bytes wide 
 ;   with the following values
-;   0 -> left offset
-;   1 -> top offset
-;   2 -> width
-;   3 -> height
+;   0 -> y offset
+;   1 -> x offset
+;   2 -> height
+;   3 -> width
 
 player_collision:
 ; player 
-.db 0x00 ; left offset 
-.db 0x00 ; top offset 
-.db 0x08 ; width
-.db 0x08 ; height 
+.db 0x00 ; y offset 
+.db 0x00 ; x offset 
+.db 0x08 ; height
+.db 0x08 ; width 
