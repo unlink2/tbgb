@@ -507,7 +507,7 @@ player_act_substate_move:
 ;   c:  x coordinate
 ; returns:
 ;   a = 0 -> no collision
-;   a = 1 -> collision
+;   a > 0 -> collision
 ; registers:
 ;   preserves hl
 ;   preserves de
@@ -523,33 +523,12 @@ act_substate_check_collision_bottom_left:
   add a, b ; y = top 
   ld b, a ; back to b
   
-  call act_substate_check_collision
+  call tileflagsat
+  and a, TILE_COLLIDER
 
   pop de
   pop hl
   ret
-
-; generic collision check
-; inputs:
-;   b: y coordinate
-;   c: x coordinate
-; returns:
-;   a = 0 -> no collision
-;   a = 1 -> collision
-; registers:
-;   changes hl
-;   changes de
-act_substate_check_collision:
-
-  ; bc is now the correct coodrinate 
-  ld hl, actpostotile
-  ld d, 0
-  ld e, a ; de = coordinate 
-
-  add hl, de ; hl = correct lookup 
-  ld a, [hl] ; get tile position
-
-  ret 
 
 ; player animation frames
 player_frames:
