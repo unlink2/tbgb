@@ -81,7 +81,7 @@ draw_mode_play:
   ld b, a
   ld a, [hl]
   ld c, a
-  call postotile
+  call tileflagsat 
   ld hl, SCRN0+6
   call dbghex 
 

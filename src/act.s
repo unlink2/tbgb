@@ -526,9 +526,7 @@ player_act_substate_move:
 ; check top left collision for current actor's 
 ; top left collision rect location
 ; inputs:
-;   hl: pointing to collision rectangle information
-;   b:  y coodinate
-;   c:  x coordinate
+;   hl: actor ptr 
 ; returns:
 ;   a = 0 -> no collision
 ;   a > 0 -> collision
@@ -538,7 +536,7 @@ player_act_substate_move:
 act_substate_check_collision_bottom_left:
   push hl
   push de
-  
+
   ld a, [hl+] ; a = left offset 
   add a, c ; x + left 
   ld c, a ; back to c 

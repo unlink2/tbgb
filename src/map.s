@@ -59,7 +59,9 @@ mapfulldraw:
 ; these flags configure a tile 
 ; for collision, damage and other such things
 tileflags:
-; 0-9 a-f = no flags
+; 0-9 a-z = no flags
+.rep i, 16, 1, .db 0
+.rep i, 16, 1, .db 0
 .rep i, 16, 1, .db 0
 ; empty tile 
 .db 0
