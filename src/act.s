@@ -408,7 +408,6 @@ player_substate_input:
 ;   hl is preserved 
 player_substate_move_sub:
   push hl
-  push hl
   
   ld hl, 0 ; hl = xs or ys
   add hl, de
@@ -425,7 +424,6 @@ player_substate_move_sub:
   sbc a, b
   ld [hl], a
 
-  pop hl
   ret 
 
 ; move current actor in a specific direction
@@ -435,9 +433,7 @@ player_substate_move_sub:
 ;   de: points to xs or ys of actor
 ;   a: velocity 
 ; returns:
-;   hl is preserved 
 player_substate_move_add:
-  push hl
   push hl
   
   ld hl, 0 ; hl = xs or ys
@@ -455,7 +451,6 @@ player_substate_move_add:
   adc a, b
   ld [hl], a
 
-  pop hl
   ret 
 
 
@@ -467,32 +462,43 @@ player_substate_move_add:
 ; registers changed:
 ;   de, hl
 player_act_substate_move:
-  push de
-
-  ld hl, acty
-  add hl, de ; hl = y
-  ld de, player_ys
+  push de ; stack now has actor ptr saved for later 
 
   ; y position
   
   ; up 
+  ld hl, acty
+  add hl, de ; hl = y
+  ld de, player_ys
   ld a, [player_velocity_ys_up] ; a = velocity up 
   call player_substate_move_sub
    
   ; down
+  pop hl
+  push hl ; stack still has actor ptr 
+  ld de, acty
+  add hl, de ; hl = y
+  ld de, player_ys
   ld a, [player_velocity_ys_down]
   call player_substate_move_add
-  
-  inc hl ; hl = x
-  ld de, player_xs
 
   ; x position
   
   ; left 
+  pop hl
+  push hl ; stack still has actor ptr 
+  ld de, actx
+  add hl, de ; hl = x
+  ld de, player_xs
   ld a, [player_velocity_xs_left]
   call player_substate_move_sub
 
   ; right 
+  pop hl
+  push hl ; stack still has actor ptr 
+  ld de, actx
+  add hl, de ; hl = x
+  ld de, player_xs
   ld a, [player_velocity_xs_right]
   call player_substate_move_add
   
