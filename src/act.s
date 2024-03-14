@@ -465,7 +465,7 @@ player_substate_move_add:
 ; inputs:
 ;   de: actor ptr
 ; registers changed:
-;   de, hl, scratch
+;   de, hl
 player_act_substate_move:
   push de
 
@@ -502,12 +502,54 @@ player_act_substate_move:
 ; check top left collision for current actor's 
 ; top left collision rect location
 ; inputs:
-;   
+;   hl: pointing to collision rectangle information
+;   b:  y coodinate
+;   c:  x coordinate
 ; returns:
 ;   a = 0 -> no collision
 ;   a = 1 -> collision
-act_substate_check_collision_top_left:
+; registers:
+;   preserves hl
+;   preserves de
+act_substate_check_collision_bottom_left:
+  push hl
+  push de
+  
+  ld a, [hl+] ; a = left offset 
+  add a, c ; x + left 
+  ld c, a ; back to c 
+
+  ld a, [hl] ; a = top offset 
+  add a, b ; y = top 
+  ld b, a ; back to b
+  
+  call act_substate_check_collision
+
+  pop de
+  pop hl
   ret
+
+; generic collision check
+; inputs:
+;   b: y coordinate
+;   c: x coordinate
+; returns:
+;   a = 0 -> no collision
+;   a = 1 -> collision
+; registers:
+;   changes hl
+;   changes de
+act_substate_check_collision:
+
+  ; bc is now the correct coodrinate 
+  ld hl, actpostotile
+  ld d, 0
+  ld e, a ; de = coordinate 
+
+  add hl, de ; hl = correct lookup 
+  ld a, [hl] ; get tile position
+
+  ret 
 
 ; player animation frames
 player_frames:
