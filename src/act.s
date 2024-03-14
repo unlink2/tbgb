@@ -454,7 +454,6 @@ player_substate_move_add:
   ret 
 
 
-
 ; move the actor in a specific direction 
 ; state vars:
 ; inputs:
@@ -479,13 +478,32 @@ player_act_substate_move:
   ld de, acty
   add hl, de ; hl = y
   ld de, player_ys
+  
+  ld a, [hl] 
+  ld [scratch], a ; scratch = previous y 
+  ld a, [player_ys] 
+  ld [scratch+1], a ; scratch+1 = previous ys
+
   ld a, [player_velocity_ys_down]
   call player_substate_move_add
+  
+  ; detect collision bottom left
+  pop hl ; hl = actor ptr
+  call act_substate_check_collision_bottom_left
+  cp a, 0 
+  jr z, @no_collision_down REL
+  ; if collision happened restore previous y 
+  ld de, acty
+  push hl
+  add hl, de
+  ld [hl], a
+  pop hl
+
+@no_collision_down:
 
   ; x position
   
   ; left 
-  pop hl
   push hl ; stack still has actor ptr 
   ld de, actx
   add hl, de ; hl = x

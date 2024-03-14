@@ -73,6 +73,18 @@ draw_mode_play:
   ld hl, SCRN0+3
   call dbghex
 
+  ; draw tile index for actor 0
+  ld hl, acttbl 
+  ld bc, acty 
+  add hl, bc 
+  ld a, [hl+]
+  ld b, a
+  ld a, [hl]
+  ld c, a
+  call postotile
+  ld hl, SCRN0+6
+  call dbghex 
+
   ret 
 
 draw_mode_title:
