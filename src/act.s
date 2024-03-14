@@ -569,8 +569,8 @@ act_substate_check_collision_bottom_left:
   ld c, a ; back to c 
   
   ld a, [hl] ; a = height 
-  add a, c ; y + width 
-  ld c, a
+  add a, b ; y + height 
+  ld b, a
   
   call tileflagsat
   and a, TILE_COLLIDER
