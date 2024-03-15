@@ -892,5 +892,5 @@ player_collision:
 ; player 
 .db 0x00 ; y offset 
 .db 0x00 ; x offset 
-.db 0x08 ; height
-.db 0x08 ; width 
+.db 0x07 ; height
+.db 0x07 ; width 
