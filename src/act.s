@@ -487,9 +487,9 @@ player_act_substate_move:
   ld a, [player_velocity_ys_down]
   call player_substate_move_add
   
-  ; detect collision bottom left
+  ; detect collision bottom 
   pop hl ; hl = actor ptr
-  call act_substate_check_collision_bottom_left
+  call act_substate_check_collision_bottom
   cp a, 0 
   jr z, @no_collision_down REL
   
@@ -525,7 +525,7 @@ player_act_substate_move:
   pop de
   ret 
 
-; check top left collision for current actor's 
+; check bottom collision for current actor's 
 ; top left collision rect location
 ; inputs:
 ;   hl: actor ptr 
@@ -535,7 +535,7 @@ player_act_substate_move:
 ; registers:
 ;   preserves hl
 ;   preserves de
-act_substate_check_collision_bottom_left:
+act_substate_check_collision_bottom:
   push hl
   push de
   
@@ -568,13 +568,27 @@ act_substate_check_collision_bottom_left:
   add a, c ; x + left 
   ld c, a ; back to c 
   
-  ld a, [hl] ; a = height 
+  ld a, [hl+] ; a = height 
   add a, b ; y + height 
   ld b, a
   
+  push bc
+  push hl
+  ; call for bottom left corner
   call tileflagsat
   and a, TILE_COLLIDER
-
+  pop hl ; hl = height 
+  pop bc ; bc is now back to the previous y/x values 
+  jr nz, @end REL
+  
+  ; call again for bottom right corner 
+  ; simply add the width to the x value currently stored in c
+  ld a, [hl] ; a = width 
+  add a, c ; x + width 
+  ld c, a
+  call tileflagsat
+  and a, TILE_COLLIDER
+@end:
   pop de
   pop hl
   ret
