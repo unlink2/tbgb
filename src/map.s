@@ -4,7 +4,8 @@
 ;   de: map to load 
 mapload:
   ; TODO: in the futue maps may be compressed
-  ; for now we just memcpy 
+  ; for now we just memcpy
+  ; TODO: mapbuf should be a room pointer
   ld hl, mapbuf 
   ld bc, MAP_SIZE 
   call memcpy

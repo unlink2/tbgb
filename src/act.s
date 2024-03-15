@@ -843,7 +843,8 @@ tileflagsat:
   push hl
   push bc 
   
-  call postotile 
+  call postotile
+  ; TODO: mapbuf should be a room pointer
   ld de, mapbuf
   add hl, de
 
