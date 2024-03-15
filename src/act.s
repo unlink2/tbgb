@@ -120,6 +120,10 @@ soamtooam_end:
 
 ; clear the soam arena 
 ; same as memset
+; FIXME: this eats a huge percentage of 
+; a frame clearning soam allocation booleans 
+; refactor this to just be a simple arena allocator 
+; for soam since we clear this every frame anyway
 soamfreeall:
   ld a, 0
   ld hl, soamallocflags
