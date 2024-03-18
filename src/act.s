@@ -120,15 +120,11 @@ soamtooam_end:
 
 ; clear the soam arena 
 ; same as memset
-; FIXME: this eats a huge percentage of 
-; a frame clearning soam allocation booleans 
-; refactor this to just be a simple arena allocator 
-; for soam since we clear this every frame anyway
 soamfreeall:
+  ; TODO handle global offset here
   ld a, 0
-  ld hl, soamallocflags
-  ld bc, OBJSMAX
-  jp memset 
+  ld [soamnext], a
+  ret
 
 actfreeall:
   ld a, 0
@@ -166,44 +162,26 @@ soamaddr:
 ; allocate the next free object 
 ; inputs:
 ;   a: prefered index. this index is checked first 
-;      and is returned if available
+;      and is returned if available. if preferred index is FF it is ignored 
 ; returns:
 ;   a: index to first free object or 0xFF if not found
 ; registers:
 ;   
 soamalloc:
-  ; check requested index first 
-  ld b, 0
-  ld c, a
-  ld d, a ; store requested index in d in case we find obj
-  ld hl, soamallocflags 
-  add hl, bc ; hl + bc = requested alloc flag 
-  ld a, [hl]
-  and a, SOAM_FACTIVE 
-  jr z, @found REL 
+  cp a, 0xFF
+  ret z
 
-  ; check all other objects now 
-  ld hl, soamallocflags 
-  ld d, 0 ; loop counter/obj index  
-@next: 
-    ; check if obj is free 
-    ld a, [hl]
-    and a, SOAM_FACTIVE 
-    jr z, @found REL
+  ld a, [soamnext]
+  cp a, OBJSMAX
+  jr nz, @not_max REL
 
-    ; go to next 
-    inc d
-    inc hl
-    ld a, d
-    cp a, OBJSMAX ; check if all objecs have been used 
-    
-    jr nz, @next REL
-  ld a, SOAM_EINVAL
-  ret
-@found:
-  ld a, SOAM_FACTIVE
-  ld [hl], a ; set active 
-  ld a, d ; return index 
+  ld a, 0xFF
+  ret 
+@not_max:
+  
+  inc a
+  ld [soamnext], a
+  dec a
   ret
 
 ; default init for all actors
@@ -273,7 +251,7 @@ player_init:
 ; allocate an oam object 
 ; and copy values into it 
 ; inputs:
-;   a: prefered oam index
+;   a: prefered oam index. if index is FF it is ignored
 ;   b, c: y, x
 ;   d, e: tile, flags
 soamsetto:
