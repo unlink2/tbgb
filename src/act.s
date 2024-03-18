@@ -238,7 +238,7 @@ player_init:
   call actstate_to
 
   pop hl
-  ld de, actcollisin
+  ld de, actcollision
   add hl, de
   ld bc, player_collision
   ld a, c
@@ -435,6 +435,20 @@ player_substate_move_add:
 
   ret 
 
+; restores y from scratch 
+; input:
+;   hl: actor ptr
+;   sratch: previous y position
+act_restore_y:
+  ; if collision happened restore previous y 
+  push hl
+  ld de, acty
+  add hl, de
+  ld a, [scratch]
+  ld [hl], a
+  pop hl
+
+  ret
 
 ; move the actor in a specific direction 
 ; state vars:
@@ -448,11 +462,28 @@ player_act_substate_move:
   ; y position
   
   ; up 
+  push de ; push act ptr for use in collision check
   ld hl, acty
   add hl, de ; hl = y
   ld de, player_ys
+
+  ld a, [hl] 
+  ld [scratch], a ; scratch = previous y 
+  ld a, [player_ys] 
+  ld [scratch+1], a ; scratch+1 = previous ys
+
   ld a, [player_velocity_ys_up] ; a = velocity up 
   call player_substate_move_sub
+  
+  ; collision detection up
+  pop hl ; hl = act ptr
+  call act_substate_check_collision_top 
+  cp a, 0
+  jr z, @no_collision_up REL
+  
+  call act_restore_y
+@no_collision_up:
+
    
   ; down
   pop hl
@@ -475,14 +506,7 @@ player_act_substate_move:
   cp a, 0 
   jr z, @no_collision_down REL
   
-  ; if collision happened restore previous y 
-  push hl
-  ld de, acty
-  add hl, de
-  ld a, [scratch]
-  ld [hl], a
-  pop hl
-
+  call act_restore_y
 @no_collision_down:
 
   ; x position
@@ -507,6 +531,18 @@ player_act_substate_move:
   pop de
   ret 
 
+; loads x/y coordinates from actor in hl into bc
+#macro act_check_collision_xy_bc
+  push hl
+  ld de, acty
+  add hl, de
+  ld a, [hl+]
+  ld b, a
+  ld a, [hl]
+  ld c, a ; bc is x/y coordinate 
+  pop hl
+#endmacro
+
 ; check bottom collision for current actor's 
 ; top left collision rect location
 ; inputs:
@@ -521,18 +557,11 @@ act_substate_check_collision_bottom:
   push hl
   push de
   
-  push hl
-  ld de, acty
-  add hl, de
-  ld a, [hl+]
-  ld b, a
-  ld a, [hl]
-  ld c, a ; bc is x/y coordinate 
+  act_check_collision_xy_bc
   
-  pop hl
-
-  ; TODO: this is still broken
-  ld de, actcollisin 
+  ; adjust positon by collision rect as needed 
+  ; by this routine
+  ld de, actcollision 
   add hl, de ; hl = collision rect
 
   ld a, [hl+]
@@ -553,6 +582,54 @@ act_substate_check_collision_bottom:
   ld a, [hl+] ; a = height 
   add a, b ; y + height 
   ld b, a
+  
+  push bc
+  push hl
+  ; call for bottom left corner
+  call tileflagsat
+  and a, TILE_COLLIDER
+  pop hl ; hl = height 
+  pop bc ; bc is now back to the previous y/x values 
+  jr nz, @end REL
+  
+  ; call again for bottom right corner 
+  ; simply add the width to the x value currently stored in c
+  ld a, [hl] ; a = width 
+  add a, c ; x + width 
+  ld c, a
+  call tileflagsat
+  and a, TILE_COLLIDER
+@end:
+  pop de
+  pop hl
+  ret
+
+act_substate_check_collision_top:
+  push hl
+  push de
+  
+  act_check_collision_xy_bc
+  
+  ; adjust positon by collision rect as needed 
+  ; by this routine
+  ld de, actcollision 
+  add hl, de ; hl = collision rect
+
+  ld a, [hl+]
+  ld e, a
+  ld a, [hl]
+  ld d, a
+  ld hl, 0
+  add hl, de ; hl = collision rectangle
+
+  ld a, [hl+] ; a = y offset 
+  add a, b ; y = top 
+  ld b, a ; back to b
+
+  ld a, [hl+] ; a = x offset 
+  add a, c ; x + left 
+  ld c, a ; back to c  
+  inc hl ; hl = width  
   
   push bc
   push hl
