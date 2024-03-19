@@ -604,6 +604,7 @@ act_substate_check_collision_bottom:
   pop hl
   ret
 
+; see collision_bottom
 act_substate_check_collision_top:
   push hl
   push de
@@ -651,6 +652,9 @@ act_substate_check_collision_top:
   pop de
   pop hl
   ret
+
+act_substate_check_collision_left:
+  ret 
 
 ; player animation frames
 player_frames:
