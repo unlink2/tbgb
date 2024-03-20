@@ -875,13 +875,16 @@ postotile:
   add hl, de
   ld a, [hl]
 
+  ; we don't store result in e yet because we still need
+  ; de but we don't need a again just yet 
+
   ld hl, acttiletomaph ; high
   ld d, 0
   ld e, b ; de = tile y offset
   add hl, de
 
   ; we now dont need de anymore 
-  ld e, a ; store result from before it 
+  ld e, a ; store result from previous operation 
 
   ld a, [hl]
   ld d, a ; de = y offset 
@@ -890,7 +893,7 @@ postotile:
   ld l, c
   add hl, de
 
-  ld a, 0 ; success
+  xor a, a ; a = 0 == success
   ret 
 
 
@@ -944,8 +947,7 @@ acttiletomapl: ; low nibble
 acttiletomaph: ; hi nibble
 .rep i, 20, 1, .db ((i * 20) >> 8)
 
-; lookup table for actor collision based on actor type
-; e.g. ACT_TPLAYER
+; actor collision rectangle  
 ;   each entry is 4 bytes wide 
 ;   with the following values
 ;   0 -> y offset
