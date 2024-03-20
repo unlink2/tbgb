@@ -874,14 +874,15 @@ postotile:
   ld e, b ; de = tile y offset 
   add hl, de
   ld a, [hl]
-  ld e, a ; store it 
 
   ld hl, acttiletomaph ; high
-  push de
   ld d, 0
   ld e, b ; de = tile y offset
   add hl, de
-  pop de
+
+  ; we now dont need de anymore 
+  ld e, a ; store result from before it 
+
   ld a, [hl]
   ld d, a ; de = y offset 
   
