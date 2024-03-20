@@ -851,60 +851,47 @@ title_cursor_draw:
 ;   a: 0 on success, > 0 on error
 postotile:
   ld a, c
-  push af ; x coordinate 
+  sub a, 8 ; -8 to adjust for offscreen values
+  ld c, a
 
-  ld a, b
-  push af ; y coordinate 
-
-
-  ; TODO: bail if sprite is clearly out of bounds
-
-  ; first load y coordinate 
-  pop af
+  srl c ; x / 2
+  srl c ; x / 4
+  srl c ; x / 8
+  
 
   ; - 16 for offscreen values and another -16 to make the sprite appear in the right spot
+  ld a, b
   sub a, 32 
+  ld b, a 
+
+  srl b ; y / 2
+  srl b ; y / 4
+  srl b ; y / 8
+
+  ; load offset address from lut 
+  ld hl, acttiletomapl ; low  
   ld d, 0
-  ld e, a ; de = offset for y
-  ld hl, actpostotile 
+  ld e, b ; de = tile y offset 
   add hl, de
   ld a, [hl]
-  ld e, a ; de = offset for y to map data 
-  
-  ; load low nibble of address into a 
-  ld hl, acttiletomapl 
-  add hl, de
-  ld a, [hl]
-  ld c, a ; store in c for now 
+  ld e, a ; store it 
 
-  ; load high nibble of address into a
-  ld hl, acttiletomaph 
-  add hl, de
-  ld a, [hl]
-  ld b, a ; store in b for now
-
-  ; bc = y offset 
-  
-  ; then load x coordinate 
-  pop af
-  sub a, 8 ; -8 to adjust for offscreen values
+  ld hl, acttiletomaph ; high
+  push de
   ld d, 0
-  ld e, a ; de = offset for x
-  ld hl, actpostotile
-  add hl, de 
-  ld a, [hl] ; a is now the x offset 
-
-  ld h, 0
-  ld l, a ; hl = x offset 
-
-  push bc 
+  ld e, b ; de = tile y offset
+  add hl, de
   pop de
-  add hl, de
+  ld a, [hl]
+  ld d, a ; de = y offset 
   
-  ; success
-  ld a, 0 
+  ld h, 0
+  ld l, c
+  add hl, de
 
-  ret
+  ld a, 0 ; success
+  ret 
+
 
 #undefine TITLE_CURSOR_DELAY
 
