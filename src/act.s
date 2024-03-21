@@ -659,6 +659,8 @@ act_substate_check_collision_left:
 ; player animation frames
 player_frames:
 .db 2, 3
+player_flame_frames: 
+.db 18, 19
 ;
 ; update player function
 ;
@@ -681,15 +683,58 @@ player_draw:
   ld d, 0
   ld e, a
   add hl, de
-
+  
+  ; player main sprite 
   ld a, [hl] ; chr 
   ld d, a ; a + global anim = real tile
   ld a, 0 ; flag
   ld e, a
   ; prefer obj 0
-  ld a, 0
   call soamsetto
   
+  ; only draw flame if velocity is not 0
+  ld a, [player_velocity_ys_down]
+  and a, a
+  jr nz, @flame_draw REL
+  ld a, [player_velocity_ys_up]
+  and a, a 
+  jr nz, @flame_draw REL
+  ld a, [player_velocity_xs_left]
+  and a, a
+  jr nz, @flame_draw REL
+  ld a, [player_velocity_xs_right]
+  and a, a
+  jr z, @no_flame_draw REL
+
+@flame_draw:
+  ; move flame 1 tile down
+  ld a, 8
+  add a, b
+  ld b, a
+
+  ; same flags but use differnet spirte 
+  ld hl, player_flame_frames
+  ld a, [global_anim_timer]
+  ld d, 0
+  ld e, a
+  add hl, de
+
+  ld a, [hl]
+  ld d, a
+  ld e, 0
+  call soamsetto
+  
+  ; pop hl one more time 
+  pop hl
+
+  ret 
+
+@no_flame_draw:
+  xor a, a
+  ld d, a
+  ld e, a
+  call soamsetto 
+
   ; pop hl one more time 
   pop hl
 
