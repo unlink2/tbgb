@@ -309,7 +309,7 @@ actstate_to:
 
 player_state_update:
   call player_substate_input
-  call player_substate_gravity
+  ; call player_substate_gravity
   call player_act_substate_move
   call player_draw
   ret
