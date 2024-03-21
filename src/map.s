@@ -57,19 +57,6 @@ mapfulldraw:
 
   ret 
 
-game_hud_init:
-  ld hl, SCRN0 + 32 + 1
-  ld a, HP_ICON ; load initial hp bar 
-  ld [hl+], a 
-  inc a 
-  ld [hl+], a
-  inc a
-  ld [hl+], a
-  inc a
-  ld [hl+], a
-
-  ret
-
 ; these flags configure a tile 
 ; for collision, damage and other such things
 tileflags:

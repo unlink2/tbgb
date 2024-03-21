@@ -84,3 +84,16 @@ init_mode_play:
   call game_hud_init
 
   ret
+
+game_hud_init:
+  ld hl, SCRN0 + 32 + 1
+  ld a, HP_ICON ; load initial hp bar 
+  ld [hl+], a 
+  inc a 
+  ld [hl+], a
+  inc a
+  ld [hl+], a
+  inc a
+  ld [hl+], a
+
+  ret
