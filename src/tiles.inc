@@ -33,6 +33,10 @@ tileset1_end:
 .de EMPTY_TILE, 1
 .de BG1, 1 ; background 1
 .de FL1, 1 ; floor 1
+.de HP_ICON, 1 ; health icon 
+.de HP_BAR_LEFT, 1
+.de HP_BAR_MIDDLE, 1
+.de HP_BAR_RIGHT, 1
 
 ; tile map flags
 .se 1

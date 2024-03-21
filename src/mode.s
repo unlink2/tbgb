@@ -80,4 +80,7 @@ init_mode_play:
   ; draw map 
   call mapfulldraw
 
+  ; draw initial hud 
+  call game_hud_init
+
   ret
