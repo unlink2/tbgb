@@ -316,7 +316,7 @@ player_state_update:
 
 ; process a single player input
 ; inputs:
-;   a: zero or not zero for input
+;   f: zero or not zero for input
 ;   hl: pointing to velocity byte
 ;    b: bit mask to set or reset 
 ;       in [player_movement_dirs] 
@@ -340,8 +340,11 @@ player_substate_input_proc:
   ld [hl+], a ; hl = ys down
 
   ; clear direction bit
+  ld a, b
+  cpl 
+  ld b, a
   ld a, [player_movement_dirs] 
-  xor a, b
+  and a, b
   ld [player_movement_dirs], a
 @done:
   ret 
