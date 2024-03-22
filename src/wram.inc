@@ -102,6 +102,16 @@ player_velocity_xs_left: .adv 1
 player_velocity_xs_right: .adv 1
 player_hpmax: .adv 1
 
+; bitfield of directions 
+; see DIRECTION fields 
+player_movement_dirs: .adv 1 
+
+; DIRECTION fields
+.def int DIR_UP = 1
+.def int DIR_DOWN = 2
+.def int DIR_LEFT = 4
+.def int DIR_RIGHT = 8
+
 #define SCRATCH_MAX 8
 ; temporary memory that can be used 
 ; by routines as they see fit

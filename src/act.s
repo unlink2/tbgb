@@ -317,7 +317,10 @@ player_state_update:
 ; process a single player input
 ; inputs:
 ;   a: zero or not zero for input
-;   hl: pointing to velocity byte  
+;   hl: pointing to velocity byte
+;    b: bit mask to set or reset 
+;       in [player_movement_dirs] 
+;       if movement occurs 
 ; returns:
 ;   hl+1
 player_substate_input_proc:
@@ -326,10 +329,20 @@ player_substate_input_proc:
   ; load max velocity for now  
   ld a, 0xFF  
   ld [hl+], a ; hl = ys down
+
+  ; set direction bit
+  ld a, [player_movement_dirs]
+  or a, b
+  ld [player_movement_dirs], a
   jr @done REL
 @not:
   ld a, 0
-  ld [hl+], a ; hl = ys down 
+  ld [hl+], a ; hl = ys down
+
+  ; clear direction bit
+  ld a, [player_movement_dirs] 
+  xor a, b
+  ld [player_movement_dirs], a
 @done:
   ret 
 
@@ -357,22 +370,26 @@ player_substate_input:
 
   ; up input
   ld a, [inputs]
-  and a, BTNUP 
+  and a, BTNUP
+  ld b, DIR_UP
   call player_substate_input_proc 
   
   ; down input
   ld a, [inputs]
   and a, BTNDOWN
+  ld b, DIR_DOWN
   call player_substate_input_proc
 
   ; left input
   ld a, [inputs]
   and a, BTNLEFT
+  ld b, DIR_LEFT
   call player_substate_input_proc
   
   ; right input 
   ld a, [inputs]
   and a, BTNRIGHT
+  ld b, DIR_RIGHT
   call player_substate_input_proc
 
   ; pop act address into de 
