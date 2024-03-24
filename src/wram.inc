@@ -108,9 +108,9 @@ player_movement_dirs: .adv 1
 
 ; DIRECTION fields
 .def int DIR_UP = 1
-.def int DIR_DOWN = 2
+.def int DIR_DOWN = 0x40 ; same bit as y-flip
 .def int DIR_LEFT = 4
-.def int DIR_RIGHT = 8
+.def int DIR_RIGHT = 0x20 ; same bit as oam x-flip
 
 #define SCRATCH_MAX 8
 ; temporary memory that can be used 

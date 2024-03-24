@@ -707,7 +707,8 @@ player_draw:
   ; player main sprite 
   ld a, [hl] ; chr 
   ld d, a ; a + global anim = real tile
-  ld a, 0 ; flag
+  ld a, [player_movement_dirs] ; flags
+  and a, 0b01100000 ; only use bits 6 (y-flip) and 5 (x-flip) 
   ld e, a
   ; prefer obj 0
   call soamsetto
