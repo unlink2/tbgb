@@ -713,19 +713,10 @@ player_draw:
   call soamsetto
   
   ; only draw flame if velocity is not 0
-  ld a, [player_velocity_ys_down]
-  and a, a
-  jr nz, @flame_draw REL
-  ld a, [player_velocity_ys_up]
-  and a, a 
-  jr nz, @flame_draw REL
-  ld a, [player_velocity_xs_left]
-  and a, a
-  jr nz, @flame_draw REL
-  ld a, [player_velocity_xs_right]
+  ld a, [player_movement_dirs]
   and a, a
   jr z, @no_flame_draw REL
-
+  
 @flame_draw:
   ; move flame 1 tile down
   ld a, 8
