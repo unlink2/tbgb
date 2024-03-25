@@ -697,8 +697,6 @@ act_draw_from_table:
   ; A * 4 because the table entries are 4 bytes long 
   sla a
   sla a
-  
-  ld [dbg], a
 
   ; get correct oam table offset 
   push de
@@ -723,6 +721,7 @@ act_draw_from_table:
   and a, e
   ld e, a ; e = oam flags
   
+  ld a, 0xFF
   jp soamsetto
 
 ; player animation frames
