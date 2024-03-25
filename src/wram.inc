@@ -117,6 +117,10 @@ player_movement_dirs: .adv 1
 ; by routines as they see fit
 scratch: .adv SCRATCH_MAX
 
+; 2 bytes for debug inspection
+; like a watch but in ram 
+dbg: .adv 2
+
 ; ====================
 ; Map buffer
 ; ====================

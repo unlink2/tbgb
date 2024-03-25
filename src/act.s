@@ -331,7 +331,7 @@ player_substate_input_proc:
   ld [hl+], a ; hl = ys down
   
   ; set direction index
-  ld b, a
+  ld a, b
   ld [player_movement_dirs], a
   ret
 @not:
@@ -671,10 +671,11 @@ act_substate_check_collision_left:
 
 ; oam table for player animation 
 player_oam_table:
-.db 0, 0, 2, 0
-.db 0, 0, 3, 0
-.db 0, 0, 2, 0
-.db 0, 0, 3, 0
+.db 0, 0, 2, 0 ; no move
+.db 0, 0, 2, 0 ; up 
+.db 0, 0, 2, 0b01000000 ; down
+.db 0, 0, 4, 0b00100000 ; left 
+.db 0, 0, 4, 0 ; right
 
 
 ; draw an actor from table in the following way:
@@ -694,8 +695,10 @@ player_oam_table:
 ;   y pos offset, x pos offset, tile, attr
 act_draw_from_table:
   ; A * 4 because the table entries are 4 bytes long 
-  srl a
-  srl a
+  sla a
+  sla a
+  
+  ld [dbg], a
 
   ; get correct oam table offset 
   push de
@@ -720,9 +723,7 @@ act_draw_from_table:
   and a, e
   ld e, a ; e = oam flags
   
-  call soamsetto
-
-  ret
+  jp soamsetto
 
 ; player animation frames
 player_frames:
@@ -745,19 +746,13 @@ player_draw:
   ld b, a
   ld a, [hl] ; x
   ld c, a
-
-  ld hl, player_frames
-  ld a, [global_anim_timer]
-  ld d, 0
-  ld e, a
-  add hl, de
   
-  ; player main sprite 
-  ld a, [hl] ; chr 
-  ld d, a ; a + global anim = real tile
-  ld e, 0 ; flags
-  ; prefer obj 0
-  call soamsetto
+  ld a, [global_anim_timer]
+  ld d, a ; d = animation offset 
+  ld e, 0xFF ; flags mask
+  ld hl, player_oam_table
+  ld a, [player_movement_dirs] ; a = tbl index
+  call act_draw_from_table
   
   ; only draw flame if velocity is not 0
   ld a, [player_movement_dirs]
