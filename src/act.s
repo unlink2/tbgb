@@ -329,14 +329,14 @@ player_substate_input_proc:
   ; load max velocity for now  
   ld a, 0xFF  
   ld [hl+], a ; hl = ys down
-
+  
   ; set direction index
   ld b, a
   ld [player_movement_dirs], a
+  ret
 @not:
   ld a, 0
   ld [hl+], a ; hl = ys down
-@done:
   ret 
 
 player_substate_gravity:
