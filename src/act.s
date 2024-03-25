@@ -330,22 +330,12 @@ player_substate_input_proc:
   ld a, 0xFF  
   ld [hl+], a ; hl = ys down
 
-  ; set direction bit
-  ld a, [player_movement_dirs]
-  or a, b
+  ; set direction index
+  ld b, a
   ld [player_movement_dirs], a
-  jr @done REL
 @not:
   ld a, 0
   ld [hl+], a ; hl = ys down
-
-  ; clear direction bit
-  ld a, b
-  cpl 
-  ld b, a
-  ld a, [player_movement_dirs] 
-  and a, b
-  ld [player_movement_dirs], a
 @done:
   ret 
 
@@ -369,6 +359,9 @@ player_substate_gravity:
 player_substate_input:
   push de
   
+  xor a, a
+  ld [player_movement_dirs], a ; reset movement dirs
+
   ld hl, player_velocity_ys_up  ; hl now points at ys up 
 
   ; up input
@@ -676,6 +669,21 @@ act_substate_check_collision_top:
 act_substate_check_collision_left:
   ret 
 
+; draw an actor from table in the following way:
+; - alloc an object in soam 
+; - pick a oam settings from a tile table (hl) 
+;   offset by A
+; - oam y/x from the table are offsets that are added to the real position 
+; - the tile is offset by the animation offset (+0 or +1)
+; inputs:
+;   A: table index 
+;   B: y coordinate
+;   C: x coordinate
+;   D: animation offset
+;   E: oam flags mask
+act_draw_from_table:
+  ret
+
 ; player animation frames
 player_frames:
 .db 2, 3
@@ -707,9 +715,7 @@ player_draw:
   ; player main sprite 
   ld a, [hl] ; chr 
   ld d, a ; a + global anim = real tile
-  ld a, [player_movement_dirs] ; flags
-  and a, 0b01100000 ; only use bits 6 (y-flip) and 5 (x-flip) 
-  ld e, a
+  ld e, 0 ; flags
   ; prefer obj 0
   call soamsetto
   
