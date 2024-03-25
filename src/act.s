@@ -669,6 +669,14 @@ act_substate_check_collision_top:
 act_substate_check_collision_left:
   ret 
 
+; oam table for player animation 
+player_oam_table:
+.db 0, 0, 2, 0
+.db 0, 0, 3, 0
+.db 0, 0, 2, 0
+.db 0, 0, 3, 0
+
+
 ; draw an actor from table in the following way:
 ; - alloc an object in soam 
 ; - pick a oam settings from a tile table (hl) 
@@ -677,11 +685,43 @@ act_substate_check_collision_left:
 ; - the tile is offset by the animation offset (+0 or +1)
 ; inputs:
 ;   A: table index 
+;   hl: oam table 
 ;   B: y coordinate
 ;   C: x coordinate
-;   D: animation offset
+;   D: tile offset
 ;   E: oam flags mask
+; oam table entry:
+;   y pos offset, x pos offset, tile, attr
 act_draw_from_table:
+  ; A * 4 because the table entries are 4 bytes long 
+  srl a
+  srl a
+
+  ; get correct oam table offset 
+  push de
+  ld d, 0
+  ld e, a
+  add hl, de ; hl = correct oam index
+  pop de 
+
+  ld a, [hl+] ; y offset  
+  add a, b
+  ld b, a ; b = real y position 
+
+  ld a, [hl+] ; x offset 
+  add a, c
+  ld c, a ; c = real x position 
+  
+  ld a, [hl+] ; tile offset 
+  add a, d
+  ld d, a ; d = real tile 
+
+  ld a, [hl+] ; oam mask 
+  and a, e
+  ld e, a ; e = oam flags
+  
+  call soamsetto
+
   ret
 
 ; player animation frames
