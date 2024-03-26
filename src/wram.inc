@@ -95,6 +95,7 @@ game_flags: .adv 1
 player_ys: .adv 1
 player_xs: .adv 1
 
+
 ; xs/ys velocity
 player_velocity_ys_up: .adv 1
 player_velocity_ys_down: .adv 1
@@ -104,13 +105,17 @@ player_hpmax: .adv 1
 
 ; bitfield of directions 
 ; see DIRECTION fields 
-player_movement_dirs: .adv 1 
+player_movement_dirs: .adv 1
+
+; which direction is the player facing
+player_facing_dir: .adv 1
 
 ; DIRECTION fields
 .def int DIR_UP = 1
 .def int DIR_DOWN = 2
 .def int DIR_LEFT = 3
 .def int DIR_RIGHT = 4
+#define VALID_FACING_DIRS DIR_UP | DIR_DOWN
 
 #define SCRATCH_MAX 8
 ; temporary memory that can be used 

@@ -318,9 +318,13 @@ player_state_update:
 ; inputs:
 ;   f: zero or not zero for input
 ;   hl: pointing to velocity byte
-;    b: bit mask to set or reset 
-;       in [player_movement_dirs] 
-;       if movement occurs 
+;    b: value to set  
+;       [player_movement_dirs] 
+;       to if movement occurs 
+;    c: value to set 
+;       [player_facing_dir] 
+;       to if movement occurs
+;       if c is 0 nothing is set
 ; returns:
 ;   hl+1
 player_substate_input_proc:
@@ -333,6 +337,10 @@ player_substate_input_proc:
   ; set direction index
   ld a, b
   ld [player_movement_dirs], a
+  ld a, c
+  cp a, 0
+  ret z
+  ld [player_facing_dir], a
   ret
 @not:
   ld a, 0
@@ -368,24 +376,28 @@ player_substate_input:
   ld a, [inputs]
   and a, BTNUP
   ld b, DIR_UP
+  ld c, DIR_UP
   call player_substate_input_proc 
   
   ; down input
   ld a, [inputs]
   and a, BTNDOWN
   ld b, DIR_DOWN
+  ld c, DIR_DOWN
   call player_substate_input_proc
 
   ; left input
   ld a, [inputs]
   and a, BTNLEFT
   ld b, DIR_LEFT
+  ld c, 0
   call player_substate_input_proc
   
   ; right input 
   ld a, [inputs]
   and a, BTNRIGHT
   ld b, DIR_RIGHT
+  ld c, 0
   call player_substate_input_proc
 
   ; pop act address into de 
@@ -669,14 +681,17 @@ act_substate_check_collision_top:
 act_substate_check_collision_left:
   ret 
 
-; oam table for player animation 
+; oam table for player animation
+; TODO: define constants for frames 
 player_oam_table:
-.db 0, 0, 2, 0 ; no move
+.db 0, 0, 2, 0 ; no facing dir
 .db 0, 0, 2, 0 ; up 
 .db 0, 0, 2, 0b01000000 ; down
-.db 0, 0, 4, 0b00100000 ; left 
-.db 0, 0, 4, 0 ; right
 
+player_flame_oam_table:
+.db 8, 0, 18, 0 ; no facing dir
+.db 8, 0, 18, 0 ; up
+.db -8, 0, 18, 0b01000000 ; down
 
 ; draw an actor from table in the following way:
 ; - alloc an object in soam 
@@ -724,11 +739,7 @@ act_draw_from_table:
   ld a, 0xFF
   jp soamsetto
 
-; player animation frames
-player_frames:
-.db 2, 3
-player_flame_frames: 
-.db 18, 19
+
 ;
 ; update player function
 ;
@@ -750,31 +761,23 @@ player_draw:
   ld d, a ; d = animation offset 
   ld e, 0xFF ; flags mask
   ld hl, player_oam_table
-  ld a, [player_movement_dirs] ; a = tbl index
+  ld a, [player_facing_dir] ; a = tbl index
   call act_draw_from_table
   
+  ; bc should be unchanged here 
+
   ; only draw flame if velocity is not 0
   ld a, [player_movement_dirs]
   and a, a
   jr z, @no_flame_draw REL
   
 @flame_draw:
-  ; move flame 1 tile down
-  ld a, 8
-  add a, b
-  ld b, a
-
-  ; same flags but use differnet spirte 
-  ld hl, player_flame_frames
   ld a, [global_anim_timer]
-  ld d, 0
-  ld e, a
-  add hl, de
-
-  ld a, [hl]
-  ld d, a
-  ld e, 0
-  call soamsetto
+  ld d, a ; d = animation offset 
+  ld e, 0xFF ; flags mask
+  ld a, [player_facing_dir] ; a = tbl index 
+  ld hl, player_flame_oam_table
+  call act_draw_from_table
   
   ; pop hl one more time 
   pop hl
