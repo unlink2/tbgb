@@ -170,3 +170,35 @@ applyscroll:
 
   ret 
 
+; pushes a new instruction to 
+; the draw stack 
+; inputs:
+;   bc: vram address
+;   a:  tile value
+draw_stack_push:
+  push af
+  ld hl, vram_update_stack 
+  ld a, [vram_update_stack]
+  ld d, a
+  ld a, [vram_update_stack+1]
+  ld e, a
+  add hl, de
+  
+  ; store values 
+
+  ; address 
+  ld a, b
+  ld [hl+], a
+  ld a, c
+  ld [hl+], a
+
+  pop af ; tile value 
+  ld [hl], a
+  
+
+  ret
+
+; draw changes from the update stack 
+; directly to vram
+draw_update_stack:
+  ret

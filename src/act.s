@@ -761,7 +761,7 @@ player_draw:
   ld d, a ; d = animation offset 
   ld e, 0xFF ; flags mask
   ld hl, player_oam_table
-  ld a, [player_facing_dir] ; a = tbl index
+  ld a, 0 ; a = tbl index
   call act_draw_from_table
   
   ; bc should be unchanged here 

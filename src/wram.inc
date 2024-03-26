@@ -133,3 +133,23 @@ dbg: .adv 2
 mapbuf: .adv MAP_SIZE
 ; contains map flags, one byte per tile
 mapflags: .adv MAP_SIZE
+
+; the vram update stack is a simple 
+; display list of vram update that can be 
+; written to at any time to update any tile 
+; on the screen.
+; it is then read and drawn during vblank until the vram_update_ptr 
+; reaches 0 or the max number allowed per frame is reached 
+
+; max per frame
+.def int VRAM_UPDATE_MAX  = 8  
+
+#define VRAM_UPDATE_LEN 16
+
+#define VRAM_UPDATE_ENTRY_LEN 3
+.se 0
+.de vram_update_offset, 2
+.de vram_update_tile, 1
+
+vram_update_ptr: .adv 2
+vram_update_stack: .adv VRAM_UPDATE_LEN * VRAM_UPDATE_ENTRY_LEN
