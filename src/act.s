@@ -262,6 +262,33 @@ bullet_init:
   hl_null_panic
   call act_init
 
+  push hl
+  
+  ; hl is new actor 
+  ld a, ACT_FACTIVE
+  ld [hl+], a
+
+  ld a, ACT_BULLET
+  ld [hl+], a ; set type 
+
+  inc hl 
+  inc hl ; skip update fn
+  inc hl
+  inc hl ; skip collision
+  
+  ld a, 0x39
+  ld [hl+], a ; y pos
+  ld [hl+], a ; y pos
+  
+  pop hl
+  ld bc, bullet_state_update
+  call actstate_to
+
+
+
+  ret
+
+bullet_state_update:
   ret
 
 ; allocate an oam object 
@@ -327,9 +354,7 @@ player_state_update:
   call player_substate_input
   ; call player_substate_gravity
   call player_act_substate_move
-
   call player_substate_shoot
-
   call player_draw
   ret
 
@@ -337,6 +362,15 @@ player_state_update:
 ; shoots a new bullet actor 
 ; if possible 
 player_substate_shoot:
+  ld a, [player_bullet_timeout]
+  cp a, 0
+  ret nz
+
+  ld a, 1
+  ld [player_bullet_timeout], a
+  
+  ; TODO: pass params here!
+  call bullet_init
   ret
 
 ; process a single player input
