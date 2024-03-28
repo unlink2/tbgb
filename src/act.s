@@ -250,17 +250,21 @@ player_init:
 
 ; init a new bullet actor 
 ; inputs:
-;   bc: x/y start
-;   d : x/y velocity per frame (max 15)
+;   bc: y/x start
+;   d : y/x velocity per frame (max 15)
 ;   e : bullet time to live (ttl)
 ; bullet actusr data:
 ;   +0 & 0x0F: x velocity 
 ;   +0 & 0xF0: y velocity
 ;   +1       : ttl
 bullet_init:
+  push bc 
+
   call act_alloc
   hl_null_panic
   call act_init
+  
+  pop bc
 
   push hl
   
@@ -275,10 +279,13 @@ bullet_init:
   inc hl ; skip update fn
   inc hl
   inc hl ; skip collision
-  
-  ld a, 0x39
+  inc hl 
+  inc hl ; skip usr
+
+  ld a, b
   ld [hl+], a ; y pos
-  ld [hl+], a ; y pos
+  ld a, c
+  ld [hl+], a ; x pos
   
   pop hl
   ld bc, bullet_state_update
@@ -289,6 +296,48 @@ bullet_init:
   ret
 
 bullet_state_update:
+  call bullet_state_move
+  call bullet_state_draw
+  ret
+
+bullet_state_move:
+  push de
+
+  pop hl
+  push hl
+  ld de, acty 
+  add hl, de
+
+  ld a, [hl]
+  dec a
+  ld [hl], a
+
+  pop de
+  ret
+bullet_oam_table:
+.db 0, 0, 16, 0 
+bullet_state_draw:
+  ; move actor ptr to hl
+  push de
+
+  pop hl
+  push hl
+  ld de, acty 
+  add hl, de
+
+  ld a, [hl+] ; y index 
+  ld b, a
+  ld a, [hl] ; x
+  ld c, a
+  
+  ld a, [global_anim_timer]
+  ld d, a ; d = animation offset 
+  ld e, 0xFF ; flags mask
+  ld hl, bullet_oam_table 
+  ld a, 0 ; a = tbl index
+  call act_draw_from_table
+  
+  pop de
   ret
 
 ; allocate an oam object 
@@ -359,19 +408,41 @@ player_state_update:
   ret
 
 
+#define PLAYER_SHOOT_DELAY 10 
 ; shoots a new bullet actor 
 ; if possible 
 player_substate_shoot:
-  ld a, [player_bullet_timeout]
+  ld a, [global_delay]
   cp a, 0
-  ret nz
+  ret nz 
 
-  ld a, 1
-  ld [player_bullet_timeout], a
+  ld a, [inputs]
+  and a, BTNA 
+  ret z
   
-  ; TODO: pass params here!
+  push de
+  push de
+  ; TODO: pass params here
+  
+  ; load y/x into bc
+  ld hl, acty 
+  add hl, de
+
+  ld a, [hl+] ; a = y
+  ld b, a ; b = y
+
+  ld a, [hl] ; a = x
+  ld c, a ; c = x
+
+  pop de 
   call bullet_init
+
+  ld a, PLAYER_SHOOT_DELAY 
+  call setdelay
+
+  pop de
   ret
+#undefine PLAYER_SHOOT_DELAY
 
 ; process a single player input
 ; inputs:
