@@ -14,7 +14,7 @@
 #define WRAMLEN 0xFFF
 
 ; max actors
-#define ACTMAX 16
+#define ACTMAX 32
 
 ; game modes
 .se 0
