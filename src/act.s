@@ -248,6 +248,22 @@ player_init:
 
   ret
 
+; init a new bullet actor 
+; inputs:
+;   bc: x/y start
+;   d : x/y velocity per frame (max 15)
+;   e : bullet time to live (ttl)
+; bullet actusr data:
+;   +0 & 0x0F: x velocity 
+;   +0 & 0xF0: y velocity
+;   +1       : ttl
+bullet_init:
+  call act_alloc
+  hl_null_panic
+  call act_init
+
+  ret
+
 ; allocate an oam object 
 ; and copy values into it 
 ; inputs:
@@ -311,7 +327,16 @@ player_state_update:
   call player_substate_input
   ; call player_substate_gravity
   call player_act_substate_move
+
+  call player_substate_shoot
+
   call player_draw
+  ret
+
+
+; shoots a new bullet actor 
+; if possible 
+player_substate_shoot:
   ret
 
 ; process a single player input

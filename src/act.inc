@@ -2,6 +2,7 @@
 #define ACT_FACTIVE 0b00000001
 
 ; actor memory layout
+; actor layour is guaranteed!
 .se 0
 .de actflags, 1
 .de acttype, 1
@@ -15,7 +16,7 @@
 ; pointer to collision offsets
 .de actcollision, 2
 
-; 2 bytes of user-specific memory
+; user-specific memory
 ; can be used by each actor as needed
 .de actusr, 2
 
@@ -33,6 +34,7 @@
 
 ; player type 
 .de ACT_TPLAYER, 1
+.de ACT_BULLET, 1
 
 ; cursor type: 
 ;  the cursor type handles location as follows:

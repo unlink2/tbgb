@@ -103,6 +103,11 @@ player_velocity_xs_left: .adv 1
 player_velocity_xs_right: .adv 1
 player_hpmax: .adv 1
 
+player_bullet_max: .adv 1
+player_bullet_count: .adv 1
+player_bullet_time: .adv 1
+player_bullet_timeout: .adv 1
+
 ; bitfield of directions 
 ; see DIRECTION fields 
 player_movement_dirs: .adv 1
