@@ -142,14 +142,14 @@ mapflags: .adv MAP_SIZE
 ; reaches 0 or the max number allowed per frame is reached 
 
 ; max per frame
-.def int VRAM_UPDATE_MAX  = 8  
+.def int VRAM_UPDATE_MAX  = 16  
 
 #define VRAM_UPDATE_LEN 16
 
 #define VRAM_UPDATE_ENTRY_LEN 3
 .se 0
-.de vram_update_offset, 2
+.de vram_update_addr, 2
 .de vram_update_tile, 1
 
-vram_update_ptr: .adv 2
-vram_update_stack: .adv VRAM_UPDATE_LEN * VRAM_UPDATE_ENTRY_LEN
+vram_update_idx: .adv 1
+vram_update_buf: .adv VRAM_UPDATE_LEN * VRAM_UPDATE_ENTRY_LEN

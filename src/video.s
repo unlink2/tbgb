@@ -50,6 +50,7 @@ draw:
   call OAMDMAFN
   
   ; game mode specific draws 
+  ; FIXME: make a jump talbe out of this 
   ld a, [game_mode]
   cp a, MODE_TITLE 
   call z, draw_mode_title
@@ -175,30 +176,26 @@ applyscroll:
 ; inputs:
 ;   bc: vram address
 ;   a:  tile value
-draw_stack_push:
+draw_update_buf_push:
   push af
-  ld hl, vram_update_stack 
-  ld a, [vram_update_stack]
-  ld d, a
-  ld a, [vram_update_stack+1]
+  ld hl, vram_update_buf
+  ld d, 0
+  ld a, [vram_update_idx]
   ld e, a
-  add hl, de
+  add hl, de ; hl = current buf offset 
+  pop af
   
-  ; store values 
 
-  ; address 
-  ld a, b
-  ld [hl+], a
-  ld a, c
-  ld [hl+], a
-
-  pop af ; tile value 
-  ld [hl], a
-  
 
   ret
 
 ; draw changes from the update stack 
 ; directly to vram
-draw_update_stack:
+draw_update_buf:
+  ; draw until a == vram_update_idx 
+  
+@done:
+  ; lastly clear draw stack 
+  xor a, a
+  ld [vram_update_idx], a
   ret
