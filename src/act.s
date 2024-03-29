@@ -43,10 +43,10 @@ act_alloc:
     add hl, bc
     ; inc counter 
     inc d
-    ld d, a
+    ld a, d
     ; are we at end?
     cp a, ACTMAX
-    jp nz, @seeknext
+    jp c, @seeknext
     
     ; return NULL
     ld hl, NULL
@@ -291,8 +291,6 @@ bullet_init:
   ld bc, bullet_state_update
   call actstate_to
 
-
-
   ret
 
 bullet_state_update:
@@ -314,6 +312,7 @@ bullet_state_move:
 
   pop de
   ret
+
 bullet_oam_table:
 .db 0, 0, 16, 0 
 bullet_state_draw:
