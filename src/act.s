@@ -638,6 +638,21 @@ act_restore_y:
 
   ret
 
+; restores x from scratch 
+; input:
+;   hl: actor ptr
+;   sratch: previous y position
+act_restore_x:
+  ; if collision happened restore previous y 
+  push hl
+  ld de, actx
+  add hl, de
+  ld a, [scratch]
+  ld [hl], a
+  pop hl
+
+  ret
+
 ; move the actor in a specific direction 
 ; state vars:
 ; inputs:
@@ -704,8 +719,25 @@ player_act_substate_move:
   ld de, actx
   add hl, de ; hl = x
   ld de, player_xs
+
+  ld a, [hl]
+  ld [scratch], a ; scrach = previous x
+  ld a, [player_xs]
+  ld [scratch+1], a ; scrach+1 = previous xs
+
   ld a, [player_velocity_xs_left]
   call player_substate_move_sub
+
+  ; detect collision left 
+  pop hl ; hl = actor ptr
+  push hl
+  call act_substate_check_collision_left 
+  cp a, 0
+  jr z, @no_collision_left REL
+
+  call act_restore_x
+
+@no_collision_left:
 
   ; right 
   pop hl
@@ -713,9 +745,26 @@ player_act_substate_move:
   ld de, actx
   add hl, de ; hl = x
   ld de, player_xs
+
+  ld a, [hl]
+  ld [scratch], a ; scrach = previous x
+  ld a, [player_xs]
+  ld [scratch+1], a ; scrach+1 = previous xs
+
   ld a, [player_velocity_xs_right]
   call player_substate_move_add
   
+  ; detect collision right 
+  pop hl ; hl = actor ptr 
+  push hl  
+  call act_substate_check_collision_right
+  cp a, 0
+  jr z, @no_collision_right REL
+
+  call act_restore_x
+
+@no_collision_right:
+
   pop de
   ret 
 
@@ -842,6 +891,95 @@ act_substate_check_collision_top:
   ret
 
 act_substate_check_collision_left:
+  push hl
+  push de
+  
+  act_check_collision_xy_bc
+
+  ld de, actcollision
+  add hl, de ; hl = collision rect 
+
+  ld a, [hl+]
+  ld e, a
+  ld a, [hl]
+  ld d, a
+  ld hl, 0
+  add hl, de ; hl = collision rectangle
+ 
+  ld a, [hl+] ; a = y offset 
+  add a, b ; y = top 
+  ld b, a ; back to b
+
+  ld a, [hl+] ; a = x offset 
+  add a, c ; x + left 
+  ld c, a ; back to c  
+
+  push bc
+  push hl
+  ; call for bottom left corner
+  call tileflagsat
+  and a, TILE_COLLIDER
+  pop hl ; hl = height 
+  pop bc ; bc is now back to the previous y/x values 
+  jr nz, @end REL
+  
+  ; call again but with height offset on y
+  ld a, [hl] ; a = height 
+  add a, b ; y + height 
+  ld b, a
+  call tileflagsat 
+  and a, TILE_COLLIDER
+@end:
+  pop de
+  pop hl
+  ret
+
+act_substate_check_collision_right:
+  push hl
+  push de
+  
+  act_check_collision_xy_bc
+
+  ld de, actcollision
+  add hl, de ; hl = collision rect 
+
+  ld a, [hl+]
+  ld e, a
+  ld a, [hl]
+  ld d, a
+  ld hl, 0
+  add hl, de ; hl = collision rectangle
+ 
+  ld a, [hl+] ; a = y offset 
+  add a, b ; y = top 
+  ld b, a ; back to b
+
+  ld a, [hl+] ; a = x offset 
+  add a, c ; x + left 
+  ld c, a ; back to c  
+
+  ld a, [hl+] ; a = width; hl = width 
+  add a, c
+  ld c, a  ; c = x + width 
+
+  push bc
+  push hl
+  ; call for bottom left corner
+  call tileflagsat
+  and a, TILE_COLLIDER
+  pop hl ; hl = height 
+  pop bc ; bc is now back to the previous y/x values 
+  jr nz, @end REL
+  
+  ; call again but with height offset on y
+  ld a, [hl] ; a = height 
+  add a, b ; y + height 
+  ld b, a
+  call tileflagsat 
+  and a, TILE_COLLIDER
+@end:
+  pop de
+  pop hl
   ret 
 
 ; oam table for player animation
