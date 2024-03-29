@@ -77,4 +77,18 @@ memset:
   ld a, b
   or a, c
   jp nz, @next
-  ret 
+  ret
+
+; clear soam in an unrolled loop
+; inputs:
+;  hl: dst 
+;  bc: length
+; registers:
+;   a, b, hl, de
+soam_memclear:
+  xor a, a
+  ld hl, soam 
+
+.rep i, OBJSMAX * 4, 1, ld [hl+], a 
+
+  ret

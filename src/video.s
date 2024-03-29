@@ -61,6 +61,9 @@ draw:
   cp a, MODE_EDITOR 
   call z, draw_mode_editor
 
+  ; now clear shadow oam
+  call soam_memclear
+
   ret
 
 draw_mode_play:
