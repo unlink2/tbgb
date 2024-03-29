@@ -259,11 +259,13 @@ player_init:
 ;   +1       : ttl
 bullet_init:
   push bc 
+  push de
 
   call act_alloc
   hl_null_panic
   call act_init
   
+  pop de
   pop bc
 
   push hl
@@ -279,8 +281,10 @@ bullet_init:
   inc hl ; skip update fn
   inc hl
   inc hl ; skip collision
-  inc hl 
-  inc hl ; skip usr
+
+  inc hl ; skip usr+0 
+  ld a, e
+  ld [hl+], a
 
   ld a, b
   ld [hl+], a ; y pos
@@ -303,8 +307,16 @@ bullet_state_move:
 
   pop hl
   push hl
-  ld de, acty 
+  ld de, actusr+1
   add hl, de
+
+  ld a, [hl] ; first read ttl.
+  cp a, 0 
+  jr z, @despawn REL
+
+  dec a
+  ld [hl+], a ; ttl=-1, hl = acty now
+
 
   ld a, [hl]
   dec a
@@ -312,6 +324,26 @@ bullet_state_move:
 
   pop de
   ret
+@despawn:
+  
+  pop hl
+  push hl
+  
+  ld de, actflags
+  add hl, de
+  xor a, a
+  ld [hl], a ; despawn this actor now!
+  
+  pop hl
+  push hl
+  ld de, acty 
+  add hl, de
+
+  ld [hl+], a ; x/y = 0
+  ld [hl+], a
+
+  pop hl
+  ret 
 
 bullet_oam_table:
 .db 0, 0, 16, 0 
@@ -432,10 +464,12 @@ player_substate_shoot:
 
   ld a, [hl] ; a = x
   ld c, a ; c = x
+  
+  ld e, 70 ; set ttl
 
-  pop de 
   call bullet_init
 
+  pop de 
   ld a, PLAYER_SHOOT_DELAY 
   call setdelay
 
