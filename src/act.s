@@ -1257,8 +1257,7 @@ postotile:
 
   srl c ; x / 2
   srl c ; x / 4
-  srl c ; x / 8
-  
+  srl c ; x / 8 
 
   ; - 16 for offscreen values and another -16 to make the sprite appear in the right spot
   ld a, b
@@ -1312,6 +1311,20 @@ tileflagsat:
   push hl
   push bc 
   
+  ; check if position is clearly oob 
+  ld a, c ; x pos 
+  cp a, 8 ; offscreen value left 
+  jr c, @oob REL
+  cp a, 168 ; right
+  jr nc, @oob REL
+
+  ld a, b ; y pos
+  cp a, 32 ; offscreen + top of map position 
+  jr c, @oob REL
+  cp a, 160 ; bottom 
+  jr nc, @oob REL
+  
+
   call postotile
   ; TODO: mapbuf should be a room pointer
   ld de, mapbuf
@@ -1329,6 +1342,11 @@ tileflagsat:
   pop hl
   pop bc 
   ret
+@oob:
+  ld a, TILE_COLLIDER
+  pop hl
+  pop bc 
+  ret 
 
 ; coordinate lookup tables 
 ; use like this:
