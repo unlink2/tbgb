@@ -1261,7 +1261,7 @@ postotile:
 
   ; - 16 for offscreen values and another -16 to make the sprite appear in the right spot
   ld a, b
-  sub a, 32 
+  sub a, 16 + MENU_H 
   ld b, a 
 
   srl b ; y / 2
@@ -1319,7 +1319,7 @@ tileflagsat:
   jr nc, @oob REL
 
   ld a, b ; y pos
-  cp a, 32 ; offscreen + top of map position 
+  cp a, 16 + MENU_H ; offscreen + top of map position 
   jr c, @oob REL
   cp a, 160 ; bottom 
   jr nc, @oob REL
