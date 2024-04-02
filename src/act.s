@@ -1076,7 +1076,7 @@ player_draw:
   ld a, [global_anim_timer]
   ld d, a ; d = animation offset 
   ld e, 0xFF ; flags mask
-  ld a, [player_facing_dir] ; a = tbl index 
+  ld a, 0 ; a = tbl index 
   ld hl, player_flame_oam_table
   call act_draw_from_table
   
@@ -1090,6 +1090,20 @@ player_draw:
   ld d, a
   ld e, a
   call soamsetto 
+ 
+@shoot_draw:
+  ld a, [global_delay] 
+  cp a, 0
+  jr z, @no_shoot_draw REL
+
+  ld a, [global_anim_timer]
+  ld d, a ; d = animation offset 
+  ld e, 0xFF ; flags mask
+  ld a, 2 ; a = tbl index 
+  ld hl, player_flame_oam_table
+  call act_draw_from_table
+  
+@no_shoot_draw:
 
   ; pop hl one more time 
   pop hl
