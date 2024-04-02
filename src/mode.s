@@ -69,6 +69,9 @@ init_mode_play:
   ; init player 
   call player_init
 
+  ; TODO test enemy 
+  call basic_enemy_init
+
   ; initial game mode
   ld a, MODE_PLAY 
   ld [game_mode], a

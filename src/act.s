@@ -1073,23 +1073,19 @@ player_draw:
   jr z, @no_flame_draw REL
   
 @flame_draw:
+  push bc
   ld a, [global_anim_timer]
   ld d, a ; d = animation offset 
   ld e, 0xFF ; flags mask
   ld a, 0 ; a = tbl index 
   ld hl, player_flame_oam_table
   call act_draw_from_table
+  pop bc
   
   ; pop hl one more time 
   pop hl
 
-  ret 
-
 @no_flame_draw:
-  xor a, a
-  ld d, a
-  ld e, a
-  call soamsetto 
  
 @shoot_draw:
   ld a, [global_delay] 
@@ -1256,6 +1252,16 @@ title_cursor_draw:
   call soamsetto
 
   pop hl
+  ret
+
+; creates a basic enemy actor 
+basic_enemy_init:
+  ret
+
+basic_enemy_update:
+  ret
+
+basic_enemy_draw:
   ret
 
 ; converts actor position to tile position 
