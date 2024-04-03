@@ -1256,12 +1256,65 @@ title_cursor_draw:
 
 ; creates a basic enemy actor 
 basic_enemy_init:
+  call act_alloc
+  hl_null_panic
+  call act_init
+
+  push hl
+  
+  ; hl is new actor 
+  ld a, ACT_FACTIVE
+  ld [hl+], a
+
+  ld a, ACT_ENEMY_BASIC
+  ld [hl+], a ; set type 
+
+  inc hl 
+  inc hl ; skip update fn
+  inc hl
+  inc hl ; skip collision
+
+  inc hl ; skip usr+0 
+  inc hl ; skip usr+1
+
+  ld a, 32
+  ld [hl+], a ; y pos
+  ld a, 32
+  ld [hl+], a ; x pos
+  
+  pop hl
+  ld bc, basic_enemy_update
+  call actstate_to
   ret
 
 basic_enemy_update:
+  call basic_enemy_draw 
   ret
 
+basic_enemy_table:
+.db 0, 0, 8, 0 
 basic_enemy_draw:
+  ; move actor ptr to hl
+  push de
+
+  pop hl
+  push hl
+  ld de, acty 
+  add hl, de
+
+  ld a, [hl+] ; y index 
+  ld b, a
+  ld a, [hl] ; x
+  ld c, a
+  
+  ld a, [global_anim_timer]
+  ld d, 0 ; d = animation offset 
+  ld e, 0xFF ; flags mask
+  ld hl, basic_enemy_table
+  ld a, 0 ; a = tbl index
+  call act_draw_from_table
+  
+  pop de
   ret
 
 ; converts actor position to tile position 

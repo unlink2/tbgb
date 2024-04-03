@@ -35,6 +35,7 @@
 ; player type 
 .de ACT_TPLAYER, 1
 .de ACT_BULLET, 1
+.de ACT_ENEMY_BASIC, 1
 
 ; cursor type: 
 ;  the cursor type handles location as follows:
