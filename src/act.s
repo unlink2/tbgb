@@ -1288,7 +1288,11 @@ basic_enemy_init:
   ret
 
 basic_enemy_update:
+  call basic_enemy_beh1
   call basic_enemy_draw 
+  ret
+
+basic_enemy_beh1:
   ret
 
 basic_enemy_table:
@@ -1316,6 +1320,12 @@ basic_enemy_draw:
   
   pop de
   ret
+
+; checks if 2 lines intersect 
+; inputs:
+;   
+rec_intersects:
+  ret 
 
 ; converts actor position to tile position 
 ; inputs:
