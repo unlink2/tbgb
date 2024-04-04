@@ -238,13 +238,6 @@ player_init:
   call actstate_to
 
   pop hl
-  ld de, actcollision
-  add hl, de
-  ld bc, player_collision
-  ld a, c
-  ld [hl+], a
-  ld a, b
-  ld [hl], a
 
   ret
 
@@ -680,6 +673,7 @@ player_act_substate_move:
   
   ; collision detection up
   pop hl ; hl = act ptr
+  ld bc, player_collision 
   call act_substate_check_collision_top 
   cp a, 0
   jr z, @no_collision_up REL
@@ -705,6 +699,7 @@ player_act_substate_move:
   
   ; detect collision bottom 
   pop hl ; hl = actor ptr
+  ld bc, player_collision 
   call act_substate_check_collision_bottom
   cp a, 0 
   jr z, @no_collision_down REL
@@ -731,6 +726,7 @@ player_act_substate_move:
   ; detect collision left 
   pop hl ; hl = actor ptr
   push hl
+  ld bc, player_collision 
   call act_substate_check_collision_left 
   cp a, 0
   jr z, @no_collision_left REL
@@ -757,6 +753,7 @@ player_act_substate_move:
   ; detect collision right 
   pop hl ; hl = actor ptr 
   push hl  
+  ld bc, player_collision 
   call act_substate_check_collision_right
   cp a, 0
   jr z, @no_collision_right REL
@@ -784,6 +781,7 @@ player_act_substate_move:
 ; top left collision rect location
 ; inputs:
 ;   hl: actor ptr 
+;   bc: collision offset ptr
 ; returns:
 ;   a = 0 -> no collision
 ;   a > 0 -> collision
@@ -793,20 +791,11 @@ player_act_substate_move:
 act_substate_check_collision_bottom:
   push hl
   push de
-  
+  push bc
   act_check_collision_xy_bc
   
-  ; adjust positon by collision rect as needed 
-  ; by this routine
-  ld de, actcollision 
-  add hl, de ; hl = collision rect
-
-  ld a, [hl+]
-  ld e, a
-  ld a, [hl]
-  ld d, a
-  ld hl, 0
-  add hl, de ; hl = collision rectangle
+  ; hl = collision rect
+  pop hl
 
   ld a, [hl+] ; a = y offset 
   add a, b ; y = top 
@@ -845,20 +834,12 @@ act_substate_check_collision_bottom:
 act_substate_check_collision_top:
   push hl
   push de
-  
+ 
+  push bc
+
   act_check_collision_xy_bc
   
-  ; adjust positon by collision rect as needed 
-  ; by this routine
-  ld de, actcollision 
-  add hl, de ; hl = collision rect
-
-  ld a, [hl+]
-  ld e, a
-  ld a, [hl]
-  ld d, a
-  ld hl, 0
-  add hl, de ; hl = collision rectangle
+  pop hl ; hl = collision rect
 
   ld a, [hl+] ; a = y offset 
   add a, b ; y = top 
@@ -894,17 +875,10 @@ act_substate_check_collision_left:
   push hl
   push de
   
+  push bc
+
   act_check_collision_xy_bc
-
-  ld de, actcollision
-  add hl, de ; hl = collision rect 
-
-  ld a, [hl+]
-  ld e, a
-  ld a, [hl]
-  ld d, a
-  ld hl, 0
-  add hl, de ; hl = collision rectangle
+  pop hl ; hl = collision rectangle
  
   ld a, [hl+] ; a = y offset 
   add a, b ; y = top 
@@ -938,17 +912,11 @@ act_substate_check_collision_right:
   push hl
   push de
   
+  push bc
+
   act_check_collision_xy_bc
-
-  ld de, actcollision
-  add hl, de ; hl = collision rect 
-
-  ld a, [hl+]
-  ld e, a
-  ld a, [hl]
-  ld d, a
-  ld hl, 0
-  add hl, de ; hl = collision rectangle
+  
+  pop hl ; hl = collision rectangle
  
   ld a, [hl+] ; a = y offset 
   add a, b ; y = top 

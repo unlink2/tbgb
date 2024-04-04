@@ -14,7 +14,7 @@
 .de actstatefn, 2 
 
 ; pointer to collision offsets
-.de actcollision, 2
+.de actunused, 2
 
 ; user-specific memory
 ; can be used by each actor as needed
