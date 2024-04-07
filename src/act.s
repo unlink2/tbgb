@@ -1289,7 +1289,7 @@ basic_enemy_draw:
   pop de
   ret
 
-; checks if 2 lines intersect 
+; checks if 2 rectangles intersect 
 ; inputs:
 ;   
 rec_intersects:
