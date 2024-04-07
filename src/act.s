@@ -673,7 +673,7 @@ player_act_substate_move:
   
   ; collision detection up
   pop hl ; hl = act ptr
-  ld bc, player_collision 
+  ld bc, player_collision
   call act_substate_check_collision_top 
   cp a, 0
   jr z, @no_collision_up REL
@@ -1425,9 +1425,30 @@ acttiletomaph: ; hi nibble
 ;   2 -> height
 ;   3 -> width
 
+; all collision rects are in order of ACT_TYPE 
+
+col_tbl:
+; type 0
+null_collision:
+.db 0, 0, 0, 0
+
+; PLAYER 
 player_collision:
-; player 
 .db 0x00 ; y offset 
 .db 0x00 ; x offset 
 .db 0x07 ; height
 .db 0x07 ; width 
+
+; BULLET
+bullet_collision:
+.db 0x00 
+.db 0x00
+.db 0x07
+.db 0x07
+
+; ENEMY_BASIC 
+enemy_basic_collision:
+.db 0x00 
+.db 0x00
+.db 0x07
+.db 0x07
