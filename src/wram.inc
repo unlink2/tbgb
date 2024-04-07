@@ -158,3 +158,7 @@ mapflags: .adv MAP_SIZE
 
 vram_update_idx: .adv 1
 vram_update_buf: .adv VRAM_UPDATE_LEN * VRAM_UPDATE_ENTRY_LEN
+
+; rectangle params for collision check
+r1: .adv 4
+r2: .adv 4 

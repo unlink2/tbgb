@@ -1291,7 +1291,8 @@ basic_enemy_draw:
 
 ; checks if 2 rectangles intersect 
 ; inputs:
-;   
+;   r1, r2 in wram filled with 
+;   x, y, w, h respectively 
 rec_intersects:
   ret 
 
