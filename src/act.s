@@ -1292,8 +1292,28 @@ basic_enemy_draw:
 ; checks if 2 rectangles intersect 
 ; inputs:
 ;   r1, r2 in wram filled with 
-;   x, y, w, h respectively 
+;   y, x, h, w respectively 
+; returns:
+;   a: 0/1
 rec_intersects:
+  ; r1.x < r2.x 
+  ld a, [r1+1] ; r1.x
+  ld b, a
+  ld a, [r2+1] ; r2.x 
+  cp a, b 
+  jr nc, @no_col REL ; <
+
+  ; r1.x + r1.w > r2.x
+
+  ; r1.y < r2.y + r2.h
+
+  ; r1.y + r1.h > r2.y
+
+@col:
+  ld a, 1
+
+@no_col:
+  ld a, 0
   ret 
 
 ; converts actor position to tile position 
