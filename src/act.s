@@ -1357,6 +1357,35 @@ rec_intersects:
   xor a, a
   ret 
 
+; generic ld col rec to new location 
+; inputs:
+;   hl: collision rectangle
+;   bc: y/x position
+#macro ld_col_rec
+   ld a, [hl+] ; a = y offset 
+   add a, b ; y + y offset 
+   ld [$1 + RY], a ; store in y 
+
+   ld a, [hl+] ; a = x offset 
+   add a, c ; x + x offset 
+   ld [$1 + RX], a ; store in x 
+
+   ld a, [hl+] ; a = height 
+   ld [$1 + RH], a ; store in height
+
+   ld a, [hl] ; a = width
+   ld [$1 + RW], a ; store in width
+#endmacro 
+
+; loads collision rectangle to r1
+ld_col_rec_r1:
+  ld_col_rec r1
+  ret
+
+ld_col_rec_r2:
+  ld_col_rec r2
+  ret 
+
 ; converts actor position to tile position 
 ; inputs:
 ;   bc: y/x coordinates
