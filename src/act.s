@@ -1296,24 +1296,59 @@ basic_enemy_draw:
 ; returns:
 ;   a: 0/1
 rec_intersects:
-  ; r1.x < r2.x 
-  ld a, [r1+RY] ; a = r1.x
+
+@check1:
+  ; r1.x < r2.x + r2.w 
+  ld a, [r1+RX] ; a = r1.x
   ld b, a ; b = r1.x
-  ld a, [r2+RY] ; a = r2.x 
-  cp a, b 
+
+  ld a, [r2+RX] ; a = r2.x
+  ld a, c ; c = r2. x
+  ld a, [r2+RW] ; a = r2.w
+  add a, c ; a = r2.x + r2.w
+  
+  cp a, b ; r1.x < r2.x + r2.w
   jr nc, @no_col REL ; a < b
 
+@check2:
   ; r1.x + r1.w > r2.x
-  ld c, a ; c = r2.x 
-  ld a, [r1+RW]
-  add a, b ; a = r1.x + r1.w
+  ld a, [r1+RX] ; a = r1.x
+  ld c, a ; c = r1.x
+  ld a, [r1+RW] ; a = r1.w
+  add a, c ; a = r1.x + r1.w
   ld b, a ; b = r1.x + r1.w
-  cp a, c 
-  jr c, @no_col REL ; a > c
+  
+  ld a, [r2+RX] ; a = r2.x 
 
+  cp a, b ; r1.x + r1.w > r2.x 
+  jr c, @no_col REL ; a > b
+
+@check3:
   ; r1.y < r2.y + r2.h
+  ld a, [r1+RY] ; a = r1.y 
+  ld b, a ; b = r1.y 
+  
+  ld a, [r2+RY] ; a = r2.y
+  ld c, a ; c= r2.y
+  
+  ld a, [r2+RH] ; a = r2.h 
+  add a, c ; a = r2.y + r2.h 
+  
+  cp a, b ; r1.y < r2.y + r2.h
+  jr nc, @no_col REL ; a < b 
 
+@check4:
   ; r1.y + r1.h > r2.y
+  
+  ld a, [r1+RY] ; a = r1.y
+  ld b, a ; b = r1.y
+  ld a, [r1+RH] ; a = r1.h
+  add a, b ; a = r1.y + r1.h 
+  ld b, a ; b = r1.y + r1.h
+
+  ld a, [r2+RY] ; a = r2.y
+  cp a, b ; r1.y + r1.h > r2.y
+  jr c, @no_col REL ; a > b
 
 @col:
   ld a, 1
