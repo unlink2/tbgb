@@ -159,6 +159,13 @@ mapflags: .adv MAP_SIZE
 vram_update_idx: .adv 1
 vram_update_buf: .adv VRAM_UPDATE_LEN * VRAM_UPDATE_ENTRY_LEN
 
+; rectangle "struct" layout
+.se 0
+.de RY, 1
+.de RX, 1
+.de RW, 1
+.de RH, 1
+
 ; rectangle params for collision check
 r1: .adv 4
 r2: .adv 4 
